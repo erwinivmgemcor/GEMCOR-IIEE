@@ -4,140 +4,194 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>GEMCOR x IIEE Cyber Quiz</title>
+    <!-- Google Fonts for that Techy look -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
     <style>
-        /* --- GEMCOR BRAND COLORS & CYBERPUNK THEME --- */
         :root {
-            --bg-color: #030811; /* Very dark blue */
-            --gemcor-blue: #004aad; /* Deep Blue from logo */
-            --gemcor-green: #00a651; /* Bright Green from logo */
-            --neon-blue: #00f0ff;
+            --bg-dark: #02050a;
+            --gemcor-blue: #0055ff;
+            --gemcor-green: #00ff88;
+            --neon-blue: #00e1ff;
             --neon-green: #39ff14;
+            --danger: #ff003c;
         }
 
         body {
             margin: 0;
             padding: 0;
-            background-color: var(--bg-color);
+            background-color: var(--bg-dark);
             color: white;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Rajdhani', sans-serif;
             overflow: hidden; 
             user-select: none; 
-            
-            /* HONEYCOMB BACKGROUND WITH GEMCOR GREEN */
-            background-image: 
-                radial-gradient(circle at 50% 50%, rgba(0, 74, 173, 0.4) 0%, transparent 70%),
-                url('data:image/svg+xml;utf8,<svg width="60" height="104" viewBox="0 0 60 104" xmlns="http://www.w3.org/2000/svg"><path d="M30 0L60 17.32V51.96L30 69.28L0 51.96V17.32L30 0Z" fill="none" stroke="rgba(0, 166, 81, 0.2)" stroke-width="2"/><path d="M30 34.64L60 51.96V86.6L30 103.92L0 86.6V51.96L30 34.64Z" fill="none" stroke="rgba(0, 166, 81, 0.2)" stroke-width="2"/></svg>');
-            background-size: cover, 60px 104px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
             height: 100vh;
             width: 100vw;
-            box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        /* Portrait 55-inch TV Optimization */
+        /* The Animated Background Canvas */
+        #bg-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.6;
+        }
+
+        /* Main UI Container */
         .container {
+            position: relative;
+            z-index: 10;
             width: 90%;
-            max-width: 800px;
-            height: 90%;
+            max-width: 850px;
+            height: 92%;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
-            border: 3px solid var(--gemcor-blue);
-            box-shadow: 0 0 40px rgba(0, 74, 173, 0.5), inset 0 0 20px rgba(0, 166, 81, 0.2);
-            border-radius: 25px;
-            padding: 30px;
-            background: rgba(3, 8, 17, 0.85);
-            position: relative;
+            border: 2px solid rgba(0, 225, 255, 0.3);
+            box-shadow: 0 0 50px rgba(0, 85, 255, 0.2), inset 0 0 30px rgba(0, 255, 136, 0.1);
+            border-radius: 30px;
+            padding: 40px;
+            background: rgba(2, 5, 10, 0.75);
+            backdrop-filter: blur(10px); /* Glassmorphism effect */
+            box-sizing: border-box;
         }
 
-        /* LOGO STYLING */
+        /* Animated Corner Accents */
+        .container::before, .container::after {
+            content: '';
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            border: 3px solid var(--gemcor-green);
+            transition: all 0.3s ease;
+        }
+        .container::before { top: -3px; left: -3px; border-right: none; border-bottom: none; border-radius: 30px 0 0 0; }
+        .container::after { bottom: -3px; right: -3px; border-left: none; border-top: none; border-radius: 0 0 30px 0; }
+
+        /* LOGO */
         .logo-container {
-            margin-bottom: 30px;
+            margin-bottom: 20px;
+            animation: floatLogo 3s ease-in-out infinite;
         }
         .logo-container img {
-            max-width: 400px; /* Pinalaki ko para kita sa 55-inch TV */
-            width: 100%;
+            max-width: 350px;
             height: auto;
-            filter: drop-shadow(0 0 15px rgba(0, 166, 81, 0.5));
+            filter: drop-shadow(0 0 20px rgba(0, 225, 255, 0.6));
         }
 
+        @keyframes floatLogo {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Typography */
         h1 {
+            font-family: 'Orbitron', sans-serif;
             font-size: 3.5rem;
             color: white;
-            text-shadow: 0 0 20px var(--gemcor-blue), 0 0 40px var(--neon-blue);
-            margin-bottom: 10px;
-            letter-spacing: 2px;
+            text-shadow: 0 0 10px var(--neon-blue), 0 0 30px var(--gemcor-blue);
+            margin: 0 0 10px 0;
+            letter-spacing: 4px;
+            text-transform: uppercase;
         }
 
         .highlight-green {
             color: var(--neon-green);
-            text-shadow: 0 0 15px var(--neon-green);
+            text-shadow: 0 0 15px var(--neon-green), 0 0 40px var(--gemcor-green);
         }
 
+        /* Buttons */
         .btn {
-            background: transparent;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.1), transparent);
             color: var(--neon-green);
-            border: 3px solid var(--gemcor-green);
-            padding: 20px 50px;
-            font-size: 2rem;
+            border: 2px solid var(--gemcor-green);
+            padding: 20px 60px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
             font-weight: bold;
-            border-radius: 15px;
+            border-radius: 12px;
             cursor: pointer;
             text-transform: uppercase;
             letter-spacing: 3px;
-            transition: all 0.2s ease;
-            box-shadow: 0 0 20px rgba(0, 166, 81, 0.4);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.2);
             margin-top: 30px;
+            position: relative;
+            overflow: hidden;
         }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: all 0.5s;
+        }
+
+        .btn:hover::before { left: 100%; }
 
         .btn:active {
             background: var(--gemcor-green);
             color: black;
-            transform: scale(0.95);
+            transform: scale(0.92);
+            box-shadow: 0 0 50px var(--neon-green);
         }
 
         .hidden { display: none !important; }
 
         /* QUESTIONS UI */
         #question-text {
-            font-size: 2.5rem;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 2.8rem;
             margin-bottom: 40px;
-            line-height: 1.4;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-            font-weight: 600;
+            line-height: 1.3;
+            font-weight: 700;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
         }
 
         .options-grid {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 20px;
+            gap: 15px;
             width: 100%;
         }
 
         .option-btn {
-            background: rgba(0, 74, 173, 0.2);
-            border: 2px solid var(--gemcor-blue);
+            background: rgba(0, 85, 255, 0.1);
+            border: 2px solid rgba(0, 225, 255, 0.4);
             color: white;
             padding: 25px;
+            font-family: 'Rajdhani', sans-serif;
             font-size: 1.8rem;
+            font-weight: 600;
             border-radius: 15px;
             cursor: pointer;
             transition: all 0.2s;
             text-align: left;
             display: flex;
             align-items: center;
-            box-shadow: 0 0 10px rgba(0, 74, 173, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option-btn:hover {
+            background: rgba(0, 85, 255, 0.3);
+            border-color: var(--neon-blue);
         }
 
         .option-btn span {
+            font-family: 'Orbitron', sans-serif;
             background: var(--gemcor-blue);
             color: white;
-            border-radius: 50%;
+            border-radius: 8px;
             width: 45px;
             height: 45px;
             display: inline-flex;
@@ -150,54 +204,66 @@
         }
 
         .option-btn:active {
+            transform: scale(0.98);
             background: var(--gemcor-blue);
-            border-color: var(--neon-blue);
             box-shadow: 0 0 30px var(--neon-blue);
         }
 
         /* RESULTS UI */
         #result-screen h1 {
-            font-size: 6rem;
+            font-size: 7rem;
             margin: 0;
+            font-family: 'Orbitron', sans-serif;
             font-weight: 900;
         }
 
         .correct-text {
             color: var(--neon-green);
-            text-shadow: 0 0 30px var(--neon-green), 0 0 60px var(--neon-green);
+            text-shadow: 0 0 30px var(--neon-green), 0 0 80px var(--gemcor-green);
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         .wrong-text {
-            color: #ff0044;
-            text-shadow: 0 0 30px #ff0044;
+            color: var(--danger);
+            text-shadow: 0 0 30px var(--danger), 0 0 80px var(--danger);
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        /* Animations */
+        @keyframes popIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Shake Animation for Wrong Answer */
         @keyframes shake {
-            0% { transform: translate(1px, 1px) rotate(0deg); }
-            10% { transform: translate(-1px, -2px) rotate(-1deg); }
-            20% { transform: translate(-3px, 0px) rotate(1deg); }
-            30% { transform: translate(3px, 2px) rotate(0deg); }
-            40% { transform: translate(1px, -1px) rotate(1deg); }
-            50% { transform: translate(-1px, 2px) rotate(-1deg); }
-            60% { transform: translate(-3px, 1px) rotate(0deg); }
-            70% { transform: translate(3px, 1px) rotate(-1deg); }
-            80% { transform: translate(-1px, -1px) rotate(1deg); }
-            90% { transform: translate(1px, 2px) rotate(0deg); }
-            100% { transform: translate(1px, -2px) rotate(-1deg); }
+            0% { transform: translate(2px, 2px) rotate(0deg); }
+            10% { transform: translate(-2px, -3px) rotate(-2deg); }
+            20% { transform: translate(-4px, 0px) rotate(2deg); }
+            30% { transform: translate(4px, 3px) rotate(0deg); }
+            40% { transform: translate(2px, -2px) rotate(2deg); }
+            50% { transform: translate(-2px, 3px) rotate(-2deg); }
+            60% { transform: translate(-4px, 2px) rotate(0deg); }
+            70% { transform: translate(4px, 2px) rotate(-2deg); }
+            80% { transform: translate(-2px, -2px) rotate(2deg); }
+            90% { transform: translate(2px, 3px) rotate(0deg); }
+            100% { transform: translate(2px, -3px) rotate(-2deg); }
         }
         .shake { animation: shake 0.5s; }
-        
+
+        /* Pulsing Button */
         @keyframes pulse {
-            0% { box-shadow: 0 0 20px rgba(0, 166, 81, 0.4); }
-            50% { box-shadow: 0 0 50px var(--neon-green), 0 0 80px rgba(0, 166, 81, 0.6); }
-            100% { box-shadow: 0 0 20px rgba(0, 166, 81, 0.4); }
+            0% { box-shadow: 0 0 20px rgba(0, 255, 136, 0.2); }
+            50% { box-shadow: 0 0 60px var(--neon-green), 0 0 100px rgba(0, 255, 136, 0.4); }
+            100% { box-shadow: 0 0 20px rgba(0, 255, 136, 0.2); }
         }
         .pulse-btn { animation: pulse 2s infinite; }
 
     </style>
 </head>
 <body>
+
+    <!-- Moving Background Canvas -->
+    <canvas id="bg-canvas"></canvas>
 
     <div class="container" id="main-container">
         
@@ -209,14 +275,14 @@
         <!-- ATTRACT SCREEN -->
         <div id="attract-screen">
             <h1>CYBER <span class="highlight-green">QUIZ</span></h1>
-            <p style="font-size: 1.5rem; color: #ccc;">Test your electrical knowledge!</p>
-            <button class="btn pulse-btn" onclick="startGame()">TAP TO START</button>
+            <p style="font-size: 1.5rem; color: #aaa; letter-spacing: 2px;">SYSTEM READY. AWAITING INPUT.</p>
+            <button class="btn pulse-btn" onclick="startGame()">INITIALIZE</button>
         </div>
 
         <!-- GAME SCREEN -->
         <div id="game-screen" class="hidden" style="width: 100%;">
-            <h2 style="color: var(--neon-green); font-size: 1.5rem; letter-spacing: 2px; margin-top:0;">QUESTION</h2>
-            <div id="question-text">Loading question...</div>
+            <h2 style="color: var(--neon-blue); font-family: 'Orbitron'; font-size: 1.2rem; letter-spacing: 4px; margin-top:0;">DATA REQUEST</h2>
+            <div id="question-text">Loading...</div>
             <div class="options-grid" id="options-container">
                 <!-- Options injected by JS -->
             </div>
@@ -232,7 +298,83 @@
     </div>
 
     <script>
-        // --- SOUND EFFECTS (Gamit ang Web Audio API) ---
+        // ==========================================
+        // 1. ANIMATED BACKGROUND (CANVAS PARTICLES)
+        // ==========================================
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height, particles;
+
+        function initCanvas() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            particles = [];
+            // Gumawa ng 60 particles
+            for (let i = 0; i < 60; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * 1.5; // Bilis ng galaw
+                this.vy = (Math.random() - 0.5) * 1.5;
+                this.radius = Math.random() * 2 + 1;
+                this.color = Math.random() > 0.5 ? '#00ff88' : '#0055ff';
+            }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                if (this.x < 0 || this.x > width) this.vx *= -1;
+                if (this.y < 0 || this.y > height) this.vy *= -1;
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = this.color;
+                ctx.fill();
+                ctx.shadowBlur = 0; // Reset for lines
+            }
+        }
+
+        function animateCanvas() {
+            ctx.clearRect(0, 0, width, height);
+            
+            // Gumuhit ng connecting lines (Parang network/circuit)
+            ctx.lineWidth = 1;
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < 120) {
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        // Mag-glow ang linya kapag malapit
+                        ctx.strokeStyle = `rgba(0, 225, 255, ${1 - distance/120})`;
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(animateCanvas);
+        }
+
+        window.addEventListener('resize', initCanvas);
+        initCanvas();
+        animateCanvas();
+
+        // ==========================================
+        // 2. SOUND EFFECTS (WEB AUDIO API)
+        // ==========================================
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
         function playSound(type) {
@@ -244,25 +386,30 @@
             gainNode.connect(audioCtx.destination);
 
             if (type === 'correct') {
+                // Sci-Fi Success Sound
                 oscillator.type = 'sine';
                 oscillator.frequency.setValueAtTime(880, audioCtx.currentTime); 
                 oscillator.frequency.exponentialRampToValueAtTime(1760, audioCtx.currentTime + 0.1); 
-                gainNode.gain.setValueAtTime(0.5, audioCtx.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(2200, audioCtx.currentTime + 0.2);
+                gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.6);
+                oscillator.start();
+                oscillator.stop(audioCtx.currentTime + 0.6);
+            } else if (type === 'wrong') {
+                // Error/Buzz Sound
+                oscillator.type = 'sawtooth';
+                oscillator.frequency.setValueAtTime(150, audioCtx.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(80, audioCtx.currentTime + 0.4);
+                gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
                 gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
                 oscillator.start();
                 oscillator.stop(audioCtx.currentTime + 0.5);
-            } else if (type === 'wrong') {
-                oscillator.type = 'sawtooth';
-                oscillator.frequency.setValueAtTime(150, audioCtx.currentTime);
-                oscillator.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.3);
-                gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
-                oscillator.start();
-                oscillator.stop(audioCtx.currentTime + 0.4);
             }
         }
 
-        // --- 10 SAMPLE QUESTIONS ---
+        // ==========================================
+        // 3. GAME LOGIC
+        // ==========================================
         const questions = [
             { q: "What does IIEE stand for?", o: ["Institute of Integrated Electrical Engineers", "International Institute of Electrical Engineering", "Integrated Institute of Electronic Engineers", "Institute of Industrial Electrical Engineers"], a: 0 },
             { q: "Which of the following is the unit of electrical resistance?", o: ["Volt", "Ampere", "Ohm", "Watt"], a: 2 },
@@ -292,7 +439,7 @@
             attractScreen.classList.add('hidden');
             gameScreen.classList.remove('hidden');
             
-            // Random question bawat player
+            // Random question
             const randomIndex = Math.floor(Math.random() * questions.length);
             currentQuestion = questions[randomIndex];
 
@@ -304,18 +451,34 @@
             gameScreen.classList.remove('hidden');
             mainContainer.classList.remove('shake');
 
-            questionText.innerText = currentQuestion.q;
+            // Typewriter effect para sa tanong
+            questionText.innerText = "";
+            let i = 0;
+            const txt = currentQuestion.q;
+            const speed = 20; // Bilis ng pag-type
+            
+            function typeWriter() {
+                if (i < txt.length) {
+                    questionText.innerHTML += txt.charAt(i);
+                    i++;
+                    setTimeout(typeWriter, speed);
+                }
+            }
+            typeWriter();
             
             optionsContainer.innerHTML = '';
             const letters = ['A', 'B', 'C', 'D'];
             
-            currentQuestion.o.forEach((option, index) => {
-                const btn = document.createElement('button');
-                btn.className = 'option-btn';
-                btn.innerHTML = `<span>${letters[index]}</span> ${option}`;
-                btn.onclick = () => checkAnswer(index);
-                optionsContainer.appendChild(btn);
-            });
+            // Delay ng konti bago lumabas ang options para suspense
+            setTimeout(() => {
+                currentQuestion.o.forEach((option, index) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'option-btn';
+                    btn.innerHTML = `<span>${letters[index]}</span> ${option}`;
+                    btn.onclick = () => checkAnswer(index);
+                    optionsContainer.appendChild(btn);
+                });
+            }, 500); 
         }
 
         function checkAnswer(selectedIndex) {
