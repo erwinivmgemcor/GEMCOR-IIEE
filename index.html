@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>GEMCOR x IIEE Cyber Quiz</title>
+    <style>
+        /* --- GEMCOR BRAND COLORS & CYBERPUNK THEME --- */
+        :root {
+            --bg-color: #030811; /* Very dark blue */
+            --gemcor-blue: #004aad; /* Deep Blue from logo */
+            --gemcor-green: #00a651; /* Bright Green from logo */
+            --neon-blue: #00f0ff;
+            --neon-green: #39ff14;
+            --honeycomb-color: rgba(0, 166, 81, 0.1);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden; 
+            user-select: none; 
+            
+            /* HONEYCOMB BACKGROUND WITH GEMCOR GREEN */
+            background-image: 
+                radial-gradient(circle at 50% 50%, rgba(0, 74, 173, 0.4) 0%, transparent 70%),
+                url('data:image/svg+xml;utf8,<svg width="60" height="104" viewBox="0 0 60 104" xmlns="http://www.w3.org/2000/svg"><path d="M30 0L60 17.32V51.96L30 69.28L0 51.96V17.32L30 0Z" fill="none" stroke="rgba(0, 166, 81, 0.2)" stroke-width="2"/><path d="M30 34.64L60 51.96V86.6L30 103.92L0 86.6V51.96L30 34.64Z" fill="none" stroke="rgba(0, 166, 81, 0.2)" stroke-width="2"/></svg>');
+            background-size: cover, 60px 104px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            width: 100vw;
+            box-sizing: border-box;
+        }
+
+        /* Portrait 55-inch TV Optimization */
+        .container {
+            width: 90%;
+            max-width: 800px;
+            height: 90%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            border: 3px solid var(--gemcor-blue);
+            box-shadow: 0 0 40px rgba(0, 74, 173, 0.5), inset 0 0 20px rgba(0, 166, 81, 0.2);
+            border-radius: 25px;
+            padding: 30px;
+            background: rgba(3, 8, 17, 0.85);
+            position: relative;
+        }
+
+        /* LOGO STYLING */
+        .logo-container {
+            margin-bottom: 20px;
+        }
+        .logo-container img {
+            max-width: 300px;
+            height: auto;
+            filter: drop-shadow(0 0 15px var(--neon-green));
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            color: white;
+            text-shadow: 0 0 20px var(--gemcor-blue), 0 0 40px var(--neon-blue);
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        .highlight-green {
+            color: var(--neon-green);
+            text-shadow: 0 0 15px var(--neon-green);
+        }
+
+        .btn {
+            background: transparent;
+            color: var(--neon-green);
+            border: 3px solid var(--gemcor-green);
+            padding: 20px 50px;
+            font-size: 2rem;
+            font-weight: bold;
+            border-radius: 15px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            transition: all 0.2s ease;
+            box-shadow: 0 0 20px rgba(0, 166, 81, 0.4);
+            margin-top: 30px;
+        }
+
+        .btn:active {
+            background: var(--gemcor-green);
+            color: black;
+            transform: scale(0.95);
+        }
+
+        .hidden { display: none !important; }
+
+        /* QUESTIONS UI */
+        #question-text {
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+            line-height: 1.4;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            font-weight: 600;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            width: 100%;
+        }
+
+        .option-btn {
+            background: rgba(0, 74, 173, 0.2);
+            border: 2px solid var(--gemcor-blue);
+            color: white;
+            padding: 25px;
+            font-size: 1.8rem;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 0 10px rgba(0, 74, 173, 0.3);
+        }
+
+        .option-btn span {
+            background: var(--gemcor-blue);
+            color: white;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 20px;
+            font-weight: bold;
+            box-shadow: 0 0 10px var(--neon-blue);
+        }
+
+        .option-btn:active {
+            background: var(--gemcor-blue);
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 30px var(--neon-blue);
+        }
+
+        /* RESULTS UI */
+        #result-screen h1 {
+            font-size: 6rem;
+            margin: 0;
+            font-weight: 900;
+        }
+
+        .correct-text {
+            color: var(--neon-green);
+            text-shadow: 0 0 30px var(--neon-green), 0 0 60px var(--neon-green);
+        }
+
+        .wrong-text {
+            color: #ff0044;
+            text-shadow: 0 0 30px #ff0044;
+        }
+
+        /* Animations */
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(3px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            60% { transform: translate(-3px, 1px) rotate(0deg); }
+            70% { transform: translate(3px, 1px) rotate(-1deg); }
+            80% { transform: translate(-1px, -1px) rotate(1deg); }
+            90% { transform: translate(1px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+        .shake { animation: shake 0.5s; }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 20px rgba(0, 166, 81, 0.4); }
+            50% { box-shadow: 0 0 50px var(--neon-green), 0 0 80px rgba(0, 166, 81, 0.6); }
+            100% { box-shadow: 0 0 20px rgba(0, 166, 81, 0.4); }
+        }
+        .pulse-btn { animation: pulse 2s infinite; }
+
+    </style>
+</head>
+<body>
+
+    <div class="container" id="main-container">
+        
+        <!-- LOGO (Palitan mo yung src ng link ng logo niyo pag na-upload mo na sa github) -->
+        <div class="logo-container">
+            <!-- Gagamit tayo ng text fallback kung wala pang image file. 
+                 Palitan mo itong <h2> ng <img> tag pag ready na. -->
+            <h2 style="color: var(--gemcor-blue); font-size: 2.5rem; margin: 0;">
+                GEM<span style="color: var(--gemcor-green);">COR</span>
+            </h2>
+            <p style="margin: 5px 0 0 0; font-size: 0.9rem; color: #aaa; letter-spacing: 1px;">Greenmetal Electric Manufacturing Corporation</p>
+        </div>
+
+        <!-- ATTRACT SCREEN -->
+        <div id="attract-screen">
+            <h1>CYBER <span class="highlight-green">QUIZ</span></h1>
+            <p style="font-size: 1.5rem; color: #ccc;">Test your electrical knowledge!</p>
+            <button class="btn pulse-btn" onclick="startGame()">TAP TO START</button>
+        </div>
+
+        <!-- GAME SCREEN -->
+        <div id="game-screen" class="hidden" style="width: 100%;">
+            <h2 style="color: var(--neon-green); font-size: 1.5rem; letter-spacing: 2px;">QUESTION <span id="q-number">1</span></h2>
+            <div id="question-text">Loading question...</div>
+            <div class="options-grid" id="options-container">
+                <!-- Options injected by JS -->
+            </div>
+        </div>
+
+        <!-- RESULT SCREEN -->
+        <div id="result-screen" class="hidden">
+            <h1 id="result-text">CORRECT!</h1>
+            <p id="result-subtext" style="font-size: 2rem; color: white; margin-top: 20px;">Claim your prize at the booth!</p>
+            <button class="btn" onclick="resetGame()" style="margin-top: 50px;">NEXT PLAYER</button>
+        </div>
+
+    </div>
+
+    <script>
+        // --- SOUND EFFECTS (Gamit ang Web Audio API para walang need mag-download ng mp3) ---
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playSound(type) {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+
+            if (type === 'correct') {
+                // Tunog ng Tama: Mataas na "Ding" (Two tones)
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(880, audioCtx.currentTime); // A5
+                oscillator.frequency.exponentialRampToValueAtTime(1760, audioCtx.currentTime + 0.1); // A6
+                gainNode.gain.setValueAtTime(0.5, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+                oscillator.start();
+                oscillator.stop(audioCtx.currentTime + 0.5);
+            } else if (type === 'wrong') {
+                // Tunog ng Mali: Mababang "Buzz" (Sawtooth)
+                oscillator.type = 'sawtooth';
+                oscillator.frequency.setValueAtTime(150, audioCtx.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.3);
+                gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+                oscillator.start();
+                oscillator.stop(audioCtx.currentTime + 0.4);
+            }
+        }
+
+        // --- 10 SAMPLE QUESTIONS (Palitan mo ito ng 100 questions niyo) ---
+        const questions = [
+            { q: "What does IIEE stand for?", o: ["Institute of Integrated Electrical Engineers", "International Institute of Electrical Engineering", "Integrated Institute of Electronic Engineers", "Institute of Industrial Electrical Engineers"], a: 0 },
+            { q: "Which of the following is the unit of electrical resistance?", o: ["Volt", "Ampere", "Ohm", "Watt"], a: 2 },
+            { q: "What is the color of the live wire in standard electrical wiring?", o: ["Black", "Green", "White", "Red or Brown"], a: 3 },
+            { q: "Who discovered the principle of electromagnetic induction?", o: ["Thomas Edison", "Nikola Tesla", "Michael Faraday", "James Watt"], a: 2 },
+            { q: "What is the standard frequency of AC power in the Philippines?", o: ["50 Hz", "60 Hz", "70 Hz", "100 Hz"], a: 1 },
+            { q: "Which material is a good conductor of electricity?", o: ["Rubber", "Wood", "Copper", "Glass"], a: 2 },
+            { q: "What does GEMCOR stand for?", o: ["General Electric Motor Corp", "Greenmetal Electric Manufacturing Corporation", "Global Electrical Machinery Corp", "Green Energy Machine Corp"], a: 1 },
+            { q: "What is the formula for Ohm's Law?", o: ["V = I / R", "V = I * R", "V = R / I", "V = I + R"], a: 1 },
+            { q: "Which device is used to protect an electrical circuit from overload?", o: ["Capacitor", "Resistor", "Circuit Breaker", "Inductor"], a: 2 },
+            { q: "What is the safe voltage limit for dry environments according to Philippine Electrical Code?", o: ["12V", "24V", "50V", "110V"], a: 2 }
+        ];
+
+        // Kukunin lang natin ang random na 1 question kada player (para hindi pare-pareho)
+        let currentQuestion = null;
+        const attractScreen = document.getElementById('attract-screen');
+        const gameScreen = document.getElementById('game-screen');
+        const resultScreen = document.getElementById('result-screen');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const resultText = document.getElementById('result-text');
+        const resultSubtext = document.getElementById('result-subtext');
+        const mainContainer = document.getElementById('main-container');
+        const qNumberElement = document.getElementById('q-number');
+
+        function startGame() {
+            // Kailangan ng user interaction bago mag-play ng sound sa browser
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            
+            attractScreen.classList.add('hidden');
+            gameScreen.classList.remove('hidden');
+            
+            // Pumili ng random na tanong mula sa array
+            const randomIndex = Math.floor(Math.random() * questions.length);
+            currentQuestion = questions[randomIndex];
+
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            resultScreen.classList.add('hidden');
+            gameScreen.classList.remove('hidden');
+            mainContainer.classList.remove('shake');
+
+            qNumberElement.innerText = "LIVE"; 
+            questionText.innerText = currentQuestion.q;
+            
+            optionsContainer.innerHTML = '';
+            const letters = ['A', 'B', 'C', 'D'];
+            
+            currentQuestion.o.forEach((option, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerHTML = `<span>${letters[index]}</span> ${option}`;
+                btn.onclick = () => checkAnswer(index);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(selectedIndex) {
+            gameScreen.classList.add('hidden');
+            resultScreen.classList.remove('hidden');
+
+            if (selectedIndex === currentQuestion.a) {
+                // TAMA
+                playSound('correct');
+                resultText.innerText = "CORRECT!";
+                resultText.className = "correct-text";
+                resultSubtext.innerText = "Great job! Please claim your souvenir at the GEMCOR booth.";
+                resultSubtext.style.color = "white";
+            } else {
+                // MALI
+                playSound('wrong');
+                resultText.innerText = "WRONG!";
+                resultText.className = "wrong-text";
+                resultSubtext.innerText = "Better luck next time!";
+                resultSubtext.style.color = "#aaa";
+                mainContainer.classList.add('shake'); 
+            }
+        }
+
+        function resetGame() {
+            resultScreen.classList.add('hidden');
+            gameScreen.classList.add('hidden');
+            attractScreen.classList.remove('hidden');
+            mainContainer.classList.remove('shake');
+            currentQuestion = null;
+        }
+    </script>
+</body>
+</html>
