@@ -1,786 +1,662 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GEMCOR x IIEE - Knowledge Assessment</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-dark: #02060a;
-            --gemcor-blue: #0055ff;
-            --gemcor-green: #00ff88;
-            --neon-blue: #00e1ff;
-            --neon-green: #39ff14;
-            --danger: #ff003c;
-            --warning: #ffcc00;
-            --text-glow: 0 0 10px rgba(255, 255, 255, 0.5);
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>GEMCOR x IIEE - Knowledge Assessment</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+:root{--bg-dark:#02060a;--gemcor-blue:#0055ff;--gemcor-green:#00ff88;--neon-blue:#00e1ff;--neon-green:#39ff14;--danger:#ff003c;--warning:#ffcc00;--text-glow:0 0 10px rgba(255,255,255,.5)}
+body{margin:0;padding:0;background:var(--bg-dark);color:#fff;font-family:'Rajdhani',sans-serif;overflow:hidden;user-select:none;height:100vh;width:100vw;display:flex;justify-content:center;align-items:center;cursor:crosshair}
+#bg-canvas,#fx-canvas{position:absolute;top:0;left:0;width:100%;height:100%;z-index:0}
+#glitch-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(255,0,60,.3);z-index:5;pointer-events:none;opacity:0;transition:opacity .1s}
 
-        body {
-            margin: 0; padding: 0; background-color: var(--bg-dark); color: white;
-            font-family: 'Rajdhani', sans-serif; overflow: hidden; user-select: none; 
-            height: 100vh; width: 100vw; display: flex; justify-content: center; align-items: center;
-            cursor: crosshair; 
-        }
+/* SETTINGS */
+.settings-btn{position:absolute;top:20px;right:20px;z-index:20;background:rgba(0,85,255,.1);border:2px solid var(--neon-blue);color:var(--neon-blue);border-radius:50%;width:50px;height:50px;font-size:1.5rem;cursor:pointer;display:flex;justify-content:center;align-items:center;transition:.3s}
+.settings-btn:hover{background:rgba(0,225,255,.3);transform:rotate(90deg)}
+#settings-modal{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:400px;max-width:90vw;box-sizing:border-box;background:rgba(2,6,10,.95);border:1px solid var(--gemcor-blue);border-radius:10px;padding:30px;z-index:30;box-shadow:0 0 50px rgba(0,85,255,.3);display:none;flex-direction:column;gap:20px;font-family:'Share Tech Mono',monospace}
+#settings-modal h2{margin:0;color:var(--neon-blue);text-align:center;letter-spacing:2px;font-size:1.5rem}
+.setting-item{display:flex;justify-content:space-between;align-items:center;font-size:1.2rem}
+input[type=range]{-webkit-appearance:none;width:150px;background:transparent}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;height:15px;width:15px;border-radius:50%;background:var(--neon-blue);cursor:pointer;margin-top:-5px;box-shadow:0 0 10px var(--neon-blue)}
+input[type=range]::-webkit-slider-runnable-track{width:100%;height:4px;cursor:pointer;background:#333;border-radius:2px}
+.switch{position:relative;display:inline-block;width:50px;height:26px}
+.switch input{opacity:0;width:0;height:0}
+.slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#333;transition:.4s;border-radius:34px}
+.slider:before{position:absolute;content:"";height:18px;width:18px;left:4px;bottom:4px;background:#fff;transition:.4s;border-radius:50%}
+input:checked+.slider{background:var(--gemcor-blue)}
+input:checked+.slider:before{transform:translateX(24px)}
+.close-btn{background:transparent;border:1px solid var(--neon-blue);color:var(--neon-blue);padding:10px;font-family:'Share Tech Mono';border-radius:5px;cursor:pointer;margin-top:10px;transition:.3s}
+.close-btn:hover{background:var(--neon-blue);color:#000}
 
-        #bg-canvas, #fx-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
+/* MAIN CONTAINER */
+.container{position:relative;z-index:10;width:90%;max-width:900px;height:92%;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;border:1px solid rgba(0,225,255,.1);box-shadow:inset 0 0 60px rgba(0,85,255,.05);border-radius:5px;padding:40px;background:rgba(2,6,10,.6);box-sizing:border-box;pointer-events:none;transition:all .2s;transform:perspective(1400px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transform-style:preserve-3d}
+.container::before,.container::after{content:'';position:absolute;width:30px;height:30px;border:2px solid var(--gemcor-blue);pointer-events:none}
+.container::before{top:10px;left:10px;border-right:none;border-bottom:none}
+.container::after{bottom:10px;right:10px;border-left:none;border-top:none}
+button,.logo-container,#question-text,#result-text,.options-grid,.settings-btn,#settings-modal,.hold-btn-container,.giveaway-grid{pointer-events:auto}
+.container.shake{animation:shake .6s cubic-bezier(.36,.07,.19,.97) both}
+.container.glitch-bg{background:rgba(255,0,60,.1);border-color:var(--danger);box-shadow:0 0 80px var(--danger)}
+.container.success-bg{background:rgba(0,255,136,.05);border-color:var(--neon-green);box-shadow:0 0 80px var(--neon-green)}
+@keyframes shake{10%,90%{transform:translate3d(-2px,0,0)}20%,80%{transform:translate3d(4px,0,0)}30%,50%,70%{transform:translate3d(-8px,0,0)}40%,60%{transform:translate3d(8px,0,0)}}
 
-        #glitch-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255, 0, 60, 0.3); z-index: 5; pointer-events: none; opacity: 0; transition: opacity 0.1s;
-        }
+/* LOGO */
+.logo-container{margin-bottom:30px;background:rgba(255,255,255,.03);border:1px solid rgba(0,225,255,.15);border-radius:15px;padding:15px 30px;box-shadow:0 10px 30px rgba(0,0,0,.5),inset 0 0 20px rgba(0,225,255,.05);backdrop-filter:blur(10px);animation:floatLogo 4s ease-in-out infinite,logoGlow 4s ease-in-out infinite}
+.logo-container img{max-width:280px;height:auto;display:block;filter:drop-shadow(0 0 15px rgba(0,166,81,.4))}
+@keyframes floatLogo{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes logoGlow{0%,100%{box-shadow:0 10px 30px rgba(0,0,0,.5),inset 0 0 20px rgba(0,225,255,.05);border-color:rgba(0,225,255,.15)}50%{box-shadow:0 10px 40px rgba(0,0,0,.6),inset 0 0 30px rgba(0,166,81,.15);border-color:rgba(0,166,81,.4)}}
 
-        /* --- SETTINGS UI --- */
-        .settings-btn {
-            position: absolute; top: 20px; right: 20px; z-index: 20;
-            background: rgba(0, 85, 255, 0.1); border: 2px solid var(--neon-blue); color: var(--neon-blue);
-            border-radius: 50%; width: 50px; height: 50px; font-size: 1.5rem; cursor: pointer;
-            display: flex; justify-content: center; align-items: center; transition: 0.3s;
-        }
-        .settings-btn:hover { background: rgba(0, 225, 255, 0.3); transform: rotate(90deg); }
+/* TITLE */
+h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.8rem,3.5vw,2.5rem);color:#fff;text-shadow:0 0 20px var(--gemcor-blue);margin:0 0 5px;letter-spacing:4px;font-weight:700;text-transform:uppercase}
+.subtitle{font-family:'Share Tech Mono',monospace;color:var(--neon-green);font-size:clamp(.9rem,1.2vw,1.2rem);letter-spacing:5px;margin-bottom:0;display:block}
 
-        #settings-modal {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 400px; background: rgba(2, 6, 10, 0.95); border: 1px solid var(--gemcor-blue);
-            border-radius: 10px; padding: 30px; z-index: 30; box-shadow: 0 0 50px rgba(0, 85, 255, 0.3);
-            display: none; flex-direction: column; gap: 20px; font-family: 'Share Tech Mono', monospace;
-        }
-        #settings-modal h2 { margin: 0; color: var(--neon-blue); text-align: center; letter-spacing: 2px; font-size: 1.5rem; }
-        .setting-item { display: flex; justify-content: space-between; align-items: center; font-size: 1.2rem; }
-        
-        input[type=range] { -webkit-appearance: none; width: 150px; background: transparent; }
-        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 15px; width: 15px; border-radius: 50%; background: var(--neon-blue); cursor: pointer; margin-top: -5px; box-shadow: 0 0 10px var(--neon-blue); }
-        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #333; border-radius: 2px; }
+/* SCI-FI 3D DIMENSION */
+.portal{position:absolute;top:50%;left:50%;width:140vmax;height:140vmax;margin:-70vmax 0 0 -70vmax;z-index:1;pointer-events:none;background:conic-gradient(from 0deg,transparent,rgba(0,85,255,.2),transparent 25%,rgba(0,255,136,.14),transparent 50%,rgba(0,225,255,.18),transparent 75%);filter:blur(30px);animation:spinPortal 40s linear infinite}
+@keyframes spinPortal{to{transform:rotate(360deg)}}
+.grid-floor,.grid-ceiling{position:absolute;left:-50%;width:200%;height:55%;z-index:1;pointer-events:none;background-image:linear-gradient(rgba(0,225,255,.4) 1px,transparent 1px),linear-gradient(90deg,rgba(0,225,255,.4) 1px,transparent 1px);background-size:60px 60px}
+.grid-floor{bottom:-8%;transform:perspective(420px) rotateX(70deg);transform-origin:50% 100%;animation:gridMove 2s linear infinite;-webkit-mask-image:linear-gradient(to top,#000,transparent 85%);mask-image:linear-gradient(to top,#000,transparent 85%)}
+.grid-ceiling{top:-8%;transform:perspective(420px) rotateX(-70deg);transform-origin:50% 0;animation:gridMoveUp 2s linear infinite;-webkit-mask-image:linear-gradient(to bottom,#000,transparent 85%);mask-image:linear-gradient(to bottom,#000,transparent 85%)}
+@keyframes gridMove{to{background-position:0 60px,0 0}}
+@keyframes gridMoveUp{to{background-position:0 -60px,0 0}}
+.scanlines{position:absolute;inset:0;z-index:7;pointer-events:none;overflow:hidden;background:repeating-linear-gradient(0deg,rgba(0,0,0,.16) 0 1px,transparent 1px 3px)}
+.scanlines::after{content:'';position:absolute;left:0;width:100%;height:120px;top:-120px;background:linear-gradient(transparent,rgba(0,225,255,.09),transparent);animation:beam 6s linear infinite}
+@keyframes beam{to{top:100%}}
+.container{animation:panelGlow 5s ease-in-out infinite}
+@keyframes panelGlow{0%,100%{box-shadow:inset 0 0 60px rgba(0,85,255,.05),0 0 30px rgba(0,85,255,.15)}50%{box-shadow:inset 0 0 80px rgba(0,225,255,.1),0 0 70px rgba(0,225,255,.35)}}
+#attract-screen{transform-style:preserve-3d}
+#attract-screen h1{transform:translateZ(50px);animation:titleGlitch 5s infinite}
+@keyframes titleGlitch{0%,91%,100%{text-shadow:0 0 20px var(--gemcor-blue)}93%{text-shadow:3px 0 var(--danger),-3px 0 var(--neon-blue)}96%{text-shadow:-3px 0 var(--danger),3px 0 var(--neon-blue)}}
+.scan-guide{transform:translateZ(30px)}
+.ring3d{position:absolute;width:112%;height:112%;border-radius:50%;border:2px solid transparent;pointer-events:none}
+.ring3d.a{border-top-color:var(--neon-green);border-bottom-color:var(--neon-blue);box-shadow:0 0 15px rgba(0,225,255,.3);animation:spin3dA 6s linear infinite}
+.ring3d.b{width:94%;height:94%;border-left-color:var(--gemcor-blue);border-right-color:var(--neon-green);animation:spin3dB 8s linear infinite}
+@keyframes spin3dA{from{transform:rotateX(70deg) rotateZ(0)}to{transform:rotateX(70deg) rotateZ(360deg)}}
+@keyframes spin3dB{from{transform:rotateY(70deg) rotateZ(0)}to{transform:rotateY(70deg) rotateZ(-360deg)}}
+.hud-data{position:absolute;font-family:'Share Tech Mono',monospace;font-size:.75rem;color:var(--neon-blue);opacity:.7;letter-spacing:1px;line-height:1.5;pointer-events:none;transform:translateZ(20px)}
+.hud-data.tl{top:24px;left:50px;text-align:left}
+.hud-data.br{bottom:24px;right:50px;text-align:right}
 
-        .switch { position: relative; display: inline-block; width: 50px; height: 26px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #333; transition: .4s; border-radius: 34px; }
-        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
-        input:checked + .slider { background-color: var(--gemcor-blue); }
-        input:checked + .slider:before { transform: translateX(24px); }
-        .close-btn { background: transparent; border: 1px solid var(--neon-blue); color: var(--neon-blue); padding: 10px; font-family: 'Share Tech Mono'; border-radius: 5px; cursor: pointer; margin-top: 10px; transition: 0.3s; }
-        .close-btn:hover { background: var(--neon-blue); color: black; }
+/* SCAN GUIDE */
+.scan-guide{margin-top:30px;font-family:'Share Tech Mono',monospace;text-align:center;pointer-events:none}
+.guide-title{color:var(--neon-green);font-size:clamp(.85rem,1.1vw,1.1rem);letter-spacing:3px;text-shadow:0 0 8px var(--neon-green);animation:guideBlink 1.6s ease-in-out infinite}
+.guide-sub{color:var(--neon-blue);font-size:clamp(.8rem,1vw,1rem);letter-spacing:2px;margin-top:8px;text-shadow:0 0 6px var(--neon-blue)}
+@keyframes guideBlink{0%,100%{opacity:1}50%{opacity:.35}}
 
-        /* --- MAIN CONTAINER --- */
-        .container {
-            position: relative; z-index: 10; width: 90%; max-width: 900px; height: 92%;
-            display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
-            border: 1px solid rgba(0, 225, 255, 0.1); box-shadow: inset 0 0 60px rgba(0, 85, 255, 0.05);
-            border-radius: 5px; padding: 40px; background: rgba(2, 6, 10, 0.85);
-            box-sizing: border-box; pointer-events: none; transition: all 0.2s;
-        }
-        
-        .container::before, .container::after { content: ''; position: absolute; width: 30px; height: 30px; border: 2px solid var(--gemcor-blue); pointer-events: none; }
-        .container::before { top: 10px; left: 10px; border-right: none; border-bottom: none; }
-        .container::after { bottom: 10px; right: 10px; border-left: none; border-top: none; }
+/* HOLD BUTTON */
+.hold-btn-container{position:relative;width:clamp(200px,22vw,280px);height:clamp(200px,22vw,280px);margin:25px auto 0;display:flex;justify-content:center;align-items:center;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:none;perspective:700px;transform:translateZ(70px)}
+.hud-ring-outer{position:absolute;width:100%;height:100%;border:1px dashed rgba(0,225,255,.3);border-radius:50%;animation:rotateHUD 20s linear infinite;pointer-events:none}
+.hud-ring-inner{position:absolute;width:82%;height:82%;border:2px solid rgba(0,85,255,.2);border-radius:50%;border-top-color:var(--neon-blue);border-bottom-color:var(--neon-blue);pointer-events:none}
+@keyframes rotateHUD{100%{transform:rotate(360deg)}}
+.progress-ring{position:absolute;top:0;left:0;width:100%;height:100%;transform:rotate(-90deg);z-index:2;pointer-events:none}
+.progress-ring__circle{stroke-linecap:round}
+.laser-scanner{position:absolute;width:60%;height:2px;background:var(--neon-blue);box-shadow:0 0 15px var(--neon-blue),0 0 30px var(--neon-blue);top:50%;left:20%;transform:translateY(-50%);opacity:0;z-index:3;pointer-events:none}
+.hold-btn-container:active .laser-scanner,.hold-btn-container.scanning .laser-scanner{opacity:1;animation:scanAnim 1s linear infinite alternate}
+@keyframes scanAnim{0%{top:30%}100%{top:70%}}
+.hand-icon{width:40%;height:40%;fill:transparent;stroke:#fff;stroke-width:1.5;filter:drop-shadow(0 0 10px rgba(255,255,255,.5));transition:transform .2s,stroke .2s,filter .2s;z-index:4;pointer-events:none}
+.hold-btn-container:active .hand-icon{stroke:var(--neon-blue);filter:drop-shadow(0 0 20px var(--neon-blue));transform:scale(.95)}
+.hold-btn-container.success .hand-icon{stroke:var(--neon-green);filter:drop-shadow(0 0 40px var(--neon-green))}
+.scan-text{position:absolute;bottom:-50px;font-family:'Share Tech Mono',monospace;font-size:clamp(.8rem,1vw,1rem);color:var(--neon-blue);text-shadow:0 0 5px var(--neon-blue);letter-spacing:2px;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;width:100%;text-align:center}
+.hold-btn-container.scanning .scan-text{opacity:1}
+.hold-btn-container.success .scan-text{color:var(--neon-green);text-shadow:0 0 5px var(--neon-green)}
 
-        button, .logo-container, #question-text, #result-text, .options-grid, .settings-btn, #settings-modal, .hold-btn-container { pointer-events: auto; }
+/* GAME UI */
+#question-text{font-family:'Rajdhani',sans-serif;font-size:clamp(1.8rem,2.5vw,2.5rem);margin-bottom:30px;font-weight:600;text-shadow:var(--text-glow)}
+.timer-container{width:100%;height:8px;background:#111;overflow:hidden;margin-bottom:40px;position:relative;border-radius:4px}
+.timer-bar{width:100%;height:100%;background:var(--neon-blue);transition:width .1s linear,background-color .3s;box-shadow:0 0 10px var(--neon-blue)}
+.options-grid{display:grid;grid-template-columns:1fr;gap:15px;width:100%}
+.option-btn{background:rgba(0,85,255,.05);border:1px solid rgba(0,225,255,.2);color:#eee;padding:20px 25px;font-family:'Rajdhani',sans-serif;font-size:clamp(1.2rem,1.5vw,1.6rem);font-weight:500;border-radius:5px;cursor:pointer;transition:all .2s;text-align:left;display:flex;align-items:center}
+.option-btn:hover{background:rgba(0,85,255,.2);border-color:var(--neon-blue);transform:translateX(5px)}
+.option-btn span{font-family:'Share Tech Mono',monospace;color:var(--neon-blue);margin-right:20px;font-size:1em;border:1px solid rgba(0,225,255,.3);padding:5px 10px;border-radius:3px}
+.option-btn:active{transform:scale(.99);background:var(--gemcor-blue)}
+.flash-correct{background:rgba(0,255,136,.2)!important;border-color:var(--neon-green)!important;color:var(--neon-green)!important;box-shadow:0 0 30px rgba(0,255,136,.3)!important}
+.flash-wrong{background:rgba(255,0,60,.2)!important;border-color:var(--danger)!important;color:#fff!important;box-shadow:0 0 30px rgba(255,0,60,.3)!important}
 
-        .container.shake { animation: shake 0.6s cubic-bezier(.36,.07,.19,.97) both; }
-        .container.glitch-bg { background: rgba(255, 0, 60, 0.1); border-color: var(--danger); box-shadow: 0 0 80px var(--danger); }
-        .container.success-bg { background: rgba(0, 255, 136, 0.05); border-color: var(--neon-green); box-shadow: 0 0 80px var(--neon-green); }
+/* RESULTS */
+#result-screen h1{font-size:clamp(3rem,5vw,5rem);margin:0;font-family:'Orbitron',sans-serif;font-weight:700;letter-spacing:5px}
+.correct-text{color:var(--neon-green);text-shadow:0 0 20px var(--neon-green)}
+.wrong-text{color:var(--danger);text-shadow:0 0 20px var(--danger)}
+.timeout-text{color:var(--warning);text-shadow:0 0 20px var(--warning)}
 
-        @keyframes shake { 10%, 90% { transform: translate3d(-2px, 0, 0); } 20%, 80% { transform: translate3d(4px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-8px, 0, 0); } 40%, 60% { transform: translate3d(8px, 0, 0); } }
-
-        /* --- ENHANCED LOGO CONTAINER --- */
-        .logo-container { 
-            margin-bottom: 30px; 
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(0, 225, 255, 0.15);
-            border-radius: 15px;
-            padding: 15px 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(0, 225, 255, 0.05);
-            backdrop-filter: blur(10px);
-            animation: floatLogo 4s ease-in-out infinite, logoGlow 4s ease-in-out infinite;
-        }
-
-        .logo-container img { 
-            max-width: 280px; 
-            height: auto; 
-            display: block;
-            filter: drop-shadow(0 0 15px rgba(0, 166, 81, 0.4));
-        }
-
-        @keyframes floatLogo { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-        @keyframes logoGlow {
-            0%, 100% { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(0, 225, 255, 0.05); border-color: rgba(0, 225, 255, 0.15); }
-            50% { box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6), inset 0 0 30px rgba(0, 166, 81, 0.15); border-color: rgba(0, 166, 81, 0.4); }
-        }
-
-        /* --- PROFESSIONAL TITLE --- */
-        h1 { 
-            font-family: 'Orbitron', sans-serif; 
-            font-size: clamp(1.8rem, 3.5vw, 2.5rem); 
-            color: white; 
-            text-shadow: 0 0 20px var(--gemcor-blue); 
-            margin: 0 0 5px 0; 
-            letter-spacing: 4px; 
-            font-weight: 700; 
-            text-transform: uppercase;
-        }
-        .subtitle {
-            font-family: 'Share Tech Mono', monospace;
-            color: var(--neon-green);
-            font-size: clamp(0.9rem, 1.2vw, 1.2rem);
-            letter-spacing: 5px;
-            margin-bottom: 0;
-            display: block;
-        }
-
-        /* --- HIGH-END PRESS AND HOLD BUTTON --- */
-        .hold-btn-container {
-            position: relative; 
-            width: clamp(200px, 22vw, 280px); 
-            height: clamp(200px, 22vw, 280px); 
-            margin: 40px auto 0 auto;
-            display: flex; justify-content: center; align-items: center;
-            cursor: pointer; -webkit-tap-highlight-color: transparent;
-        }
-        
-        .hud-ring-outer { position: absolute; width: 100%; height: 100%; border: 1px dashed rgba(0, 225, 255, 0.3); border-radius: 50%; animation: rotateHUD 20s linear infinite; pointer-events: none; }
-        .hud-ring-inner { position: absolute; width: 82%; height: 82%; border: 2px solid rgba(0, 85, 255, 0.2); border-radius: 50%; border-top-color: var(--neon-blue); border-bottom-color: var(--neon-blue); pointer-events: none; }
-        
-        @keyframes rotateHUD { 100% { transform: rotate(360deg); } }
-
-        .progress-ring { position: absolute; top: 0; left: 0; width: 100%; height: 100%; transform: rotate(-90deg); z-index: 2; pointer-events: none;}
-        .progress-ring__circle { stroke-dasharray: 1000; stroke-dashoffset: 1000; stroke-linecap: round; transition: stroke-dashoffset 0.05s linear; }
-
-        .laser-scanner {
-            position: absolute; width: 60%; height: 2px; background: var(--neon-blue);
-            box-shadow: 0 0 15px var(--neon-blue), 0 0 30px var(--neon-blue);
-            top: 50%; left: 20%; transform: translateY(-50%); opacity: 0; z-index: 3; pointer-events: none;
-        }
-        .hold-btn-container:active .laser-scanner, .hold-btn-container.scanning .laser-scanner { opacity: 1; animation: scanAnim 1s linear infinite alternate; }
-        @keyframes scanAnim { 0% { top: 30%; } 100% { top: 70%; } }
-
-        .hand-icon {
-            width: 40%; height: 40%; fill: transparent; stroke: white; stroke-width: 1.5;
-            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
-            transition: transform 0.2s, stroke 0.2s, filter 0.2s; z-index: 4;
-        }
-        .hold-btn-container:active .hand-icon { stroke: var(--neon-blue); filter: drop-shadow(0 0 20px var(--neon-blue)); transform: scale(0.95); }
-        .hold-btn-container.success .hand-icon { stroke: var(--neon-green); filter: drop-shadow(0 0 40px var(--neon-green)); }
-
-        .scan-text {
-            position: absolute; 
-            bottom: -50px; 
-            font-family: 'Share Tech Mono', monospace;
-            font-size: clamp(0.8rem, 1vw, 1rem); 
-            color: var(--neon-blue); 
-            text-shadow: 0 0 5px var(--neon-blue);
-            letter-spacing: 2px; 
-            opacity: 0; 
-            transition: opacity 0.3s; 
-            pointer-events: none; 
-            white-space: nowrap;
-            width: 100%;
-            text-align: center;
-        }
-        .hold-btn-container.scanning .scan-text { opacity: 1; }
-        .hold-btn-container.success .scan-text { color: var(--neon-green); text-shadow: 0 0 5px var(--neon-green); }
-
-        /* --- GAME UI --- */
-        #question-text { font-family: 'Rajdhani', sans-serif; font-size: clamp(1.8rem, 2.5vw, 2.5rem); margin-bottom: 30px; font-weight: 600; text-shadow: var(--text-glow); }
-        
-        .timer-container { width: 100%; height: 8px; background: #111; overflow: hidden; margin-bottom: 40px; position: relative; border-radius: 4px; }
-        .timer-bar { width: 100%; height: 100%; background: var(--neon-blue); transition: width 0.1s linear, background-color 0.3s; box-shadow: 0 0 10px var(--neon-blue); }
-
-        .options-grid { display: grid; grid-template-columns: 1fr; gap: 15px; width: 100%; }
-        .option-btn { background: rgba(0, 85, 255, 0.05); border: 1px solid rgba(0, 225, 255, 0.2); color: #eee; padding: 20px 25px; font-family: 'Rajdhani', sans-serif; font-size: clamp(1.2rem, 1.5vw, 1.6rem); font-weight: 500; border-radius: 5px; cursor: pointer; transition: all 0.2s; text-align: left; display: flex; align-items: center; }
-        .option-btn:hover { background: rgba(0, 85, 255, 0.2); border-color: var(--neon-blue); transform: translateX(5px); }
-        .option-btn span { font-family: 'Share Tech Mono', monospace; color: var(--neon-blue); margin-right: 20px; font-size: 1em; border: 1px solid rgba(0, 225, 255, 0.3); padding: 5px 10px; border-radius: 3px; }
-        .option-btn:active { transform: scale(0.99); background: var(--gemcor-blue); }
-        
-        .flash-correct { background: rgba(0, 255, 136, 0.2) !important; border-color: var(--neon-green) !important; color: var(--neon-green) !important; box-shadow: 0 0 30px rgba(0, 255, 136, 0.3) !important; }
-        .flash-wrong { background: rgba(255, 0, 60, 0.2) !important; border-color: var(--danger) !important; color: white !important; box-shadow: 0 0 30px rgba(255, 0, 60, 0.3) !important; }
-
-        /* --- RESULTS UI --- */
-        #result-screen h1 { font-size: clamp(3rem, 5vw, 5rem); margin: 0; font-family: 'Orbitron', sans-serif; font-weight: 700; letter-spacing: 5px; }
-        .correct-text { color: var(--neon-green); text-shadow: 0 0 20px var(--neon-green); }
-        .wrong-text { color: var(--danger); text-shadow: 0 0 20px var(--danger); }
-        .timeout-text { color: var(--warning); text-shadow: 0 0 20px var(--warning); }
-        
-        .btn { background: transparent; color: var(--neon-blue); border: 1px solid var(--neon-blue); padding: 15px 40px; font-family: 'Orbitron', sans-serif; font-size: clamp(1rem, 1.2vw, 1.2rem); font-weight: 700; border-radius: 5px; cursor: pointer; text-transform: uppercase; letter-spacing: 2px; transition: all 0.3s; margin-top: 40px; position: relative; overflow: hidden; }
-        .btn:hover { background: rgba(0, 225, 255, 0.1); box-shadow: 0 0 20px rgba(0, 225, 255, 0.3); }
-        .btn:active { background: var(--neon-blue); color: black; }
-        .hidden { display: none !important; }
-    </style>
+/* GIVEAWAY */
+#giveaway-screen h2{font-family:'Orbitron';color:var(--neon-blue);letter-spacing:3px;margin-bottom:10px;font-size:clamp(1.5rem,2vw,2rem)}
+.giveaway-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;width:100%;margin-top:20px}
+.giveaway-btn{background:rgba(0,255,136,.1);border:2px solid var(--neon-green);color:#fff;padding:20px;font-family:'Rajdhani';font-size:1.5rem;font-weight:700;border-radius:10px;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.giveaway-btn small{font-size:1rem;color:var(--neon-blue);font-family:'Share Tech Mono';margin-top:5px;display:block}
+.giveaway-btn:hover{background:rgba(0,255,136,.3);transform:scale(1.05);box-shadow:0 0 30px rgba(0,255,136,.4)}
+.giveaway-btn:active{transform:scale(.95)}
+.giveaway-btn:disabled{background:rgba(50,50,50,.5);border-color:#555;color:#777;cursor:not-allowed;transform:none;box-shadow:none}
+.btn{background:transparent;color:var(--neon-blue);border:1px solid var(--neon-blue);padding:15px 40px;font-family:'Orbitron',sans-serif;font-size:clamp(1rem,1.2vw,1.2rem);font-weight:700;border-radius:5px;cursor:pointer;text-transform:uppercase;letter-spacing:2px;transition:all .3s;margin-top:40px;position:relative;overflow:hidden}
+.btn:hover{background:rgba(0,225,255,.1);box-shadow:0 0 20px rgba(0,225,255,.3)}
+.btn:active{background:var(--neon-blue);color:#000}
+.hidden{display:none!important}
+</style>
 </head>
 <body>
 
-    <canvas id="bg-canvas"></canvas>
-    <canvas id="fx-canvas" style="z-index: 6; pointer-events: none;"></canvas>
-    <div id="glitch-overlay"></div>
+<canvas id="bg-canvas"></canvas>
+<canvas id="fx-canvas" style="z-index:6;pointer-events:none;"></canvas>
+<div class="portal"></div>
+<div class="grid-floor"></div>
+<div class="grid-ceiling"></div>
+<div id="glitch-overlay"></div>
+<div class="scanlines"></div>
 
-    <button class="settings-btn" onclick="toggleSettings()">⚙</button>
-    <div id="settings-modal">
-        <h2>SYSTEM CONFIG</h2>
-        <div class="setting-item">
-            <span>AUDIO LEVEL</span>
-            <input type="range" id="volume-slider" min="0" max="1" step="0.1" value="0.6"> <!-- Tinodo ang default volume sa 0.6 -->
-        </div>
-        <div class="setting-item">
-            <span>HAPTIC FEEDBACK</span>
-            <label class="switch">
-                <input type="checkbox" id="vibrate-toggle" checked>
-                <span class="slider"></span>
-            </label>
-        </div>
-        <button class="close-btn" onclick="toggleSettings()">CLOSE</button>
+<button class="settings-btn" onclick="toggleSettings()">⚙</button>
+<div id="settings-modal">
+    <h2>SYSTEM CONFIG</h2>
+    <div class="setting-item"><span>AUDIO LEVEL</span><input type="range" id="volume-slider" min="0" max="1" step="0.1" value="0.6"></div>
+    <div class="setting-item"><span>HAPTIC FEEDBACK</span><label class="switch"><input type="checkbox" id="vibrate-toggle" checked><span class="slider"></span></label></div>
+    <button class="close-btn" onclick="toggleSettings()">CLOSE</button>
+</div>
+
+<div class="container" id="main-container">
+    <div class="hud-data tl" id="hud-tl">SYS.STATUS: ONLINE<br>DIMENSION: Ω-7<br>LINK: SECURE</div>
+    <div class="hud-data br" id="hud-br"></div>
+    <div class="logo-container">
+        <img src="https://github.com/erwinivmgemcor/GEMCOR-IIEE/blob/main/gemcor-logo.png?raw=true" alt="GEMCOR Logo">
     </div>
 
-    <div class="container" id="main-container">
-        <div class="logo-container">
-            <img src="https://github.com/erwinivmgemcor/GEMCOR-IIEE/blob/main/gemcor-logo.png?raw=true" alt="GEMCOR Logo">
+    <div id="attract-screen">
+        <h1>KNOWLEDGE <span class="subtitle">ASSESSMENT</span></h1>
+        <div class="scan-guide">
+            <div class="guide-title">[ IDENTITY VERIFICATION REQUIRED ]</div>
+            <div class="guide-sub">PRESS &amp; HOLD THE HAND TO SCAN YOUR IDENTITY</div>
         </div>
-
-        <div id="attract-screen">
-            <h1>KNOWLEDGE <span class="subtitle">ASSESSMENT</span></h1>
-            
-            <div class="hold-btn-container" id="hold-btn">
-                <div class="scan-text" id="scan-text">AWAITING TOUCH...</div>
-
-                <div class="hud-ring-outer"></div>
-                <div class="hud-ring-inner"></div>
-                <div class="laser-scanner"></div>
-
-                <svg class="progress-ring" viewBox="0 0 320 320">
-                    <circle class="progress-ring__circle" stroke="var(--neon-blue)" stroke-width="4" fill="transparent" r="140" cx="160" cy="160" />
-                </svg>
-                
-                <svg class="hand-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M18 11V6a2 2 0 0 0-2-2 2 2 0 0 0-2 2v5M14 10V4a2 2 0 0 0-2-2 2 2 0 0 0-2 2v6M10 10.5V6a2 2 0 0 0-2-2 2 2 0 0 0-2 2v8M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-            </div>
-            
-        </div>
-
-        <div id="game-screen" class="hidden" style="width: 100%;">
-            <div class="timer-container"><div class="timer-bar" id="timer-bar"></div></div>
-            <h2 style="color: var(--neon-blue); font-family: 'Share Tech Mono'; font-size: clamp(0.8rem, 1vw, 1rem); letter-spacing: 3px; margin-top:0; text-align: left;">// ASSESSMENT_START</h2>
-            <div id="question-text">Loading...</div>
-            <div class="options-grid" id="options-container"></div>
-        </div>
-
-        <div id="result-screen" class="hidden">
-            <h1 id="result-text">CORRECT</h1>
-            <p id="result-subtext" style="font-size: clamp(1rem, 1.2vw, 1.5rem); color: #ccc; margin-top: 20px; font-family: 'Share Tech Mono';">Claim your prize at the booth.</p>
-            <button class="btn" onclick="resetGame()">NEXT SUBJECT</button>
+        <div class="hold-btn-container" id="hold-btn">
+            <div class="scan-text" id="scan-text">AWAITING TOUCH...</div>
+            <div class="hud-ring-outer"></div>
+            <div class="hud-ring-inner"></div>
+        <div class="ring3d a"></div>
+        <div class="ring3d b"></div>
+            <div class="laser-scanner"></div>
+            <svg class="progress-ring" viewBox="0 0 320 320">
+                <circle class="progress-ring__circle" stroke="var(--neon-blue)" stroke-width="4" fill="transparent" r="140" cx="160" cy="160"/>
+            </svg>
+            <svg class="hand-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M18 11V6a2 2 0 0 0-2-2 2 2 0 0 0-2 2v5M14 10V4a2 2 0 0 0-2-2 2 2 0 0 0-2 2v6M10 10.5V6a2 2 0 0 0-2-2 2 2 0 0 0-2 2v8M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
         </div>
     </div>
 
-    <script>
-        // ==========================================
-        // 1. GLOBAL SETTINGS & AUDIO
-        // ==========================================
-        let masterVolume = 0.6; // Pinalaki ang default volume
-        let isVibrateEnabled = true;
-        let audioCtx = null; 
+    <div id="game-screen" class="hidden" style="width:100%;">
+        <div class="timer-container"><div class="timer-bar" id="timer-bar"></div></div>
+        <h2 style="color:var(--neon-blue);font-family:'Share Tech Mono';font-size:clamp(.8rem,1vw,1rem);letter-spacing:3px;margin-top:0;text-align:left;">// ASSESSMENT_START</h2>
+        <div id="question-text">Loading...</div>
+        <div class="options-grid" id="options-container"></div>
+    </div>
 
-        function toggleSettings() {
-            const modal = document.getElementById('settings-modal');
-            modal.style.display = (modal.style.display === 'flex') ? 'none' : 'flex';
-        }
+    <div id="result-screen" class="hidden">
+        <h1 id="result-text">CORRECT</h1>
+        <p id="result-subtext" style="font-size:clamp(1rem,1.2vw,1.5rem);color:#ccc;margin-top:20px;font-family:'Share Tech Mono';">Proceed to claim your prize.</p>
+        <button class="btn" id="claim-btn" onclick="showGiveaways()" style="display:none;">CLAIM PRIZE</button>
+        <button class="btn" id="next-btn" onclick="resetGame()">NEXT SUBJECT</button>
+    </div>
 
-        document.getElementById('volume-slider').addEventListener('input', (e) => {
-            masterVolume = parseFloat(e.target.value);
-            // Kung may tumutugtog na music, i-update agad ang volume
-            if (musicGainNode && audioCtx) {
-                musicGainNode.gain.setTargetAtTime(masterVolume * 0.2, audioCtx.currentTime, 0.1);
-            }
-        });
+    <div id="giveaway-screen" class="hidden" style="width:100%;">
+        <h2>SELECT YOUR GIVEAWAY</h2>
+        <p style="font-family:'Share Tech Mono';color:#aaa;font-size:1rem;">Select one item from the available inventory.</p>
+        <div class="giveaway-grid" id="giveaway-container"></div>
+    </div>
+</div>
 
-        document.getElementById('vibrate-toggle').addEventListener('change', (e) => { isVibrateEnabled = e.target.checked; });
+<script>
+// ==========================================
+// 1. GLOBAL SETTINGS & AUDIO STATE
+// ==========================================
+let masterVolume = 0.6;
+let isVibrateEnabled = true;
+let audioCtx = null;
+let musicInterval = null;
+let musicGainNode = null;
 
-        function triggerVibrate(pattern) {
-            if (isVibrateEnabled && navigator.vibrate) navigator.vibrate(pattern);
-        }
+function toggleSettings() {
+    const modal = document.getElementById('settings-modal');
+    modal.style.display = (modal.style.display === 'flex') ? 'none' : 'flex';
+}
+document.getElementById('volume-slider').addEventListener('input', (e) => {
+    masterVolume = parseFloat(e.target.value);
+    if (musicGainNode && audioCtx) musicGainNode.gain.setTargetAtTime(masterVolume * 0.2, audioCtx.currentTime, 0.1);
+});
+document.getElementById('vibrate-toggle').addEventListener('change', (e) => { isVibrateEnabled = e.target.checked; });
+function triggerVibrate(pattern) { if (isVibrateEnabled && navigator.vibrate) navigator.vibrate(pattern); }
 
-        // ==========================================
-        // 2. BACKGROUND CANVAS
-        // ==========================================
-        const canvas = document.getElementById('bg-canvas');
-        const ctx = canvas.getContext('2d');
-        let width, height, particles = [], pulses = [];
-        const PARTICLE_COUNT = 80, CONNECTION_DISTANCE = 150;
+// ==========================================
+// 2. BACKGROUND CANVAS
+// ==========================================
+const canvas = document.getElementById('bg-canvas');
+const ctx = canvas.getContext('2d');
+let width, height, particles = [], pulses = [];
+const PARTICLE_COUNT = 80, CONNECTION_DISTANCE = 150;
 
-        function initCanvas() {
-            width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight;
-            particles = [];
-            for (let i = 0; i < PARTICLE_COUNT; i++) particles.push(new Particle());
-        }
-
-        class Particle {
-            constructor() {
-                this.x = Math.random() * width; this.y = Math.random() * height;
-                this.vx = (Math.random() - 0.5) * 0.8; this.vy = (Math.random() - 0.5) * 0.8;
-                this.radius = Math.random() * 2 + 1.5; this.baseColor = Math.random() > 0.3 ? '#0055ff' : '#00ff88';
-            }
-            update() {
-                this.x += this.vx; this.y += this.vy;
-                if (this.x < 0 || this.x > width) this.vx *= -1;
-                if (this.y < 0 || this.y > height) this.vy *= -1;
-            }
-            draw() {
-                ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-                ctx.fillStyle = this.baseColor; ctx.shadowBlur = 15; ctx.shadowColor = this.baseColor; ctx.fill(); ctx.shadowBlur = 0; 
-            }
-        }
-
-        class Pulse {
-            constructor(x, y) {
-                this.x = x; this.y = y; this.radius = 0; this.maxRadius = Math.random() * 150 + 100;
-                this.opacity = 1; this.speed = 4; this.color = Math.random() > 0.5 ? '0, 255, 136' : '0, 225, 255';
-            }
-            update() { this.radius += this.speed; this.opacity -= 0.03; }
-            draw() {
-                ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-                ctx.strokeStyle = `rgba(${this.color}, ${this.opacity})`; ctx.lineWidth = 2; ctx.stroke(); ctx.shadowBlur = 0;
-            }
-        }
-
-        function animateCanvas() {
-            ctx.fillStyle = 'rgba(2, 6, 10, 0.3)'; ctx.fillRect(0, 0, width, height);
-            for (let i = 0; i < particles.length; i++) {
-                particles[i].update(); particles[i].draw();
-                for (let j = i + 1; j < particles.length; j++) {
-                    const dx = particles[i].x - particles[j].x, dy = particles[i].y - particles[j].y;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-                    if (distance < CONNECTION_DISTANCE) {
-                        ctx.beginPath(); ctx.moveTo(particles[i].x, particles[i].y); ctx.lineTo(particles[j].x, particles[j].y);
-                        ctx.strokeStyle = `rgba(0, 85, 255, ${(1 - (distance / CONNECTION_DISTANCE)) * 0.6})`; ctx.lineWidth = 1; ctx.stroke();
-                    }
-                }
-            }
-            for (let i = pulses.length - 1; i >= 0; i--) {
-                pulses[i].update(); pulses[i].draw();
-                if (pulses[i].opacity <= 0) pulses.splice(i, 1);
-            }
-            requestAnimationFrame(animateCanvas);
-        }
-
-        function createPulse(e) {
-            if(e.target.closest('#settings-modal') || e.target.closest('.settings-btn') || e.target.closest('.hold-btn-container')) return;
-            let x = e.touches ? e.touches[0].clientX : e.clientX;
-            let y = e.touches ? e.touches[0].clientY : e.clientY;
-            pulses.push(new Pulse(x, y));
-            setTimeout(() => pulses.push(new Pulse(x, y)), 100);
-            particles.forEach(p => {
-                const dx = p.x - x, dy = p.y - y, dist = Math.sqrt(dx * dx + dy * dy);
-                if (dist < 200) { p.vx += (dx / dist) * 2; p.vy += (dy / dist) * 2; }
-            });
-            triggerVibrate(20); 
-        }
-
-        window.addEventListener('mousedown', createPulse); window.addEventListener('touchstart', createPulse);
-        window.addEventListener('resize', initCanvas); initCanvas(); animateCanvas();
-
-        // ==========================================
-        // 3. CONFETTI EFFECT
-        // ==========================================
-        const fxCanvas = document.getElementById('fx-canvas');
-        const fxCtx = fxCanvas.getContext('2d');
-        let confetti = [], isConfettiActive = false;
-        function resizeFx() { fxCanvas.width = window.innerWidth; fxCanvas.height = window.innerHeight; }
-        window.addEventListener('resize', resizeFx); resizeFx();
-
-        class ConfettiPiece {
-            constructor() {
-                this.x = Math.random() * fxCanvas.width; this.y = -20;
-                this.size = Math.random() * 8 + 4; this.speedY = Math.random() * 4 + 2; this.speedX = (Math.random() - 0.5) * 3;
-                this.color = ['#00ff88', '#0055ff', '#00e1ff', '#ffffff'][Math.floor(Math.random() * 4)];
-                this.rotation = Math.random() * 360; this.rotSpeed = (Math.random() - 0.5) * 10;
-            }
-            update() { this.y += this.speedY; this.x += this.speedX; this.rotation += this.rotSpeed; }
-            draw() {
-                fxCtx.save(); fxCtx.translate(this.x, this.y); fxCtx.rotate(this.rotation * Math.PI / 180);
-                fxCtx.fillStyle = this.color; fxCtx.shadowBlur = 10; fxCtx.shadowColor = this.color;
-                fxCtx.fillRect(-this.size/2, -this.size/2, this.size, this.size); fxCtx.restore();
+function initCanvas() {
+    width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight;
+    particles = [];
+    for (let i = 0; i < PARTICLE_COUNT; i++) particles.push(new Particle());
+}
+class Particle {
+    constructor() {
+        this.x = Math.random() * width; this.y = Math.random() * height;
+        this.vx = (Math.random() - 0.5) * 0.8; this.vy = (Math.random() - 0.5) * 0.8;
+        this.radius = Math.random() * 2 + 1.5; this.baseColor = Math.random() > 0.3 ? '#0055ff' : '#00ff88';
+    }
+    update() {
+        this.x += this.vx; this.y += this.vy;
+        if (this.x < 0 || this.x > width) this.vx *= -1;
+        if (this.y < 0 || this.y > height) this.vy *= -1;
+    }
+    draw() {
+        ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = this.baseColor; ctx.shadowBlur = 15; ctx.shadowColor = this.baseColor; ctx.fill(); ctx.shadowBlur = 0;
+    }
+}
+class Pulse {
+    constructor(x, y) {
+        this.x = x; this.y = y; this.radius = 0; this.maxRadius = Math.random() * 150 + 100;
+        this.opacity = 1; this.speed = 4; this.color = Math.random() > 0.5 ? '0, 255, 136' : '0, 225, 255';
+    }
+    update() { this.radius += this.speed; this.opacity -= 0.03; }
+    draw() {
+        ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(${this.color}, ${this.opacity})`; ctx.lineWidth = 2; ctx.stroke(); ctx.shadowBlur = 0;
+    }
+}
+function animateCanvas() {
+    ctx.fillStyle = 'rgba(2, 6, 10, 0.3)'; ctx.fillRect(0, 0, width, height);
+    for (let i = 0; i < particles.length; i++) {
+        particles[i].update(); particles[i].draw();
+        for (let j = i + 1; j < particles.length; j++) {
+            const dx = particles[i].x - particles[j].x, dy = particles[i].y - particles[j].y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            if (distance < CONNECTION_DISTANCE) {
+                ctx.beginPath(); ctx.moveTo(particles[i].x, particles[i].y); ctx.lineTo(particles[j].x, particles[j].y);
+                ctx.strokeStyle = `rgba(0, 85, 255, ${(1 - (distance / CONNECTION_DISTANCE)) * 0.6})`; ctx.lineWidth = 1; ctx.stroke();
             }
         }
+    }
+    for (let i = pulses.length - 1; i >= 0; i--) {
+        pulses[i].update(); pulses[i].draw();
+        if (pulses[i].opacity <= 0) pulses.splice(i, 1);
+    }
+    requestAnimationFrame(animateCanvas);
+}
+function createPulse(e) {
+    if (e.target.closest('#settings-modal') || e.target.closest('.settings-btn') || e.target.closest('.hold-btn-container') || e.target.closest('.giveaway-grid')) return;
+    let x = e.touches ? e.touches[0].clientX : e.clientX;
+    let y = e.touches ? e.touches[0].clientY : e.clientY;
+    pulses.push(new Pulse(x, y));
+    setTimeout(() => pulses.push(new Pulse(x, y)), 100);
+    particles.forEach(p => {
+        const dx = p.x - x, dy = p.y - y, dist = Math.sqrt(dx * dx + dy * dy) || 1;
+        if (dist < 200) { p.vx += (dx / dist) * 2; p.vy += (dy / dist) * 2; }
+    });
+    triggerVibrate(20);
+}
+window.addEventListener('mousedown', createPulse); window.addEventListener('touchstart', createPulse);
+window.addEventListener('resize', initCanvas); initCanvas(); animateCanvas();
 
-        function startConfetti() {
-            confetti = []; isConfettiActive = true;
-            for (let i = 0; i < 150; i++) confetti.push(new ConfettiPiece());
-            animateConfetti();
+// ==========================================
+// 3. CONFETTI
+// ==========================================
+const fxCanvas = document.getElementById('fx-canvas');
+const fxCtx = fxCanvas.getContext('2d');
+let confetti = [], isConfettiActive = false;
+function resizeFx() { fxCanvas.width = window.innerWidth; fxCanvas.height = window.innerHeight; }
+window.addEventListener('resize', resizeFx); resizeFx();
+
+class ConfettiPiece {
+    constructor() {
+        this.x = Math.random() * fxCanvas.width; this.y = -20;
+        this.size = Math.random() * 8 + 4; this.speedY = Math.random() * 4 + 2; this.speedX = (Math.random() - 0.5) * 3;
+        this.color = ['#00ff88', '#0055ff', '#00e1ff', '#ffffff'][Math.floor(Math.random() * 4)];
+        this.rotation = Math.random() * 360; this.rotSpeed = (Math.random() - 0.5) * 10;
+    }
+    update() { this.y += this.speedY; this.x += this.speedX; this.rotation += this.rotSpeed; }
+    draw() {
+        fxCtx.save(); fxCtx.translate(this.x, this.y); fxCtx.rotate(this.rotation * Math.PI / 180);
+        fxCtx.fillStyle = this.color; fxCtx.shadowBlur = 10; fxCtx.shadowColor = this.color;
+        fxCtx.fillRect(-this.size / 2, -this.size / 2, this.size, this.size); fxCtx.restore();
+    }
+}
+function startConfetti() {
+    confetti = []; isConfettiActive = true;
+    for (let i = 0; i < 150; i++) confetti.push(new ConfettiPiece());
+    animateConfetti();
+}
+function animateConfetti() {
+    if (!isConfettiActive) return;
+    fxCtx.clearRect(0, 0, fxCanvas.width, fxCanvas.height);
+    confetti.forEach(p => { p.update(); p.draw(); });
+    confetti = confetti.filter(p => p.y < fxCanvas.height);
+    if (confetti.length > 0) requestAnimationFrame(animateConfetti);
+    else { isConfettiActive = false; fxCtx.clearRect(0, 0, fxCanvas.width, fxCanvas.height); }
+}
+
+// ==========================================
+// 4. AUDIO SYNTHESIZER
+// ==========================================
+function initAudio() {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    startEnergeticMusic();
+}
+function playCorrectSound() {
+    if (!audioCtx) return;
+    const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+    osc.connect(gain); gain.connect(audioCtx.destination); osc.type = 'sine';
+    osc.frequency.setValueAtTime(523.25, audioCtx.currentTime);
+    osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1);
+    osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.2);
+    osc.frequency.setValueAtTime(1046.50, audioCtx.currentTime + 0.3);
+    gain.gain.setValueAtTime(masterVolume, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 1.0);
+    osc.start(); osc.stop(audioCtx.currentTime + 1.0);
+}
+function playWrongSound() {
+    if (!audioCtx) return;
+    const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+    osc.connect(gain); gain.connect(audioCtx.destination); osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(100, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(40, audioCtx.currentTime + 0.4);
+    gain.gain.setValueAtTime(masterVolume, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+    osc.start(); osc.stop(audioCtx.currentTime + 0.5);
+}
+function playTickSound() {
+    if (!audioCtx) return;
+    const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+    osc.connect(gain); gain.connect(audioCtx.destination); osc.type = 'square';
+    osc.frequency.setValueAtTime(880, audioCtx.currentTime);
+    gain.gain.setValueAtTime(masterVolume * 0.15, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
+    osc.start(); osc.stop(audioCtx.currentTime + 0.08);
+}
+function playClickSound() {
+    if (!audioCtx) return;
+    const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+    osc.connect(gain); gain.connect(audioCtx.destination); osc.type = 'triangle';
+    osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.1);
+    gain.gain.setValueAtTime(masterVolume * 0.4, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.12);
+    osc.start(); osc.stop(audioCtx.currentTime + 0.12);
+}
+function startEnergeticMusic() {
+    if (musicInterval || !audioCtx) return;
+    musicGainNode = audioCtx.createGain();
+    musicGainNode.gain.value = masterVolume * 0.2;
+    musicGainNode.connect(audioCtx.destination);
+    const bass = [110, 110, 130.81, 98];
+    const arp = [440, 523.25, 659.25, 523.25, 440, 392, 523.25, 392];
+    let step = 0;
+    function note(freq, type, dur, vol) {
+        const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
+        o.type = type; o.frequency.value = freq;
+        g.gain.setValueAtTime(vol, audioCtx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+        o.connect(g); g.connect(musicGainNode);
+        o.start(); o.stop(audioCtx.currentTime + dur);
+    }
+    musicInterval = setInterval(() => {
+        if (step % 2 === 0) note(bass[Math.floor(step / 2) % bass.length], 'sawtooth', 0.28, 0.5);
+        note(arp[step % arp.length], 'square', 0.12, 0.18);
+        step++;
+    }, 150);
+}
+
+// ==========================================
+// 5. CONTENT (REPLACE WITH GEMCOR'S EXCEL LIST)
+// ==========================================
+// answer: 0 = A, 1 = B, 2 = C, 3 = D
+const QUESTIONS = [
+    { q: "Sample: What does IIEE stand for?", options: ["Institute of Integrated Electrical Engineers", "International Institute of Energy Experts", "Industrial Institute of Electronic Engineering", "Integrated Instrument & Electrical Establishment"], answer: 0 },
+    { q: "Sample: Which unit measures electrical resistance?", options: ["Volt", "Ohm", "Watt", "Ampere"], answer: 1 },
+    { q: "Sample: Which device protects a circuit from overcurrent?", options: ["Resistor", "Capacitor", "Circuit breaker", "Transformer"], answer: 2 }
+];
+const DEFAULT_GIVEAWAYS = [
+    { id: "shirt", name: "GEMCOR T-Shirt", stock: 50 },
+    { id: "mug",   name: "GEMCOR Mug",     stock: 30 },
+    { id: "cap",   name: "GEMCOR Cap",     stock: 20 }
+];
+const QUESTION_TIME = 15;   // seconds per question
+const HOLD_TIME = 1500;     // ms to hold start button
+const STORAGE_KEY = 'gemcor_iiee_inventory_v1';
+
+// ==========================================
+// 6. INVENTORY (localStorage)
+// ==========================================
+function loadInventory() {
+    try {
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        if (Array.isArray(saved) && saved.length) return saved;
+    } catch (e) {}
+    return DEFAULT_GIVEAWAYS.map(g => ({ ...g }));
+}
+function saveInventory() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(inventory)); } catch (e) {} }
+function resetInventory() { inventory = DEFAULT_GIVEAWAYS.map(g => ({ ...g })); saveInventory(); console.log('Inventory reset', inventory); }
+let inventory = loadInventory();
+const totalStock = () => inventory.reduce((sum, g) => sum + g.stock, 0);
+
+// ==========================================
+// 7. PRESS & HOLD TO START
+// ==========================================
+const $ = id => document.getElementById(id);
+const holdBtn = $('hold-btn');
+const scanText = $('scan-text');
+const ring = document.querySelector('.progress-ring__circle');
+const CIRC = 2 * Math.PI * 140;
+ring.style.strokeDasharray = CIRC;
+ring.style.strokeDashoffset = CIRC;
+let holdTimer = null, holdStart = 0, holdDone = false;
+
+function setRing(progress) { ring.style.strokeDashoffset = CIRC * (1 - progress); }
+function startHold(e) {
+    e.preventDefault();
+    initAudio();
+    holdDone = false; holdStart = Date.now();
+    holdBtn.classList.add('scanning');
+    scanText.textContent = 'SCANNING...';
+    triggerVibrate(30);
+    clearInterval(holdTimer);
+    holdTimer = setInterval(() => {
+        const p = Math.min((Date.now() - holdStart) / HOLD_TIME, 1);
+        setRing(p);
+        if (p >= 1) completeHold();
+    }, 30);
+}
+function cancelHold() {
+    if (holdDone) return;
+    clearInterval(holdTimer);
+    holdBtn.classList.remove('scanning');
+    scanText.textContent = 'AWAITING TOUCH...';
+    setRing(0);
+}
+function completeHold() {
+    holdDone = true;
+    clearInterval(holdTimer);
+    holdBtn.classList.add('success');
+    scanText.textContent = 'ACCESS GRANTED';
+    triggerVibrate([60, 40, 60]);
+    playCorrectSound();
+    setTimeout(startGame, 700);
+}
+holdBtn.addEventListener('pointerdown', startHold);
+['pointerup', 'pointerleave', 'pointercancel'].forEach(ev => holdBtn.addEventListener(ev, cancelHold));
+holdBtn.addEventListener('contextmenu', e => e.preventDefault());
+
+// ==========================================
+// 8. GAME LOGIC
+// ==========================================
+const container = $('main-container');
+const screens = ['attract-screen', 'game-screen', 'result-screen', 'giveaway-screen'];
+function showScreen(id) { screens.forEach(s => $(s).classList.toggle('hidden', s !== id)); }
+
+let deck = [], currentQ = null, timeLeft = QUESTION_TIME, timerInterval = null, answered = false;
+
+function nextQuestion() {
+    if (deck.length === 0) deck = QUESTIONS.map((_, i) => i).sort(() => Math.random() - 0.5);
+    return QUESTIONS[deck.pop()];
+}
+function startGame() {
+    container.classList.remove('shake', 'glitch-bg', 'success-bg');
+    holdBtn.classList.remove('scanning', 'success');
+    currentQ = nextQuestion();
+    answered = false;
+    timeLeft = QUESTION_TIME;
+
+    $('question-text').textContent = currentQ.q;
+    const optBox = $('options-container');
+    optBox.innerHTML = '';
+    ['A', 'B', 'C', 'D'].forEach((letter, i) => {
+        if (currentQ.options[i] === undefined) return;
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.innerHTML = `<span>${letter}</span>`;
+        btn.appendChild(document.createTextNode(currentQ.options[i]));
+        btn.addEventListener('click', () => selectAnswer(i, btn));
+        optBox.appendChild(btn);
+    });
+
+    const bar = $('timer-bar');
+    bar.style.width = '100%';
+    bar.style.backgroundColor = 'var(--neon-blue)';
+    showScreen('game-screen');
+
+    clearInterval(timerInterval);
+    let lastWhole = QUESTION_TIME;
+    timerInterval = setInterval(() => {
+        timeLeft -= 0.1;
+        const pct = Math.max(timeLeft / QUESTION_TIME, 0) * 100;
+        bar.style.width = pct + '%';
+        if (pct < 30) bar.style.backgroundColor = 'var(--danger)';
+        else if (pct < 60) bar.style.backgroundColor = 'var(--warning)';
+        if (timeLeft <= 5 && Math.ceil(timeLeft) !== lastWhole) { lastWhole = Math.ceil(timeLeft); playTickSound(); }
+        if (timeLeft <= 0) { clearInterval(timerInterval); handleResult('timeout'); }
+    }, 100);
+}
+function selectAnswer(index, btn) {
+    if (answered) return;
+    answered = true;
+    clearInterval(timerInterval);
+    playClickSound();
+    const buttons = [...document.querySelectorAll('.option-btn')];
+    buttons.forEach(b => b.style.pointerEvents = 'none');
+    if (index === currentQ.answer) {
+        btn.classList.add('flash-correct');
+        setTimeout(() => handleResult('correct'), 900);
+    } else {
+        btn.classList.add('flash-wrong');
+        setTimeout(() => handleResult('wrong'), 1400);
+    }
+}
+function handleResult(type) {
+    answered = true;
+    const title = $('result-text'), sub = $('result-subtext');
+    const claimBtn = $('claim-btn'), nextBtn = $('next-btn');
+    title.className = '';
+    claimBtn.style.display = 'none';
+    nextBtn.textContent = 'NEXT SUBJECT';
+
+    if (type === 'correct') {
+        title.textContent = 'WINNER!';
+        title.classList.add('correct-text');
+        container.classList.add('success-bg');
+        playCorrectSound(); startConfetti(); triggerVibrate([100, 50, 100, 50, 200]);
+        if (totalStock() > 0) {
+            sub.textContent = 'Proceed to claim your prize.';
+            claimBtn.style.display = 'inline-block';
+        } else {
+            sub.textContent = 'Congratulations! All giveaways have been claimed.';
         }
+    } else {
+        const timedOut = type === 'timeout';
+        title.textContent = timedOut ? "TIME'S UP" : 'WRONG ANSWER';
+        title.classList.add(timedOut ? 'timeout-text' : 'wrong-text');
+        sub.textContent = timedOut ? 'Time ran out. Better luck next time!' : 'Access denied. Better luck next time!';
+        playWrongSound(); triggerVibrate([300]);
+        container.classList.add('shake', 'glitch-bg');
+        const g = $('glitch-overlay');
+        g.style.opacity = 1; setTimeout(() => g.style.opacity = 0, 250);
+    }
+    showScreen('result-screen');
+}
 
-        function animateConfetti() {
-            if (!isConfettiActive) return;
-            fxCtx.clearRect(0, 0, fxCanvas.width, fxCanvas.height);
-            confetti.forEach(p => { p.update(); p.draw(); });
-            confetti = confetti.filter(p => p.y < fxCanvas.height);
-            if (confetti.length > 0) requestAnimationFrame(animateConfetti);
-            else { isConfettiActive = false; fxCtx.clearRect(0, 0, fxCanvas.width, fxCanvas.height); }
-        }
+// ==========================================
+// 9. GIVEAWAY SELECTION
+// ==========================================
+function showGiveaways() {
+    playClickSound();
+    const box = $('giveaway-container');
+    box.innerHTML = '';
+    inventory.forEach(item => {
+        const btn = document.createElement('button');
+        btn.className = 'giveaway-btn';
+        btn.disabled = item.stock <= 0;
+        btn.appendChild(document.createTextNode(item.name));
+        const small = document.createElement('small');
+        small.textContent = item.stock > 0 ? `${item.stock} LEFT` : 'OUT OF STOCK';
+        btn.appendChild(small);
+        btn.addEventListener('click', () => claimGiveaway(item.id));
+        box.appendChild(btn);
+    });
+    showScreen('giveaway-screen');
+}
+function claimGiveaway(id) {
+    const item = inventory.find(g => g.id === id);
+    if (!item || item.stock <= 0) return;
+    item.stock -= 1;   // inventory deducted here
+    saveInventory();
+    playCorrectSound(); startConfetti(); triggerVibrate([80, 40, 80]);
+    const title = $('result-text');
+    title.className = 'correct-text';
+    title.textContent = 'PRIZE CLAIMED!';
+    $('result-subtext').textContent = `You selected: ${item.name}. Please proceed to the GEMCOR booth staff.`;
+    $('claim-btn').style.display = 'none';
+    $('next-btn').textContent = 'DONE';
+    showScreen('result-screen');
+}
 
-        // ==========================================
-        // 4. AUDIO SYNTHESIZER (SFX & ENERGETIC BGM)
-        // ==========================================
-        let musicInterval = null;
-        let musicGainNode = null;
+// ==========================================
+// 10. RESET & SHORTCUTS
+// ==========================================
+function resetGame() {
+    clearInterval(timerInterval); clearInterval(holdTimer);
+    container.classList.remove('shake', 'glitch-bg', 'success-bg');
+    holdBtn.classList.remove('scanning', 'success');
+    scanText.textContent = 'AWAITING TOUCH...';
+    setRing(0);
+    holdDone = false; answered = false;
+    showScreen('attract-screen');
+}
+window.addEventListener('keydown', e => {
+    // Admin: Ctrl+Shift+R resets giveaway inventory
+    if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'r') {
+        e.preventDefault();
+        if (confirm('Reset giveaway inventory to default counts?')) resetInventory();
+        return;
+    }
+    // Keyboard answers (1-4 / A-D) for desktop testing
+    if ($('game-screen').classList.contains('hidden') || answered) return;
+    const map = { '1': 0, '2': 1, '3': 2, '4': 3, a: 0, b: 1, c: 2, d: 3 };
+    const i = map[e.key.toLowerCase()];
+    const btns = document.querySelectorAll('.option-btn');
+    if (i !== undefined && btns[i]) selectAnswer(i, btns[i]);
+});
 
-        function initAudio() {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
-            startEnergeticMusic();
-        }
+// 3D parallax tilt that follows the pointer
+window.addEventListener('pointermove', e => {
+    const x = e.clientX / window.innerWidth - 0.5, y = e.clientY / window.innerHeight - 0.5;
+    container.style.setProperty('--ry', (x * 10) + 'deg');
+    container.style.setProperty('--rx', (-y * 8) + 'deg');
+});
 
-        function playCorrectSound() {
-            if (!audioCtx) return;
-            const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
-            osc.connect(gain); gain.connect(audioCtx.destination); osc.type = 'sine';
-            osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); 
-            osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1); 
-            osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.2); 
-            osc.frequency.setValueAtTime(1046.50, audioCtx.currentTime + 0.3); 
-            gain.gain.setValueAtTime(masterVolume, audioCtx.currentTime); 
-            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 1.0);
-            osc.start(); osc.stop(audioCtx.currentTime + 1.0);
-        }
+// Live HUD readout
+const hudBr = $('hud-br');
+setInterval(() => {
+    const r = () => (Math.random() * 999).toFixed(2).padStart(6, '0');
+    hudBr.innerHTML = `X:${r()} Y:${r()}<br>Z:${r()}<br>FLUX: ${(Math.random() * 100).toFixed(1)}%`;
+}, 140);
 
-        function playWrongSound() {
-            if (!audioCtx) return;
-            const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
-            osc.connect(gain); gain.connect(audioCtx.destination); osc.type = 'sawtooth';
-            osc.frequency.setValueAtTime(100, audioCtx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(40, audioCtx.currentTime + 0.4);
-            gain.gain.setValueAtTime(masterVolume, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
-            osc.start(); osc.stop(audioCtx.currentTime + 0.5);
-        }
-
-        function playTickSound() {
-            if (!audioCtx) return;
-            const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
-            osc.connect(gain); gain.connect(audioCtx.destination); osc.type = 'square';
-            osc.frequency.setValueAtTime(1500, audioCtx.currentTime);
-            gain.gain.setValueAtTime(masterVolume * 0.1, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.03);
-            osc.start(); osc.stop(audioCtx.currentTime + 0.03);
-        }
-
-        function playSuccessBootSound() {
-            if (!audioCtx) return;
-            const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
-            osc.connect(gain); gain.connect(audioCtx.destination); osc.type = 'triangle';
-            osc.frequency.setValueAtTime(300, audioCtx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.4);
-            gain.gain.setValueAtTime(masterVolume, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.6);
-            osc.start(); osc.stop(audioCtx.currentTime + 0.6);
-        }
-
-        // --- ENERGETIC SYNTHWAVE BACKGROUND MUSIC ---
-        function startEnergeticMusic() {
-            if (!audioCtx || musicInterval) return;
-            
-            // C Minor energetic progression (C, Eb, F, G)
-            const bassNotes = [65.41, 77.78, 87.31, 98.00]; 
-            const arpNotes = [261.63, 311.13, 349.23, 392.00]; 
-            let step = 0;
-
-            if (!musicGainNode) { 
-                musicGainNode = audioCtx.createGain(); 
-                musicGainNode.connect(audioCtx.destination); 
-                // Ginawa kong mas malakas ang volume base sa masterVolume
-                musicGainNode.gain.value = masterVolume * 0.3; 
-            }
-
-            // Bilis ng beat (125 BPM)
-            const tempo = 480; 
-
-            musicInterval = setInterval(() => {
-                if(!audioCtx) return;
-                
-                // 1. BASS DRUM (Kick) - Pang-gising ng energy
-                if (step % 2 === 0) {
-                    const kickOsc = audioCtx.createOscillator();
-                    const kickGain = audioCtx.createGain();
-                    kickOsc.connect(kickGain); kickGain.connect(musicGainNode);
-                    kickOsc.frequency.setValueAtTime(150, audioCtx.currentTime);
-                    kickOsc.frequency.exponentialRampToValueAtTime(40, audioCtx.currentTime + 0.1);
-                    kickGain.gain.setValueAtTime(1.0, audioCtx.currentTime);
-                    kickGain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
-                    kickOsc.start(); kickOsc.stop(audioCtx.currentTime + 0.15);
-                }
-
-                // 2. BASS SYNTH (Mababang tunog)
-                const bassOsc = audioCtx.createOscillator();
-                const bassGain = audioCtx.createGain();
-                const bassFilter = audioCtx.createBiquadFilter();
-                
-                bassOsc.type = 'sawtooth';
-                bassFilter.type = 'lowpass';
-                bassFilter.frequency.setValueAtTime(800, audioCtx.currentTime);
-                
-                bassOsc.connect(bassFilter); bassFilter.connect(bassGain); bassGain.connect(musicGainNode);
-                bassOsc.frequency.setValueAtTime(bassNotes[step % 4], audioCtx.currentTime);
-                
-                bassGain.gain.setValueAtTime(masterVolume * 0.4, audioCtx.currentTime);
-                bassGain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
-                bassOsc.start(); bassOsc.stop(audioCtx.currentTime + 0.2);
-
-                // 3. ARPEGGIO (Mataas na tunog, parang sci-fi laser)
-                if (step % 2 !== 0) {
-                    const arpOsc = audioCtx.createOscillator();
-                    const arpGain = audioCtx.createGain();
-                    arpOsc.connect(arpGain); arpGain.connect(musicGainNode);
-                    arpOsc.type = 'square';
-                    arpOsc.frequency.setValueAtTime(arpNotes[Math.floor(step/2) % 4], audioCtx.currentTime);
-                    
-                    arpGain.gain.setValueAtTime(masterVolume * 0.15, audioCtx.currentTime);
-                    arpGain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
-                    arpOsc.start(); arpOsc.stop(audioCtx.currentTime + 0.1);
-                }
-
-                step++;
-            }, tempo);
-        }
-
-        // ==========================================
-        // 5. HOLD-TO-START LOGIC 
-        // ==========================================
-        const holdBtn = document.getElementById('hold-btn');
-        const progressCircle = document.querySelector('.progress-ring__circle');
-        const scanText = document.getElementById('scan-text');
-        
-        let holdTimer = null;
-        let holdProgress = 0;
-        const HOLD_DURATION = 2000; 
-        const INTERVAL = 30; 
-        
-        const ringRadius = 140;
-        const ringCircumference = 2 * Math.PI * ringRadius; 
-        
-        progressCircle.style.strokeDasharray = `${ringCircumference}`;
-        progressCircle.style.strokeDashoffset = `${ringCircumference}`;
-
-        function startHold(e) {
-            if(attractScreen.classList.contains('hidden')) return;
-            e.preventDefault(); 
-            
-            initAudio();
-
-            holdProgress = 0;
-            triggerVibrate(20);
-            holdBtn.classList.add('scanning');
-            scanText.innerText = "DECRYPTING_BIO_SIG...";
-
-            if(holdTimer) clearInterval(holdTimer);
-
-            holdTimer = setInterval(() => {
-                holdProgress += INTERVAL;
-                const offset = ringCircumference - (holdProgress / HOLD_DURATION) * ringCircumference;
-                progressCircle.style.strokeDashoffset = offset;
-
-                if (holdProgress > HOLD_DURATION * 0.6) {
-                    scanText.innerText = "VERIFYING_CLEARANCE...";
-                }
-
-                if (holdProgress >= HOLD_DURATION) {
-                    clearInterval(holdTimer);
-                    holdTimer = null;
-                    completeHold();
-                }
-            }, INTERVAL);
-        }
-
-        function endHold() {
-            if (holdTimer) {
-                clearInterval(holdTimer);
-                holdTimer = null;
-                progressCircle.style.strokeDashoffset = ringCircumference;
-                holdBtn.classList.remove('scanning');
-                scanText.innerText = "AWAITING TOUCH...";
-            }
-        }
-
-        function completeHold() {
-            holdBtn.classList.remove('scanning');
-            holdBtn.classList.add('success');
-            scanText.innerText = "ACCESS_GRANTED";
-            
-            triggerVibrate([100, 50, 200]);
-            playSuccessBootSound();
-            
-            setTimeout(() => {
-                holdBtn.classList.remove('success');
-                progressCircle.style.strokeDashoffset = ringCircumference; 
-                startGame();
-            }, 800); 
-        }
-
-        holdBtn.addEventListener('mousedown', startHold);
-        holdBtn.addEventListener('touchstart', startHold, {passive: false}); 
-        holdBtn.addEventListener('mouseup', endHold);
-        holdBtn.addEventListener('mouseleave', endHold);
-        holdBtn.addEventListener('touchend', endHold);
-        holdBtn.addEventListener('touchcancel', endHold);
-
-        // ==========================================
-        // 6. GAME LOGIC & TIMER
-        // ==========================================
-        const questions = [
-            { q: "What does IIEE stand for?", o: ["Institute of Integrated Electrical Engineers", "International Institute of Electrical Engineering", "Integrated Institute of Electronic Engineers", "Institute of Industrial Electrical Engineers"], a: 0 },
-            { q: "Which of the following is the unit of electrical resistance?", o: ["Volt", "Ampere", "Ohm", "Watt"], a: 2 },
-            { q: "What is the color of the live wire in standard electrical wiring?", o: ["Black", "Green", "White", "Red or Brown"], a: 3 },
-            { q: "Who discovered the principle of electromagnetic induction?", o: ["Thomas Edison", "Nikola Tesla", "Michael Faraday", "James Watt"], a: 2 },
-            { q: "What is the standard frequency of AC power in the Philippines?", o: ["50 Hz", "60 Hz", "70 Hz", "100 Hz"], a: 1 }
-        ];
-
-        let currentQuestion = null;
-        let timerInterval = null;
-        let timeLeft = 15;
-        const MAX_TIME = 15;
-
-        const attractScreen = document.getElementById('attract-screen');
-        const gameScreen = document.getElementById('game-screen');
-        const resultScreen = document.getElementById('result-screen');
-        const questionText = document.getElementById('question-text');
-        const optionsContainer = document.getElementById('options-container');
-        const resultText = document.getElementById('result-text');
-        const resultSubtext = document.getElementById('result-subtext');
-        const mainContainer = document.getElementById('main-container');
-        const glitchOverlay = document.getElementById('glitch-overlay');
-        const timerBar = document.getElementById('timer-bar');
-
-        function startGame() {
-            attractScreen.classList.add('hidden');
-            gameScreen.classList.remove('hidden');
-            const randomIndex = Math.floor(Math.random() * questions.length);
-            currentQuestion = questions[randomIndex];
-            loadQuestion();
-        }
-
-        function loadQuestion() {
-            resultScreen.classList.add('hidden');
-            gameScreen.classList.remove('hidden');
-            mainContainer.classList.remove('shake', 'glitch-bg', 'success-bg');
-            glitchOverlay.style.opacity = 0;
-            
-            questionText.innerText = "";
-            let i = 0;
-            const txt = currentQuestion.q;
-            function typeWriter() {
-                if (i < txt.length) { questionText.innerHTML += txt.charAt(i); i++; setTimeout(typeWriter, 15); }
-            }
-            typeWriter();
-            
-            optionsContainer.innerHTML = '';
-            const letters = ['A', 'B', 'C', 'D'];
-            setTimeout(() => {
-                currentQuestion.o.forEach((option, index) => {
-                    const btn = document.createElement('button');
-                    btn.className = 'option-btn';
-                    btn.id = `opt-${index}`;
-                    btn.innerHTML = `<span>[${letters[index]}]</span> ${option}`;
-                    btn.onclick = () => checkAnswer(index);
-                    optionsContainer.appendChild(btn);
-                });
-            }, 500); 
-
-            startTimer();
-        }
-
-        function startTimer() {
-            clearInterval(timerInterval);
-            timeLeft = MAX_TIME;
-            timerBar.style.width = '100%';
-            timerBar.style.backgroundColor = 'var(--neon-blue)';
-            timerBar.style.boxShadow = '0 0 10px var(--neon-blue)';
-
-            timerInterval = setInterval(() => {
-                timeLeft -= 0.1;
-                const percentage = (timeLeft / MAX_TIME) * 100;
-                timerBar.style.width = `${percentage}%`;
-
-                if (timeLeft <= 5) {
-                    timerBar.style.backgroundColor = 'var(--danger)';
-                    timerBar.style.boxShadow = '0 0 10px var(--danger)';
-                    if (Math.abs(timeLeft - Math.round(timeLeft)) < 0.05 && Math.round(timeLeft) > 0) playTickSound();
-                } else if (timeLeft <= 10) {
-                    timerBar.style.backgroundColor = 'var(--warning)';
-                    timerBar.style.boxShadow = '0 0 10px var(--warning)';
-                }
-
-                if (timeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    timeOut();
-                }
-            }, 100);
-        }
-
-        function timeOut() {
-            triggerVibrate([300, 100, 300]);
-            playWrongSound();
-            gameScreen.classList.add('hidden');
-            resultScreen.classList.remove('hidden');
-            resultText.innerText = "TIME'S UP";
-            resultText.className = "timeout-text";
-            resultSubtext.innerText = "Connection timed out. Protocol failed.";
-            mainContainer.classList.add('shake', 'glitch-bg'); 
-            
-            const correctBtn = document.getElementById(`opt-${currentQuestion.a}`);
-            if(correctBtn) correctBtn.classList.add('flash-correct');
-        }
-
-        function checkAnswer(selectedIndex) {
-            clearInterval(timerInterval); 
-            triggerVibrate(30); 
-            
-            const selectedBtn = document.getElementById(`opt-${selectedIndex}`);
-            const correctBtn = document.getElementById(`opt-${currentQuestion.a}`);
-
-            setTimeout(() => {
-                gameScreen.classList.add('hidden');
-                resultScreen.classList.remove('hidden');
-
-                if (selectedIndex === currentQuestion.a) {
-                    playCorrectSound();
-                    startConfetti();
-                    triggerVibrate([100, 50, 100, 50, 200]); 
-                    resultText.innerText = "CORRECT";
-                    resultText.className = "correct-text";
-                    resultSubtext.innerText = "Data accepted. Claim your prize at the GEMCOR booth.";
-                    mainContainer.classList.add('success-bg');
-                } else {
-                    playWrongSound();
-                    glitchOverlay.style.opacity = 1;
-                    setTimeout(() => glitchOverlay.style.opacity = 0, 200);
-                    triggerVibrate([200, 100, 200]); 
-                    resultText.innerText = "INCORRECT";
-                    resultText.className = "wrong-text";
-                    resultSubtext.innerText = "Access denied. Better luck next time.";
-                    mainContainer.classList.add('shake', 'glitch-bg'); 
-                    if(correctBtn) correctBtn.classList.add('flash-correct');
-                }
-            }, 300);
-
-            if(selectedBtn) {
-                if (selectedIndex === currentQuestion.a) selectedBtn.classList.add('flash-correct');
-                else selectedBtn.classList.add('flash-wrong');
-            }
-        }
-
-        function resetGame() {
-            clearInterval(timerInterval);
-            resultScreen.classList.add('hidden');
-            gameScreen.classList.add('hidden');
-            attractScreen.classList.remove('hidden');
-            mainContainer.classList.remove('shake', 'glitch-bg', 'success-bg');
-            glitchOverlay.style.opacity = 0;
-            currentQuestion = null;
-            isConfettiActive = false;
-            fxCtx.clearRect(0, 0, fxCanvas.width, fxCanvas.height);
-            triggerVibrate(20);
-            progressCircle.style.strokeDashoffset = ringCircumference;
-        }
-    </script>
+showScreen('attract-screen');
+</script>
 </body>
 </html>
