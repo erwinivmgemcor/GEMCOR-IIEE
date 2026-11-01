@@ -76,6 +76,21 @@ h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.8rem,3.5vw,2.5rem);color:
 .hud-data.tl{top:24px;left:50px;text-align:left}
 .hud-data.br{bottom:24px;right:50px;text-align:right}
 
+/* INVENTORY EDITOR */
+#settings-modal{max-height:88vh;overflow-y:auto}
+#inv-editor{display:none;flex-direction:column;gap:10px;border-top:1px solid rgba(0,225,255,.25);padding-top:15px}
+#inv-editor h3{margin:0;color:var(--neon-green);font-size:1rem;letter-spacing:2px;text-align:center}
+.inv-row{display:flex;gap:6px;align-items:center}
+.inv-row input{background:#0a1520;border:1px solid var(--neon-blue);color:#fff;font-family:'Share Tech Mono',monospace;font-size:1rem;padding:6px;border-radius:4px;min-width:0;box-sizing:border-box}
+.inv-name{flex:1}
+.inv-stock{width:60px;text-align:center}
+.mini-btn{background:transparent;border:1px solid var(--neon-blue);color:var(--neon-blue);font-family:'Share Tech Mono',monospace;font-size:1.1rem;width:32px;height:32px;border-radius:4px;cursor:pointer;padding:0}
+.mini-btn:hover{background:var(--neon-blue);color:#000}
+.mini-btn.del{border-color:var(--danger);color:var(--danger)}
+.mini-btn.del:hover{background:var(--danger);color:#fff}
+.inv-actions{display:flex;gap:8px}
+.inv-actions .close-btn{flex:1;margin-top:0;font-size:.85rem}
+
 /* SCAN GUIDE */
 .scan-guide{margin-top:30px;font-family:'Share Tech Mono',monospace;text-align:center;pointer-events:none}
 .guide-title{color:var(--neon-green);font-size:clamp(.85rem,1.1vw,1.1rem);letter-spacing:3px;text-shadow:0 0 8px var(--neon-green);animation:guideBlink 1.6s ease-in-out infinite}
@@ -146,6 +161,15 @@ h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.8rem,3.5vw,2.5rem);color:
     <h2>SYSTEM CONFIG</h2>
     <div class="setting-item"><span>AUDIO LEVEL</span><input type="range" id="volume-slider" min="0" max="1" step="0.1" value="0.6"></div>
     <div class="setting-item"><span>HAPTIC FEEDBACK</span><label class="switch"><input type="checkbox" id="vibrate-toggle" checked><span class="slider"></span></label></div>
+    <button class="close-btn" id="inv-open-btn" onclick="toggleInventoryEditor()">EDIT INVENTORY 🔒</button>
+    <div id="inv-editor">
+        <h3>// GIVEAWAY INVENTORY</h3>
+        <div id="inv-list"></div>
+        <div class="inv-actions">
+            <button class="close-btn" onclick="addInventoryItem()">+ ADD ITEM</button>
+            <button class="close-btn" onclick="resetInventoryUI()">RESET DEFAULT</button>
+        </div>
+    </div>
     <button class="close-btn" onclick="toggleSettings()">CLOSE</button>
 </div>
 
@@ -641,6 +665,65 @@ window.addEventListener('keydown', e => {
     const btns = document.querySelectorAll('.option-btn');
     if (i !== undefined && btns[i]) selectAnswer(i, btns[i]);
 });
+
+// ==========================================
+// INVENTORY EDITOR (inside Settings)
+// ==========================================
+const ADMIN_PIN = '1234';   // <-- change this before the event
+let invUnlocked = false;
+
+function toggleInventoryEditor() {
+    const ed = $('inv-editor');
+    if (ed.style.display === 'flex') { ed.style.display = 'none'; return; }
+    if (!invUnlocked) {
+        const pin = prompt('Enter admin PIN:');
+        if (pin !== ADMIN_PIN) { if (pin !== null) alert('Wrong PIN.'); return; }
+        invUnlocked = true;
+        $('inv-open-btn').textContent = 'EDIT INVENTORY 🔓';
+    }
+    renderInventoryEditor();
+    ed.style.display = 'flex';
+}
+function renderInventoryEditor() {
+    const list = $('inv-list');
+    list.innerHTML = '';
+    inventory.forEach((item, i) => {
+        const row = document.createElement('div');
+        row.className = 'inv-row';
+        row.style.marginBottom = '8px';
+
+        const name = document.createElement('input');
+        name.className = 'inv-name'; name.type = 'text'; name.value = item.name;
+        name.addEventListener('input', () => { item.name = name.value; saveInventory(); });
+
+        const minus = document.createElement('button');
+        minus.className = 'mini-btn'; minus.textContent = '−';
+        const stock = document.createElement('input');
+        stock.className = 'inv-stock'; stock.type = 'number'; stock.min = 0; stock.value = item.stock;
+        const plus = document.createElement('button');
+        plus.className = 'mini-btn'; plus.textContent = '+';
+        const del = document.createElement('button');
+        del.className = 'mini-btn del'; del.textContent = '✕';
+
+        const setStock = v => { item.stock = Math.max(0, parseInt(v) || 0); stock.value = item.stock; saveInventory(); };
+        minus.addEventListener('click', () => setStock(item.stock - 1));
+        plus.addEventListener('click', () => setStock(item.stock + 1));
+        stock.addEventListener('change', () => setStock(stock.value));
+        del.addEventListener('click', () => {
+            if (confirm(`Delete "${item.name}"?`)) { inventory.splice(i, 1); saveInventory(); renderInventoryEditor(); }
+        });
+
+        row.append(name, minus, stock, plus, del);
+        list.appendChild(row);
+    });
+}
+function addInventoryItem() {
+    inventory.push({ id: 'item_' + Date.now(), name: 'New Item', stock: 10 });
+    saveInventory(); renderInventoryEditor();
+}
+function resetInventoryUI() {
+    if (confirm('Reset inventory to default items and counts?')) { resetInventory(); renderInventoryEditor(); }
+}
 
 // 3D parallax tilt that follows the pointer
 window.addEventListener('pointermove', e => {
