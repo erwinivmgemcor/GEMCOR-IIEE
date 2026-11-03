@@ -132,14 +132,19 @@ h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.8rem,3.5vw,2.5rem);color:
 .wrong-text{color:var(--danger);text-shadow:0 0 20px var(--danger)}
 .timeout-text{color:var(--warning);text-shadow:0 0 20px var(--warning)}
 
-/* GIVEAWAY */
+/* GIVEAWAY (picture cards) */
 #giveaway-screen h2{font-family:'Orbitron';color:var(--neon-blue);letter-spacing:3px;margin-bottom:10px;font-size:clamp(1.5rem,2vw,2rem)}
-.giveaway-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;width:100%;margin-top:20px}
-.giveaway-btn{background:rgba(0,255,136,.1);border:2px solid var(--neon-green);color:#fff;padding:20px;font-family:'Rajdhani';font-size:1.5rem;font-weight:700;border-radius:10px;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.giveaway-btn small{font-size:1rem;color:var(--neon-blue);font-family:'Share Tech Mono';margin-top:5px;display:block}
-.giveaway-btn:hover{background:rgba(0,255,136,.3);transform:scale(1.05);box-shadow:0 0 30px rgba(0,255,136,.4)}
-.giveaway-btn:active{transform:scale(.95)}
+.giveaway-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;width:100%;margin-top:20px}
+@media (min-width:1100px){.giveaway-grid{grid-template-columns:repeat(4,1fr)}}
+.giveaway-btn{position:relative;background:rgba(0,255,136,.08);border:2px solid var(--neon-green);color:#fff;padding:12px;font-family:'Rajdhani';font-size:1.25rem;font-weight:700;border-radius:12px;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;-webkit-tap-highlight-color:transparent}
+.giveaway-btn .prize-img{width:100%;height:clamp(110px,20vh,190px);object-fit:contain;background:#fff;border-radius:8px;padding:6px;box-sizing:border-box;pointer-events:none;-webkit-user-drag:none}
+.giveaway-btn .prize-name{line-height:1.1}
+.giveaway-btn small{font-size:.95rem;color:var(--neon-blue);font-family:'Share Tech Mono';display:block}
+.giveaway-btn:hover{background:rgba(0,255,136,.25);transform:scale(1.04);box-shadow:0 0 30px rgba(0,255,136,.4)}
+.giveaway-btn:active{transform:scale(.96)}
 .giveaway-btn:disabled{background:rgba(50,50,50,.5);border-color:#555;color:#777;cursor:not-allowed;transform:none;box-shadow:none}
+.giveaway-btn:disabled .prize-img{opacity:.3;filter:grayscale(1)}
+.prize-selected{display:block;width:min(260px,60%);max-height:26vh;object-fit:contain;background:#fff;border-radius:12px;padding:8px;box-sizing:border-box;margin:20px auto 0;box-shadow:0 0 40px rgba(0,255,136,.5)}
 .btn{background:transparent;color:var(--neon-blue);border:1px solid var(--neon-blue);padding:15px 40px;font-family:'Orbitron',sans-serif;font-size:clamp(1rem,1.2vw,1.2rem);font-weight:700;border-radius:5px;cursor:pointer;text-transform:uppercase;letter-spacing:2px;transition:all .3s;margin-top:40px;position:relative;overflow:hidden}
 .btn:hover{background:rgba(0,225,255,.1);box-shadow:0 0 20px rgba(0,225,255,.3)}
 .btn:active{background:var(--neon-blue);color:#000}
@@ -212,13 +217,14 @@ h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.8rem,3.5vw,2.5rem);color:
     <div id="result-screen" class="hidden">
         <h1 id="result-text">CORRECT</h1>
         <p id="result-subtext" style="font-size:clamp(1rem,1.2vw,1.5rem);color:#ccc;margin-top:20px;font-family:'Share Tech Mono';">Proceed to claim your prize.</p>
+        <div id="prize-preview"></div>
         <button class="btn" id="claim-btn" onclick="showGiveaways()" style="display:none;">CLAIM PRIZE</button>
         <button class="btn" id="next-btn" onclick="resetGame()">NEXT SUBJECT</button>
     </div>
 
     <div id="giveaway-screen" class="hidden" style="width:100%;">
         <h2>SELECT YOUR GIVEAWAY</h2>
-        <p style="font-family:'Share Tech Mono';color:#aaa;font-size:1rem;">Select one item from the available inventory.</p>
+        <p style="font-family:'Share Tech Mono';color:#aaa;font-size:1rem;">Tap the item you want to claim.</p>
         <div class="giveaway-grid" id="giveaway-container"></div>
     </div>
 </div>
@@ -436,14 +442,23 @@ const QUESTIONS = [
     { q: "Sample: Which unit measures electrical resistance?", options: ["Volt", "Ohm", "Watt", "Ampere"], answer: 1 },
     { q: "Sample: Which device protects a circuit from overcurrent?", options: ["Resistor", "Capacitor", "Circuit breaker", "Transformer"], answer: 2 }
 ];
+
+// Folder where the giveaway pictures are hosted (same GitHub repo as the logo)
+const IMG_BASE = 'https://github.com/erwinivmgemcor/GEMCOR-IIEE/blob/main/';
+const IMG_SUFFIX = '?raw=true';
+// To use local files instead (same folder as index.html), set:
+// const IMG_BASE = ''; const IMG_SUFFIX = '';
+const imgUrl = file => IMG_BASE + file + IMG_SUFFIX;
+
 const DEFAULT_GIVEAWAYS = [
-    { id: "shirt", name: "GEMCOR T-Shirt", stock: 50 },
-    { id: "mug",   name: "GEMCOR Mug",     stock: 30 },
-    { id: "cap",   name: "GEMCOR Cap",     stock: 20 }
+    { id: "gemcor_pouch",      name: "GEMCOR Pouch",      stock: 50, img: "gemcor-pouch.jpg" },
+    { id: "gemcor_folder",     name: "GEMCOR Folder",     stock: 50, img: "gemcor-folder.jpg" },
+    { id: "greenlight_pouch",  name: "GreenLight Pouch",  stock: 50, img: "greenlight-pouch.jpg" },
+    { id: "greenlight_folder", name: "GreenLight Folder", stock: 50, img: "greenlight-folder.jpg" }
 ];
 const QUESTION_TIME = 15;   // seconds per question
 const HOLD_TIME = 1500;     // ms to hold start button
-const STORAGE_KEY = 'gemcor_iiee_inventory_v1';
+const STORAGE_KEY = 'gemcor_iiee_inventory_v2';
 
 // ==========================================
 // 6. INVENTORY (localStorage)
@@ -459,6 +474,9 @@ function saveInventory() { try { localStorage.setItem(STORAGE_KEY, JSON.stringif
 function resetInventory() { inventory = DEFAULT_GIVEAWAYS.map(g => ({ ...g })); saveInventory(); console.log('Inventory reset', inventory); }
 let inventory = loadInventory();
 const totalStock = () => inventory.reduce((sum, g) => sum + g.stock, 0);
+
+// Preload giveaway pictures so they show instantly
+inventory.forEach(g => { if (g.img) { const p = new Image(); p.src = imgUrl(g.img); } });
 
 // ==========================================
 // 7. PRESS & HOLD TO START
@@ -578,6 +596,7 @@ function handleResult(type) {
     const claimBtn = $('claim-btn'), nextBtn = $('next-btn');
     title.className = '';
     claimBtn.style.display = 'none';
+    $('prize-preview').innerHTML = '';
     nextBtn.textContent = 'NEXT SUBJECT';
 
     if (type === 'correct') {
@@ -605,7 +624,7 @@ function handleResult(type) {
 }
 
 // ==========================================
-// 9. GIVEAWAY SELECTION
+// 9. GIVEAWAY SELECTION (PICTURE CARDS)
 // ==========================================
 function showGiveaways() {
     playClickSound();
@@ -615,10 +634,26 @@ function showGiveaways() {
         const btn = document.createElement('button');
         btn.className = 'giveaway-btn';
         btn.disabled = item.stock <= 0;
-        btn.appendChild(document.createTextNode(item.name));
+
+        if (item.img) {
+            const im = document.createElement('img');
+            im.className = 'prize-img';
+            im.src = imgUrl(item.img);
+            im.alt = item.name;
+            im.draggable = false;
+            im.onerror = () => im.remove();   // if picture fails to load, show text only
+            btn.appendChild(im);
+        }
+
+        const nm = document.createElement('span');
+        nm.className = 'prize-name';
+        nm.textContent = item.name;
+        btn.appendChild(nm);
+
         const small = document.createElement('small');
         small.textContent = item.stock > 0 ? `${item.stock} LEFT` : 'OUT OF STOCK';
         btn.appendChild(small);
+
         btn.addEventListener('click', () => claimGiveaway(item.id));
         box.appendChild(btn);
     });
@@ -634,6 +669,18 @@ function claimGiveaway(id) {
     title.className = 'correct-text';
     title.textContent = 'PRIZE CLAIMED!';
     $('result-subtext').textContent = `You selected: ${item.name}. Please proceed to the GEMCOR booth staff.`;
+
+    const prev = $('prize-preview');
+    prev.innerHTML = '';
+    if (item.img) {
+        const im = document.createElement('img');
+        im.className = 'prize-selected';
+        im.src = imgUrl(item.img);
+        im.alt = item.name;
+        im.onerror = () => im.remove();
+        prev.appendChild(im);
+    }
+
     $('claim-btn').style.display = 'none';
     $('next-btn').textContent = 'DONE';
     showScreen('result-screen');
@@ -648,6 +695,7 @@ function resetGame() {
     holdBtn.classList.remove('scanning', 'success');
     scanText.textContent = 'AWAITING TOUCH...';
     setRing(0);
+    $('prize-preview').innerHTML = '';
     holdDone = false; answered = false;
     showScreen('attract-screen');
 }
