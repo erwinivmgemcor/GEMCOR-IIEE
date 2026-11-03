@@ -49,14 +49,14 @@ button,.logo-container,#question-text,#result-text,.options-grid,.settings-btn,#
 
 /* BRAND STRIP: GEMCOR x GO POWER x GREENLIGHT */
 .brand-strip{display:flex;align-items:center;justify-content:center;gap:clamp(8px,1.6vw,18px);width:100%;margin-bottom:28px;transition:margin .4s}
-.brand-card{--c1:#0055ff;--c2:#00a651;--shine:rgba(0,166,81,.28);position:relative;flex:1 1 0;min-width:0;height:clamp(62px,10vh,92px);display:flex;align-items:center;justify-content:center;padding:10px 16px;box-sizing:border-box;border-radius:14px;background:linear-gradient(145deg,#fff 0%,#eef3fb 100%);border:2px solid var(--c1);overflow:hidden;animation:cardFloat 4s ease-in-out infinite,cardGlow 4s ease-in-out infinite;transition:height .4s,padding .4s}
-.brand-card::before{content:'';position:absolute;left:0;right:0;bottom:0;height:5px;background:linear-gradient(90deg,var(--c1),var(--c2))}
+.brand-card{--c1:#2f80ff;--c2:#00e88a;--g:rgba(47,128,255,.28);--shine:rgba(255,255,255,.22);position:relative;flex:1 1 0;min-width:0;height:clamp(62px,10vh,92px);display:flex;align-items:center;justify-content:center;padding:10px 16px;box-sizing:border-box;border-radius:14px;background:linear-gradient(160deg,rgba(255,255,255,.08),rgba(255,255,255,.015)),radial-gradient(ellipse at 50% 130%,var(--g),transparent 70%),rgba(2,6,10,.55);border:1px solid var(--c1);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);overflow:hidden;animation:cardFloat 4s ease-in-out infinite,cardGlow 4s ease-in-out infinite;transition:height .4s,padding .4s}
+.brand-card::before{content:'';position:absolute;left:0;right:0;bottom:0;height:3px;background:linear-gradient(90deg,var(--c1),var(--c2))}
 .brand-card::after{content:'';position:absolute;top:0;left:-60%;width:35%;height:100%;background:linear-gradient(105deg,transparent,var(--shine),transparent);transform:skewX(-20deg);animation:cardShine 5s ease-in-out infinite}
-.brand-card img{max-width:100%;max-height:100%;object-fit:contain;display:block;position:relative;z-index:1;pointer-events:none;-webkit-user-drag:none}
-.brand-card .fallback{font-family:'Orbitron',sans-serif;font-weight:700;color:#0a2a6b;font-size:1rem;letter-spacing:1px}
-.b-gemcor{--c1:#0055ff;--c2:#00a651;--shine:rgba(0,166,81,.30)}
-.b-go{--c1:#f4511e;--c2:#1b44a8;--shine:rgba(244,81,30,.28);animation-delay:.6s,.6s,.6s}
-.b-green{--c1:#18b84a;--c2:#1f78c8;--shine:rgba(31,120,200,.28);animation-delay:1.2s,1.2s,1.2s}
+.brand-card img{filter:drop-shadow(0 0 6px var(--g));max-width:100%;max-height:100%;object-fit:contain;display:block;position:relative;z-index:1;pointer-events:none;-webkit-user-drag:none}
+.brand-card .fallback{font-family:'Orbitron',sans-serif;font-weight:700;color:#cfe6ff;font-size:1rem;letter-spacing:1px}
+.b-gemcor{--c1:#2f80ff;--c2:#00e88a;--g:rgba(47,128,255,.30);--shine:rgba(0,255,136,.25)}
+.b-go{--c1:#ff6a2b;--c2:#3d7bff;--g:rgba(255,106,43,.30);--shine:rgba(255,106,43,.28);animation-delay:.6s,.6s,.6s}
+.b-green{--c1:#2bd45f;--c2:#3aa0ff;--g:rgba(43,212,95,.28);--shine:rgba(58,160,255,.28);animation-delay:1.2s,1.2s,1.2s}
 .brand-x{font-family:'Orbitron',sans-serif;color:var(--neon-blue);text-shadow:0 0 10px var(--neon-blue);font-size:clamp(1rem,1.8vw,1.6rem);opacity:.85;animation:guideBlink 2.4s ease-in-out infinite}
 @keyframes cardFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 @keyframes cardGlow{0%,100%{box-shadow:0 0 16px var(--c1),0 10px 26px rgba(0,0,0,.55)}50%{box-shadow:0 0 30px var(--c2),0 10px 26px rgba(0,0,0,.55)}}
@@ -73,6 +73,12 @@ button,.logo-container,#question-text,#result-text,.options-grid,.settings-btn,#
 .container.compact .brand-card{flex:1 1 0;width:auto;height:34px;padding:4px 6px}
 .container.compact .brand-x{display:inline;font-size:.8rem}
 }
+
+
+/* WIN BANNER (instruction under the title) */
+.win-banner{display:inline-block;margin:16px auto 0;padding:9px 24px;font-family:'Orbitron',sans-serif;font-weight:700;font-size:clamp(.75rem,1.3vw,1.1rem);letter-spacing:2px;text-transform:uppercase;line-height:1.4;color:#fff;border-radius:40px;border:1px solid rgba(0,255,136,.7);background:linear-gradient(90deg,rgba(0,255,136,.12),rgba(0,225,255,.1),rgba(255,106,43,.16));text-shadow:0 0 10px rgba(255,255,255,.35);animation:bannerPulse 2.4s ease-in-out infinite;transform:translateZ(40px)}
+.win-banner b{color:var(--go-orange);text-shadow:0 0 12px var(--go-orange)}
+@keyframes bannerPulse{0%,100%{box-shadow:0 0 14px rgba(0,255,136,.3);border-color:rgba(0,255,136,.7)}50%{box-shadow:0 0 30px rgba(255,106,43,.45);border-color:rgba(255,106,43,.85)}}
 
 /* TITLE */
 h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.8rem,3.5vw,2.5rem);color:#fff;text-shadow:0 0 20px var(--gemcor-blue);margin:0 0 5px;letter-spacing:4px;font-weight:700;text-transform:uppercase}
@@ -101,7 +107,7 @@ h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.8rem,3.5vw,2.5rem);color:
 @keyframes spin3dA{from{transform:rotateX(70deg) rotateZ(0)}to{transform:rotateX(70deg) rotateZ(360deg)}}
 @keyframes spin3dB{from{transform:rotateY(70deg) rotateZ(0)}to{transform:rotateY(70deg) rotateZ(-360deg)}}
 .hud-data{position:absolute;font-family:'Share Tech Mono',monospace;font-size:.75rem;color:var(--neon-blue);opacity:.7;letter-spacing:1px;line-height:1.5;pointer-events:none;transform:translateZ(20px)}
-.hud-data.tl{top:24px;left:50px;text-align:left}
+.hud-data.tl{top:18px;left:46px;text-align:left;font-size:.68rem;line-height:1.3}
 .hud-data.br{bottom:24px;right:50px;text-align:right}
 
 /* INVENTORY EDITOR */
@@ -120,13 +126,13 @@ h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.8rem,3.5vw,2.5rem);color:
 .inv-actions .close-btn{flex:1;margin-top:0;font-size:.85rem}
 
 /* SCAN GUIDE */
-.scan-guide{margin-top:30px;font-family:'Share Tech Mono',monospace;text-align:center;pointer-events:none}
+.scan-guide{margin-top:24px;font-family:'Share Tech Mono',monospace;text-align:center;pointer-events:none}
 .guide-title{color:var(--neon-green);font-size:clamp(.85rem,1.1vw,1.1rem);letter-spacing:3px;text-shadow:0 0 8px var(--neon-green);animation:guideBlink 1.6s ease-in-out infinite}
 .guide-sub{color:var(--neon-blue);font-size:clamp(.8rem,1vw,1rem);letter-spacing:2px;margin-top:8px;text-shadow:0 0 6px var(--neon-blue)}
 @keyframes guideBlink{0%,100%{opacity:1}50%{opacity:.35}}
 
 /* HOLD BUTTON */
-.hold-btn-container{position:relative;width:clamp(200px,22vw,280px);height:clamp(200px,22vw,280px);margin:25px auto 0;display:flex;justify-content:center;align-items:center;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:none;perspective:700px;transform:translateZ(70px)}
+.hold-btn-container{position:relative;width:clamp(180px,19vw,250px);height:clamp(180px,19vw,250px);margin:22px auto 0;display:flex;justify-content:center;align-items:center;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:none;perspective:700px;transform:translateZ(70px)}
 .hud-ring-outer{position:absolute;width:100%;height:100%;border:1px dashed rgba(0,225,255,.3);border-radius:50%;animation:rotateHUD 20s linear infinite;pointer-events:none}
 .hud-ring-inner{position:absolute;width:82%;height:82%;border:2px solid rgba(0,85,255,.2);border-radius:50%;border-top-color:var(--neon-blue);border-bottom-color:var(--neon-blue);pointer-events:none}
 @keyframes rotateHUD{100%{transform:rotate(360deg)}}
@@ -210,15 +216,16 @@ h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.8rem,3.5vw,2.5rem);color:
     <div class="hud-data tl" id="hud-tl">SYS.STATUS: ONLINE<br>DIMENSION: Ω-7<br>LINK: SECURE</div>
     <div class="hud-data br" id="hud-br"></div>
     <div class="brand-strip" id="brand-strip">
-        <div class="brand-card b-gemcor"><img data-logo="gemcor-logo.png" alt="GEMCOR"></div>
+        <div class="brand-card b-gemcor"><img data-logo="gemcor-logo-neon.png" alt="GEMCOR"></div>
         <span class="brand-x">×</span>
-        <div class="brand-card b-go"><img data-logo="go-power-logo.png" alt="GO Power Solutions"></div>
+        <div class="brand-card b-go"><img data-logo="go-power-logo-neon.png" alt="GO Power Solutions"></div>
         <span class="brand-x">×</span>
-        <div class="brand-card b-green"><img data-logo="greenlight-logo.png" alt="GreenLight Power"></div>
+        <div class="brand-card b-green"><img data-logo="greenlight-logo-neon.png" alt="GreenLight Power"></div>
     </div>
 
     <div id="attract-screen">
         <h1>KNOWLEDGE <span class="subtitle">ASSESSMENT</span></h1>
+        <div class="win-banner">★ Answer the question correctly to <b>win prizes!</b> ★</div>
         <div class="scan-guide">
             <div class="guide-title">[ IDENTITY VERIFICATION REQUIRED ]</div>
             <div class="guide-sub">PRESS &amp; HOLD THE HAND TO SCAN YOUR IDENTITY</div>
