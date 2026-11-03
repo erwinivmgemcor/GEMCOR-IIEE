@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>GEMCOR x IIEE - Knowledge Assessment</title>
+<title>GEMCOR × GO Power × GreenLight | IIEE Knowledge Assessment</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
-:root{--bg-dark:#02060a;--gemcor-blue:#0055ff;--gemcor-green:#00ff88;--neon-blue:#00e1ff;--neon-green:#39ff14;--danger:#ff003c;--warning:#ffcc00;--text-glow:0 0 10px rgba(255,255,255,.5)}
+:root{--bg-dark:#02060a;--gemcor-blue:#0055ff;--gemcor-green:#00ff88;--neon-blue:#00e1ff;--neon-green:#39ff14;--danger:#ff003c;--warning:#ffcc00;--go-orange:#ff6a2b;--text-glow:0 0 10px rgba(255,255,255,.5)}
 body{margin:0;padding:0;background:var(--bg-dark);color:#fff;font-family:'Rajdhani',sans-serif;overflow:hidden;user-select:none;height:100vh;width:100vw;display:flex;justify-content:center;align-items:center;cursor:crosshair}
 #bg-canvas,#fx-canvas{position:absolute;top:0;left:0;width:100%;height:100%;z-index:0}
 #glitch-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(255,0,60,.3);z-index:5;pointer-events:none;opacity:0;transition:opacity .1s}
@@ -46,12 +46,40 @@ button,.logo-container,#question-text,#result-text,.options-grid,.settings-btn,#
 @keyframes floatLogo{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 @keyframes logoGlow{0%,100%{box-shadow:0 10px 30px rgba(0,0,0,.5),inset 0 0 20px rgba(0,225,255,.05);border-color:rgba(0,225,255,.15)}50%{box-shadow:0 10px 40px rgba(0,0,0,.6),inset 0 0 30px rgba(0,166,81,.15);border-color:rgba(0,166,81,.4)}}
 
+
+/* BRAND STRIP: GEMCOR x GO POWER x GREENLIGHT */
+.brand-strip{display:flex;align-items:center;justify-content:center;gap:clamp(8px,1.6vw,18px);width:100%;margin-bottom:28px;transition:margin .4s}
+.brand-card{--c1:#0055ff;--c2:#00a651;--shine:rgba(0,166,81,.28);position:relative;flex:1 1 0;min-width:0;height:clamp(62px,10vh,92px);display:flex;align-items:center;justify-content:center;padding:10px 16px;box-sizing:border-box;border-radius:14px;background:linear-gradient(145deg,#fff 0%,#eef3fb 100%);border:2px solid var(--c1);overflow:hidden;animation:cardFloat 4s ease-in-out infinite,cardGlow 4s ease-in-out infinite;transition:height .4s,padding .4s}
+.brand-card::before{content:'';position:absolute;left:0;right:0;bottom:0;height:5px;background:linear-gradient(90deg,var(--c1),var(--c2))}
+.brand-card::after{content:'';position:absolute;top:0;left:-60%;width:35%;height:100%;background:linear-gradient(105deg,transparent,var(--shine),transparent);transform:skewX(-20deg);animation:cardShine 5s ease-in-out infinite}
+.brand-card img{max-width:100%;max-height:100%;object-fit:contain;display:block;position:relative;z-index:1;pointer-events:none;-webkit-user-drag:none}
+.brand-card .fallback{font-family:'Orbitron',sans-serif;font-weight:700;color:#0a2a6b;font-size:1rem;letter-spacing:1px}
+.b-gemcor{--c1:#0055ff;--c2:#00a651;--shine:rgba(0,166,81,.30)}
+.b-go{--c1:#f4511e;--c2:#1b44a8;--shine:rgba(244,81,30,.28);animation-delay:.6s,.6s,.6s}
+.b-green{--c1:#18b84a;--c2:#1f78c8;--shine:rgba(31,120,200,.28);animation-delay:1.2s,1.2s,1.2s}
+.brand-x{font-family:'Orbitron',sans-serif;color:var(--neon-blue);text-shadow:0 0 10px var(--neon-blue);font-size:clamp(1rem,1.8vw,1.6rem);opacity:.85;animation:guideBlink 2.4s ease-in-out infinite}
+@keyframes cardFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes cardGlow{0%,100%{box-shadow:0 0 16px var(--c1),0 10px 26px rgba(0,0,0,.55)}50%{box-shadow:0 0 30px var(--c2),0 10px 26px rgba(0,0,0,.55)}}
+@keyframes cardShine{0%,55%{left:-60%}100%{left:130%}}
+.container.compact .brand-strip{margin-bottom:14px}
+.container.compact .brand-card{height:clamp(38px,6vh,52px);padding:5px 10px;animation:cardGlow 4s ease-in-out infinite}
+.container.compact .brand-card::before{height:3px}
+.container.compact .brand-x{font-size:1rem}
+@media (max-width:600px){
+.brand-strip{flex-direction:column;gap:8px}
+.brand-card{flex:none;width:78%;height:56px}
+.brand-x{display:none}
+.container.compact .brand-strip{flex-direction:row;gap:6px}
+.container.compact .brand-card{flex:1 1 0;width:auto;height:34px;padding:4px 6px}
+.container.compact .brand-x{display:inline;font-size:.8rem}
+}
+
 /* TITLE */
 h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.8rem,3.5vw,2.5rem);color:#fff;text-shadow:0 0 20px var(--gemcor-blue);margin:0 0 5px;letter-spacing:4px;font-weight:700;text-transform:uppercase}
 .subtitle{font-family:'Share Tech Mono',monospace;color:var(--neon-green);font-size:clamp(.9rem,1.2vw,1.2rem);letter-spacing:5px;margin-bottom:0;display:block}
 
 /* SCI-FI 3D DIMENSION */
-.portal{position:absolute;top:50%;left:50%;width:140vmax;height:140vmax;margin:-70vmax 0 0 -70vmax;z-index:1;pointer-events:none;background:conic-gradient(from 0deg,transparent,rgba(0,85,255,.2),transparent 25%,rgba(0,255,136,.14),transparent 50%,rgba(0,225,255,.18),transparent 75%);filter:blur(30px);animation:spinPortal 40s linear infinite}
+.portal{position:absolute;top:50%;left:50%;width:140vmax;height:140vmax;margin:-70vmax 0 0 -70vmax;z-index:1;pointer-events:none;background:conic-gradient(from 0deg,transparent,rgba(0,85,255,.2),transparent 25%,rgba(0,255,136,.14),transparent 45%,rgba(255,106,43,.15),transparent 58%,rgba(0,225,255,.18),transparent 78%);filter:blur(30px);animation:spinPortal 40s linear infinite}
 @keyframes spinPortal{to{transform:rotate(360deg)}}
 .grid-floor,.grid-ceiling{position:absolute;left:-50%;width:200%;height:55%;z-index:1;pointer-events:none;background-image:linear-gradient(rgba(0,225,255,.4) 1px,transparent 1px),linear-gradient(90deg,rgba(0,225,255,.4) 1px,transparent 1px);background-size:60px 60px}
 .grid-floor{bottom:-8%;transform:perspective(420px) rotateX(70deg);transform-origin:50% 100%;animation:gridMove 2s linear infinite;-webkit-mask-image:linear-gradient(to top,#000,transparent 85%);mask-image:linear-gradient(to top,#000,transparent 85%)}
@@ -181,8 +209,12 @@ h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.8rem,3.5vw,2.5rem);color:
 <div class="container" id="main-container">
     <div class="hud-data tl" id="hud-tl">SYS.STATUS: ONLINE<br>DIMENSION: Ω-7<br>LINK: SECURE</div>
     <div class="hud-data br" id="hud-br"></div>
-    <div class="logo-container">
-        <img src="https://github.com/erwinivmgemcor/GEMCOR-IIEE/blob/main/gemcor-logo.png?raw=true" alt="GEMCOR Logo">
+    <div class="brand-strip" id="brand-strip">
+        <div class="brand-card b-gemcor"><img data-logo="gemcor-logo.png" alt="GEMCOR"></div>
+        <span class="brand-x">×</span>
+        <div class="brand-card b-go"><img data-logo="go-power-logo.png" alt="GO Power Solutions"></div>
+        <span class="brand-x">×</span>
+        <div class="brand-card b-green"><img data-logo="greenlight-logo.png" alt="GreenLight Power"></div>
     </div>
 
     <div id="attract-screen">
@@ -267,7 +299,7 @@ class Particle {
     constructor() {
         this.x = Math.random() * width; this.y = Math.random() * height;
         this.vx = (Math.random() - 0.5) * 0.8; this.vy = (Math.random() - 0.5) * 0.8;
-        this.radius = Math.random() * 2 + 1.5; this.baseColor = Math.random() > 0.3 ? '#0055ff' : '#00ff88';
+        this.radius = Math.random() * 2 + 1.5; const r = Math.random(); this.baseColor = r < 0.4 ? '#0055ff' : (r < 0.72 ? '#00ff88' : '#ff6a2b');
     }
     update() {
         this.x += this.vx; this.y += this.vy;
@@ -282,7 +314,7 @@ class Particle {
 class Pulse {
     constructor(x, y) {
         this.x = x; this.y = y; this.radius = 0; this.maxRadius = Math.random() * 150 + 100;
-        this.opacity = 1; this.speed = 4; this.color = Math.random() > 0.5 ? '0, 255, 136' : '0, 225, 255';
+        this.opacity = 1; this.speed = 4; this.color = ['0, 255, 136', '0, 225, 255', '255, 106, 43'][Math.floor(Math.random() * 3)];
     }
     update() { this.radius += this.speed; this.opacity -= 0.03; }
     draw() {
@@ -337,7 +369,7 @@ class ConfettiPiece {
     constructor() {
         this.x = Math.random() * fxCanvas.width; this.y = -20;
         this.size = Math.random() * 8 + 4; this.speedY = Math.random() * 4 + 2; this.speedX = (Math.random() - 0.5) * 3;
-        this.color = ['#00ff88', '#0055ff', '#00e1ff', '#ffffff'][Math.floor(Math.random() * 4)];
+        this.color = ['#00ff88', '#0055ff', '#00e1ff', '#ff6a2b', '#ffffff'][Math.floor(Math.random() * 5)];
         this.rotation = Math.random() * 360; this.rotSpeed = (Math.random() - 0.5) * 10;
     }
     update() { this.y += this.speedY; this.x += this.speedX; this.rotation += this.rotSpeed; }
@@ -530,7 +562,10 @@ holdBtn.addEventListener('contextmenu', e => e.preventDefault());
 // ==========================================
 const container = $('main-container');
 const screens = ['attract-screen', 'game-screen', 'result-screen', 'giveaway-screen'];
-function showScreen(id) { screens.forEach(s => $(s).classList.toggle('hidden', s !== id)); }
+function showScreen(id) {
+    screens.forEach(s => $(s).classList.toggle('hidden', s !== id));
+    container.classList.toggle('compact', id !== 'attract-screen');   // smaller logo strip during game
+}
 
 let deck = [], currentQ = null, timeLeft = QUESTION_TIME, timerInterval = null, answered = false;
 
@@ -668,7 +703,7 @@ function claimGiveaway(id) {
     const title = $('result-text');
     title.className = 'correct-text';
     title.textContent = 'PRIZE CLAIMED!';
-    $('result-subtext').textContent = `You selected: ${item.name}. Please proceed to the GEMCOR booth staff.`;
+    $('result-subtext').textContent = `You selected: ${item.name}. Please proceed to the booth staff to receive your prize.`;
 
     const prev = $('prize-preview');
     prev.innerHTML = '';
@@ -786,6 +821,12 @@ setInterval(() => {
     const r = () => (Math.random() * 999).toFixed(2).padStart(6, '0');
     hudBr.innerHTML = `X:${r()} Y:${r()}<br>Z:${r()}<br>FLUX: ${(Math.random() * 100).toFixed(1)}%`;
 }, 140);
+
+// Load the 3 company logos (same IMG_BASE as giveaway pictures)
+document.querySelectorAll('img[data-logo]').forEach(im => {
+    im.onerror = () => { const s = document.createElement('span'); s.className = 'fallback'; s.textContent = im.alt; im.replaceWith(s); };
+    im.src = imgUrl(im.dataset.logo);
+});
 
 showScreen('attract-screen');
 </script>
