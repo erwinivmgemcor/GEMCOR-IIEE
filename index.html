@@ -171,9 +171,9 @@ h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.8rem,3.5vw,2.5rem);color:
 #giveaway-screen h2{font-family:'Orbitron';color:var(--neon-blue);letter-spacing:3px;margin-bottom:10px;font-size:clamp(1.5rem,2vw,2rem)}
 .giveaway-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;width:100%;margin-top:20px}
 @media (min-width:1100px){.giveaway-grid{grid-template-columns:repeat(4,1fr)}}
-.giveaway-btn{position:relative;background:rgba(0,255,136,.08);border:2px solid var(--neon-green);color:#fff;padding:12px;font-family:'Rajdhani';font-size:1.25rem;font-weight:700;border-radius:12px;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;-webkit-tap-highlight-color:transparent}
+.giveaway-btn{justify-content:flex-start;position:relative;background:rgba(0,255,136,.08);border:2px solid var(--neon-green);color:#fff;padding:12px;font-family:'Rajdhani';font-size:1.25rem;font-weight:700;border-radius:12px;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;-webkit-tap-highlight-color:transparent}
 .giveaway-btn .prize-img{width:100%;height:clamp(110px,20vh,190px);object-fit:contain;background:#fff;border-radius:8px;padding:6px;box-sizing:border-box;pointer-events:none;-webkit-user-drag:none}
-.giveaway-btn .prize-name{line-height:1.1}
+.giveaway-btn .prize-name{line-height:1.1;min-height:2.2em;display:flex;align-items:center;justify-content:center}
 .giveaway-btn small{font-size:.95rem;color:var(--neon-blue);font-family:'Share Tech Mono';display:block}
 .giveaway-btn:hover{background:rgba(0,255,136,.25);transform:scale(1.04);box-shadow:0 0 30px rgba(0,255,136,.4)}
 .giveaway-btn:active{transform:scale(.96)}
@@ -589,13 +589,13 @@ const imgUrl = file => IMG_BASE + file + IMG_SUFFIX;
 
 const DEFAULT_GIVEAWAYS = [
     { id: "gemcor_pouch",      name: "GEMCOR Pouch",      stock: 50, img: "gemcor-pouch.jpg" },
-    { id: "gemcor_folder",     name: "GEMCOR Folder",     stock: 50, img: "gemcor-folder.jpg" },
+    { id: "gemcor_notepad",    name: "GEMCOR Notepad",    stock: 50, img: "gemcor-notepad.jpg" },
     { id: "greenlight_pouch",  name: "GreenLight Pouch",  stock: 50, img: "greenlight-pouch.jpg" },
-    { id: "greenlight_folder", name: "GreenLight Folder", stock: 50, img: "greenlight-folder.jpg" }
+    { id: "greenlight_notepad",name: "GreenLight Notepad",stock: 50, img: "greenlight-notepad.jpg" }
 ];
 const QUESTION_TIME = 15;   // seconds per question
 const HOLD_TIME = 1500;     // ms to hold start button
-const STORAGE_KEY = 'gemcor_iiee_inventory_v2';
+const STORAGE_KEY = 'gemcor_iiee_inventory_v3';
 
 // ==========================================
 // 6. INVENTORY (localStorage)
