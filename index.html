@@ -3,11 +3,27 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#02060a">
 <title>GEMCOR × GO Power × GreenLight | IIEE Knowledge Assessment</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
 :root{--bg-dark:#02060a;--gemcor-blue:#0055ff;--gemcor-green:#00ff88;--neon-blue:#00e1ff;--neon-green:#39ff14;--danger:#ff003c;--warning:#ffcc00;--go-orange:#ff6a2b;--text-glow:0 0 10px rgba(255,255,255,.5)}
 body{margin:0;padding:0;background:var(--bg-dark);color:#fff;font-family:'Rajdhani',sans-serif;overflow:hidden;user-select:none;height:100vh;width:100vw;display:flex;justify-content:center;align-items:center;cursor:crosshair}
+/* STAGE (everything lives here so the whole game can be rotated for a portrait-mounted TV) */
+#stage{--k:1;position:fixed;top:0;left:0;width:calc(100vw / var(--k));height:calc(100vh / var(--k));overflow:hidden;display:flex;justify-content:center;align-items:center;transform-origin:0 0;transform:scale(var(--k))}
+#stage.rot90{width:calc(100vh / var(--k));height:calc(100vw / var(--k));left:100vw;transform:rotate(90deg) scale(var(--k))}
+#stage.rot270{width:calc(100vh / var(--k));height:calc(100vw / var(--k));top:100vh;transform:rotate(-90deg) scale(var(--k))}
+#stage.rot180{left:100vw;top:100vh;transform:rotate(180deg) scale(var(--k))}
+/* no 3D tilt when rotated: keeps touch/click positions exact */
+#stage.rot90 .container,#stage.rot180 .container,#stage.rot270 .container{transform:none;transform-style:flat}
+#stage.is-portrait .container{width:94%;max-width:1000px;height:94%}
+#stage.is-portrait .hud-data.tl{left:40px}
+#stage.is-portrait .giveaway-btn .prize-img{height:260px}
+#stage.is-portrait .giveaway-btn{font-size:1.5rem}
+.rot-hint{font-size:.8rem;color:#7fa;opacity:.8;margin-top:-10px}
 #bg-canvas,#fx-canvas{position:absolute;top:0;left:0;width:100%;height:100%;z-index:0}
 #glitch-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(255,0,60,.3);z-index:5;pointer-events:none;opacity:0;transition:opacity .1s}
 
@@ -112,7 +128,7 @@ h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.8rem,3.5vw,2.5rem);color:
 .hud-data.br{bottom:24px;right:50px;text-align:right}
 
 /* INVENTORY EDITOR */
-#settings-modal{max-height:88vh;overflow-y:auto}
+#settings-modal{max-height:88%;overflow-y:auto}
 #inv-editor{display:none;flex-direction:column;gap:10px;border-top:1px solid rgba(0,225,255,.25);padding-top:15px}
 #inv-editor h3{margin:0;color:var(--neon-green);font-size:1rem;letter-spacing:2px;text-align:center}
 .inv-row{display:flex;gap:6px;align-items:center}
@@ -170,7 +186,7 @@ h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.8rem,3.5vw,2.5rem);color:
 /* GIVEAWAY (picture cards) */
 #giveaway-screen h2{font-family:'Orbitron';color:var(--neon-blue);letter-spacing:3px;margin-bottom:10px;font-size:clamp(1.5rem,2vw,2rem)}
 .giveaway-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;width:100%;margin-top:20px}
-@media (min-width:1100px){.giveaway-grid{grid-template-columns:repeat(4,1fr)}}
+#stage.is-wide .giveaway-grid{grid-template-columns:repeat(4,1fr)}
 .giveaway-btn{justify-content:flex-start;position:relative;background:rgba(0,255,136,.08);border:2px solid var(--neon-green);color:#fff;padding:12px;font-family:'Rajdhani';font-size:1.25rem;font-weight:700;border-radius:12px;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;-webkit-tap-highlight-color:transparent}
 .giveaway-btn .prize-img{width:100%;height:clamp(110px,20vh,190px);object-fit:contain;background:#fff;border-radius:8px;padding:6px;box-sizing:border-box;pointer-events:none;-webkit-user-drag:none}
 .giveaway-btn .prize-name{line-height:1.1;min-height:2.2em;display:flex;align-items:center;justify-content:center}
@@ -187,6 +203,7 @@ h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.8rem,3.5vw,2.5rem);color:
 </style>
 </head>
 <body>
+<div id="stage">
 
 <canvas id="bg-canvas"></canvas>
 <canvas id="fx-canvas" style="z-index:6;pointer-events:none;"></canvas>
@@ -201,6 +218,9 @@ h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.8rem,3.5vw,2.5rem);color:
     <h2>SYSTEM CONFIG</h2>
     <div class="setting-item"><span>AUDIO LEVEL</span><input type="range" id="volume-slider" min="0" max="1" step="0.1" value="0.6"></div>
     <div class="setting-item"><span>HAPTIC FEEDBACK</span><label class="switch"><input type="checkbox" id="vibrate-toggle" checked><span class="slider"></span></label></div>
+    <div class="setting-item"><span>FULLSCREEN</span><button class="close-btn" id="fs-btn" onclick="toggleFullscreen()" style="margin:0;min-width:90px">ENTER</button></div>
+    <div class="setting-item"><span>SCREEN ROTATION</span><button class="close-btn" id="rot-btn" onclick="cycleRotation()" style="margin:0;min-width:90px">0°</button></div>
+    <div class="rot-hint">TV mounted upright (portrait)? Tap ROTATION until the screen looks straight.</div>
     <button class="close-btn" id="inv-open-btn" onclick="toggleInventoryEditor()">EDIT INVENTORY 🔒</button>
     <div id="inv-editor">
         <h3>// GIVEAWAY INVENTORY</h3>
@@ -269,10 +289,75 @@ h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.8rem,3.5vw,2.5rem);color:
     </div>
 </div>
 
+</div><!-- /stage -->
+
 <script>
 // ==========================================
 // 1. GLOBAL SETTINGS & AUDIO STATE
 // ==========================================
+// ==========================================
+// 0. STAGE & SCREEN ROTATION (for TVs mounted in portrait)
+// ==========================================
+const stage = document.getElementById('stage');
+const ROT_KEY = 'gemcor_iiee_rotation';
+let rotation = 0;
+const stageW = () => stage.clientWidth;
+const stageH = () => stage.clientHeight;
+// Convert a screen (client) coordinate into the stage's own coordinate system
+let uiScale = 1;   // bigger UI on big TVs (stage is shrunk, then scaled up)
+function toStage(cx, cy) {
+    const W = window.innerWidth, H = window.innerHeight;
+    let p;
+    switch (rotation) {
+        case 90:  p = { x: cy,     y: W - cx }; break;
+        case 270: p = { x: H - cy, y: cx };     break;
+        case 180: p = { x: W - cx, y: H - cy }; break;
+        default:  p = { x: cx,     y: cy };
+    }
+    return { x: p.x / uiScale, y: p.y / uiScale };
+}
+function refreshLayout() {
+    // scale the whole UI up on large screens (1080p / portrait TVs); phones & small screens stay 1x
+    uiScale = Math.min(2, Math.max(1, Math.min(window.innerWidth, window.innerHeight) / 900));
+    stage.style.setProperty('--k', uiScale.toFixed(3));
+    initCanvas(); resizeFx();
+    const w = stageW(), h = stageH();
+    stage.classList.toggle('is-portrait', h > w * 1.1);
+    stage.classList.toggle('is-wide', w >= 1100);
+}
+function applyRotation(r, save) {
+    rotation = r;
+    stage.classList.remove('rot90', 'rot180', 'rot270');
+    if (r) stage.classList.add('rot' + r);
+    if (save !== false) { try { localStorage.setItem(ROT_KEY, String(r)); } catch (e) {} }
+    const b = document.getElementById('rot-btn'); if (b) b.textContent = r + '°';
+    refreshLayout();
+}
+function cycleRotation() {
+    const order = [0, 90, 180, 270];
+    applyRotation(order[(order.indexOf(rotation) + 1) % 4]);
+}
+
+// ---- Fullscreen (hides the browser address bar / tabs) ----
+const isFullscreen = () => !!(document.fullscreenElement || document.webkitFullscreenElement);
+function enterFullscreen() {
+    const el = document.documentElement;
+    const req = el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen;
+    if (req && !isFullscreen()) { try { const r = req.call(el); if (r && r.catch) r.catch(() => {}); } catch (e) {} }
+}
+function toggleFullscreen() {
+    if (isFullscreen()) { (document.exitFullscreen || document.webkitExitFullscreen).call(document); }
+    else enterFullscreen();
+}
+function syncFsBtn() { const b = document.getElementById('fs-btn'); if (b) b.textContent = isFullscreen() ? 'EXIT' : 'ENTER'; }
+['fullscreenchange', 'webkitfullscreenchange'].forEach(ev => document.addEventListener(ev, () => { syncFsBtn(); setTimeout(refreshLayout, 150); }));
+// Auto-enter fullscreen on the very first touch/click (browsers require a user action)
+window.addEventListener('pointerup', function once(e) {
+    if (e.target.closest && e.target.closest('#settings-modal, .settings-btn')) return;
+    enterFullscreen();
+    window.removeEventListener('pointerup', once);
+}, true);
+
 let masterVolume = 0.6;
 let isVibrateEnabled = true;
 let audioCtx = null;
@@ -299,7 +384,7 @@ let width, height, particles = [], pulses = [];
 const PARTICLE_COUNT = 80, CONNECTION_DISTANCE = 150;
 
 function initCanvas() {
-    width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight;
+    width = canvas.width = stageW(); height = canvas.height = stageH();
     particles = [];
     for (let i = 0; i < PARTICLE_COUNT; i++) particles.push(new Particle());
 }
@@ -351,8 +436,8 @@ function animateCanvas() {
 }
 function createPulse(e) {
     if (e.target.closest('#settings-modal') || e.target.closest('.settings-btn') || e.target.closest('.hold-btn-container') || e.target.closest('.giveaway-grid')) return;
-    let x = e.touches ? e.touches[0].clientX : e.clientX;
-    let y = e.touches ? e.touches[0].clientY : e.clientY;
+    const pt = toStage(e.touches ? e.touches[0].clientX : e.clientX, e.touches ? e.touches[0].clientY : e.clientY);
+    let x = pt.x, y = pt.y;
     pulses.push(new Pulse(x, y));
     setTimeout(() => pulses.push(new Pulse(x, y)), 100);
     particles.forEach(p => {
@@ -370,7 +455,7 @@ window.addEventListener('resize', initCanvas); initCanvas(); animateCanvas();
 const fxCanvas = document.getElementById('fx-canvas');
 const fxCtx = fxCanvas.getContext('2d');
 let confetti = [], isConfettiActive = false;
-function resizeFx() { fxCanvas.width = window.innerWidth; fxCanvas.height = window.innerHeight; }
+function resizeFx() { fxCanvas.width = stageW(); fxCanvas.height = stageH(); }
 window.addEventListener('resize', resizeFx); resizeFx();
 
 class ConfettiPiece {
@@ -840,6 +925,8 @@ function resetGame() {
     showScreen('attract-screen');
 }
 window.addEventListener('keydown', e => {
+    // Admin: Ctrl+Shift+O cycles screen rotation
+    if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'o') { e.preventDefault(); cycleRotation(); return; }
     // Admin: Ctrl+Shift+R resets giveaway inventory
     if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'r') {
         e.preventDefault();
@@ -915,7 +1002,8 @@ function resetInventoryUI() {
 
 // 3D parallax tilt that follows the pointer
 window.addEventListener('pointermove', e => {
-    const x = e.clientX / window.innerWidth - 0.5, y = e.clientY / window.innerHeight - 0.5;
+    const pt = toStage(e.clientX, e.clientY);
+    const x = pt.x / stageW() - 0.5, y = pt.y / stageH() - 0.5;
     container.style.setProperty('--ry', (x * 10) + 'deg');
     container.style.setProperty('--rx', (-y * 8) + 'deg');
 });
@@ -932,6 +1020,17 @@ document.querySelectorAll('img[data-logo]').forEach(im => {
     im.onerror = () => { const s = document.createElement('span'); s.className = 'fallback'; s.textContent = im.alt; im.replaceWith(s); };
     im.src = imgUrl(im.dataset.logo);
 });
+
+// Restore rotation: ?rotate=90 in the URL wins, otherwise the saved setting
+(function () {
+    let r = 0;
+    const q = new URLSearchParams(location.search).get('rotate');
+    if (q !== null && [0, 90, 180, 270].includes(parseInt(q))) r = parseInt(q);
+    else { try { r = parseInt(localStorage.getItem(ROT_KEY)) || 0; } catch (e) {} }
+    if (![0, 90, 180, 270].includes(r)) r = 0;
+    applyRotation(r, q !== null);
+})();
+window.addEventListener('resize', refreshLayout);
 
 showScreen('attract-screen');
 </script>
