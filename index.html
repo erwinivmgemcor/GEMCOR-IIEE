@@ -221,23 +221,20 @@ h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.8rem,3.5vw,2.5rem);color:
 @keyframes borderHue{0%,100%{border-color:rgba(0,225,255,.5)}33%{border-color:rgba(57,255,20,.6)}66%{border-color:rgba(255,106,43,.6)}}
 #stage.attract-on .hud-data.br{bottom:48px}
 #stage.is-portrait.attract-on .hud-data.br{display:none}
-/* prize showcase floating around the game */
-#prize-showcase{position:absolute;inset:0;z-index:11;pointer-events:none;opacity:0;transition:opacity .5s}
-#stage.attract-on #prize-showcase{opacity:1}
-.pz{position:absolute;width:var(--pzw,170px)}
-.pz-card{position:relative;text-align:center;animation:pzFloat 3.8s ease-in-out infinite;animation-delay:calc(var(--i,0) * -.9s)}
-.pz-img{display:block;width:100%;aspect-ratio:1/1;object-fit:contain;background:#fff;border-radius:16px;padding:8px;box-sizing:border-box;border:3px solid var(--neon-green);animation:pzGlow 2.4s ease-in-out infinite;animation-delay:calc(var(--i,0) * -.6s)}
-.pz-name{display:block;margin-top:10px;font-family:'Orbitron',sans-serif;font-weight:700;font-size:clamp(.7rem,1vw,.95rem);letter-spacing:1.5px;color:#fff;text-shadow:0 0 10px var(--neon-green)}
-.pz-badge{position:absolute;top:-14px;right:-14px;z-index:2;width:54px;height:54px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#ffb347,#ff6a2b);color:#fff;font-family:'Orbitron',sans-serif;font-weight:900;font-size:.8rem;display:flex;align-items:center;justify-content:center;box-shadow:0 0 18px rgba(255,106,43,.9);animation:badgeSpin 3s ease-in-out infinite}
-@keyframes pzFloat{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-16px) rotate(3deg)}}
-@keyframes pzGlow{0%,100%{box-shadow:0 0 14px rgba(57,255,20,.5)}50%{box-shadow:0 0 34px rgba(0,225,255,.9)}}
-@keyframes badgeSpin{0%,100%{transform:rotate(-12deg) scale(1)}50%{transform:rotate(12deg) scale(1.15)}}
 /* scrolling LED-style ticker */
-#ticker{position:absolute;left:0;bottom:0;width:100%;height:36px;z-index:12;overflow:hidden;pointer-events:none;opacity:0;transition:opacity .5s;background:linear-gradient(90deg,rgba(0,85,255,.6),rgba(0,166,81,.6),rgba(255,106,43,.6));border-top:1px solid rgba(255,255,255,.35);box-shadow:0 -4px 24px rgba(0,225,255,.35)}
-#stage.attract-on #ticker{opacity:1}
+.ticker{position:absolute;left:0;bottom:0;width:100%;height:36px;z-index:12;overflow:hidden;pointer-events:none;opacity:0;transition:opacity .5s;background:linear-gradient(90deg,rgba(0,85,255,.6),rgba(0,166,81,.6),rgba(255,106,43,.6));border-top:1px solid rgba(255,255,255,.35);box-shadow:0 -4px 24px rgba(0,225,255,.35)}
+#stage.attract-on .ticker{opacity:1}
+.ticker.top{top:0;bottom:auto;border-top:none;border-bottom:1px solid rgba(255,255,255,.35);box-shadow:0 4px 24px rgba(0,225,255,.35);background:linear-gradient(90deg,rgba(255,106,43,.6),rgba(0,166,81,.6),rgba(0,85,255,.6))}
+.ticker.top .ticker-track{animation-direction:reverse}
+#stage.attract-on .settings-btn{top:50px}
+#stage.attract-on .hud-data.tl{top:48px}
 .ticker-track{display:inline-flex;white-space:nowrap;height:100%;align-items:center;animation:tickerMove 40s linear infinite;will-change:transform}
 .ticker-track span{font-family:'Orbitron',sans-serif;font-weight:700;font-size:.95rem;letter-spacing:3px;color:#fff;text-shadow:0 0 8px rgba(0,0,0,.8);padding-right:60px}
 @keyframes tickerMove{to{transform:translateX(-50%)}}
+
+/* tap-for-sound hint (shown only while the browser is still blocking the music) */
+#sound-hint{position:absolute;left:50%;bottom:52px;transform:translateX(-50%);z-index:14;pointer-events:none;opacity:0;transition:opacity .4s;padding:8px 20px;border-radius:30px;border:1px solid var(--neon-green);background:rgba(2,6,10,.8);color:#fff;font-family:'Share Tech Mono',monospace;font-size:.95rem;letter-spacing:2px;white-space:nowrap;box-shadow:0 0 20px rgba(57,255,20,.5);animation:guideBlink 1.4s ease-in-out infinite}
+#stage.attract-on.need-sound #sound-hint{opacity:1}
 /* big periodic "attention burst" */
 #burst{position:absolute;inset:0;z-index:13;pointer-events:none;display:flex;align-items:center;justify-content:center;opacity:0}
 #burst::before{content:'';position:absolute;left:50%;top:50%;width:20px;height:20px;margin:-10px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.9),rgba(0,225,255,.5) 40%,transparent 70%);opacity:0}
@@ -345,9 +342,10 @@ h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.8rem,3.5vw,2.5rem);color:
     </div>
 </div>
 
-<div id="prize-showcase"></div>
+<div id="sound-hint">🔊 TAP ANYWHERE TO TURN ON SOUND</div>
 <div id="burst"><div class="burst-text">WIN PRIZES!</div></div>
-<div id="ticker"><div class="ticker-track" id="ticker-track"></div></div>
+<div class="ticker top"><div class="ticker-track" id="ticker-track-top"></div></div>
+<div class="ticker"><div class="ticker-track" id="ticker-track"></div></div>
 </div><!-- /stage -->
 
 <script>
@@ -383,7 +381,6 @@ function refreshLayout() {
     const w = stageW(), h = stageH();
     stage.classList.toggle('is-portrait', h > w * 1.1);
     stage.classList.toggle('is-wide', w >= 1100);
-    if (document.getElementById('prize-showcase') && typeof inventory !== 'undefined') layoutShowcase();
 }
 function applyRotation(r, save) {
     rotation = r;
@@ -729,10 +726,10 @@ const QUESTIONS = [
 ];
 
 // Folder where the giveaway pictures are hosted (same GitHub repo as the logo)
-const IMG_BASE = 'https://github.com/erwinivmgemcor/GEMCOR-IIEE/blob/main/';
-const IMG_SUFFIX = '?raw=true';
-// To use local files instead (same folder as index.html), set:
-// const IMG_BASE = ''; const IMG_SUFFIX = '';
+const IMG_BASE = '';        // files sit next to index.html (GitHub Pages)
+const IMG_SUFFIX = '';
+// If the files are hosted elsewhere, e.g. the repo's raw links, use:
+// const IMG_BASE = 'https://raw.githubusercontent.com/erwinivmgemcor/GEMCOR-IIEE/main/'; const IMG_SUFFIX = '';
 const imgUrl = file => IMG_BASE + file + IMG_SUFFIX;
 
 const DEFAULT_GIVEAWAYS = [
@@ -997,7 +994,6 @@ function resetGame() {
     setRing(0);
     $('prize-preview').innerHTML = '';
     holdDone = false; answered = false;
-    renderShowcase();
     showScreen('attract-screen');
 }
 window.addEventListener('keydown', e => {
@@ -1094,48 +1090,6 @@ document.querySelectorAll('img[data-logo]').forEach(im => {
 // ==========================================
 // 11. ATTRACT MODE (runs while nobody is playing)
 // ==========================================
-function renderShowcase() {
-    const box = $('prize-showcase');
-    box.innerHTML = '';
-    inventory.filter(g => g.img && g.stock > 0).slice(0, 4).forEach((g, i) => {
-        const d = document.createElement('div');
-        d.className = 'pz'; d.style.setProperty('--i', i);
-        d.innerHTML = '<div class="pz-card"><span class="pz-badge">WIN!</span><img class="pz-img" alt=""><span class="pz-name"></span></div>';
-        const im = d.querySelector('img');
-        im.src = imgUrl(g.img); im.alt = g.name; im.onerror = () => d.remove();
-        d.querySelector('.pz-name').textContent = g.name;
-        box.appendChild(d);
-    });
-    layoutShowcase();
-}
-// Wide screen: prizes float in the side margins. Portrait: a row under the content. Otherwise hidden.
-function layoutShowcase() {
-    const box = $('prize-showcase'), items = [...box.children];
-    const w = stageW(), h = stageH(), portrait = h > w * 1.1;
-    const cw = Math.min(portrait ? 1000 : 900, w * (portrait ? 0.94 : 0.9));
-    const m = (w - cw) / 2, n = items.length;
-    box.style.display = 'block';
-    if (!n) { box.style.display = 'none'; return; }
-    if (m >= 150) {
-        const pzw = Math.min(210, m - 36);
-        box.style.setProperty('--pzw', pzw + 'px');
-        items.forEach((el, i) => {
-            const cx = i < 2 ? m / 2 : w - m / 2;
-            el.style.left = (cx - pzw / 2) + 'px';
-            el.style.top = (i % 2 === 0 ? h * 0.2 : h * 0.55) + 'px';
-        });
-    } else if (portrait) {
-        const gap = 18, pzw = Math.min(200, (w * 0.94 - (n - 1) * gap) / n);
-        box.style.setProperty('--pzw', pzw + 'px');
-        const total = n * pzw + (n - 1) * gap;
-        items.forEach((el, i) => {
-            el.style.left = ((w - total) / 2 + i * (pzw + gap)) + 'px';
-            el.style.top = (h - 36 - pzw - 70 - h * 0.03) + 'px';
-        });
-    } else {
-        box.style.display = 'none';
-    }
-}
 // Rotating call-to-action messages
 const WIN_MSGS = [
     '★ Answer the question correctly to <b>win prizes!</b> ★',
@@ -1156,6 +1110,8 @@ setInterval(() => {
     const msgs = ['PRESS IT TO WIN IT', 'ANSWER CORRECTLY &amp; WIN FREE GIVEAWAYS', 'GEMCOR × GREENLIGHT POWER × GO POWER SOLUTIONS', 'VISIT OUR BOOTH'];
     const one = msgs.map(t => '<span>★ ' + t + '</span>').join('');
     $('ticker-track').innerHTML = one + one + one + one;
+    const top = ['WIN FREE GIVEAWAYS', 'ANSWER THE QUESTION CORRECTLY', 'PRESS &amp; HOLD THE HAND TO START', 'JOIN THE GAME NOW'].map(t => '<span>★ ' + t + '</span>').join('');
+    $('ticker-track-top').innerHTML = top + top + top + top;
 })();
 // Big burst every few seconds while idle: flash + giant text + confetti + particle shock-wave
 const BURST_MSGS = ['WIN PRIZES!', 'PRESS IT TO WIN IT!', 'FREE GIVEAWAYS!', 'ANSWER & WIN!'];
@@ -1179,7 +1135,7 @@ setTimeout(attractBurst, 2500);   // first burst right after the page loads
 // Start music as early as the browser allows (first touch/click, or immediately in kiosk mode)
 ['pointerdown', 'keydown', 'touchend'].forEach(ev => window.addEventListener(ev, () => { if (!bgm || bgm.paused || !audioCtx) initAudio(); }, true));
 startEnergeticMusic();
-renderShowcase();
+setInterval(() => stage.classList.toggle('need-sound', !bgm || bgm.paused), 500);
 
 // Restore rotation: ?rotate=90 in the URL wins, otherwise the saved setting
 (function () {
