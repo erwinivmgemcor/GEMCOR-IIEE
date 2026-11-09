@@ -1,0 +1,7 @@
+{
+  "appId": "com.gemcor.pressittowin",
+  "appName": "Press It To Win It",
+  "webDir": "www",
+  "backgroundColor": "#02060a",
+  "android": { "allowMixedContent": false }
+}
