@@ -57,7 +57,7 @@ button,.logo-container,#question-text,#result-text,.options-grid,.settings-btn,#
 @keyframes shake{10%,90%{transform:translate3d(-2px,0,0)}20%,80%{transform:translate3d(4px,0,0)}30%,50%,70%{transform:translate3d(-8px,0,0)}40%,60%{transform:translate3d(8px,0,0)}}
 
 /* LOGO */
-.logo-container{margin-bottom:30px;background:rgba(255,255,255,.03);border:1px solid rgba(0,225,255,.15);border-radius:15px;padding:15px 30px;box-shadow:0 10px 30px rgba(0,0,0,.5),inset 0 0 20px rgba(0,225,255,.05);backdrop-filter:blur(10px);animation:floatLogo 4s ease-in-out infinite,logoGlow 4s ease-in-out infinite}
+.logo-container{margin-bottom:30px;background:rgba(255,255,255,.03);border:1px solid rgba(0,225,255,.15);border-radius:15px;padding:15px 30px;box-shadow:0 10px 30px rgba(0,0,0,.5),inset 0 0 20px rgba(0,225,255,.05);animation:floatLogo 4s ease-in-out infinite,logoGlow 4s ease-in-out infinite}
 .logo-container img{max-width:280px;height:auto;display:block;filter:drop-shadow(0 0 15px rgba(0,166,81,.4))}
 @keyframes floatLogo{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 @keyframes logoGlow{0%,100%{box-shadow:0 10px 30px rgba(0,0,0,.5),inset 0 0 20px rgba(0,225,255,.05);border-color:rgba(0,225,255,.15)}50%{box-shadow:0 10px 40px rgba(0,0,0,.6),inset 0 0 30px rgba(0,166,81,.15);border-color:rgba(0,166,81,.4)}}
@@ -65,7 +65,7 @@ button,.logo-container,#question-text,#result-text,.options-grid,.settings-btn,#
 
 /* BRAND STRIP: GEMCOR x GO POWER x GREENLIGHT */
 .brand-strip{display:flex;align-items:center;justify-content:center;gap:clamp(8px,1.6vw,18px);width:100%;margin-bottom:28px;transition:margin .4s}
-.brand-card{--c1:#2f80ff;--c2:#00e88a;--g:rgba(47,128,255,.28);--shine:rgba(255,255,255,.22);position:relative;flex:1 1 0;min-width:0;height:clamp(62px,10vh,92px);display:flex;align-items:center;justify-content:center;padding:10px 16px;box-sizing:border-box;border-radius:14px;background:linear-gradient(160deg,rgba(255,255,255,.08),rgba(255,255,255,.015)),radial-gradient(ellipse at 50% 130%,var(--g),transparent 70%),rgba(2,6,10,.55);border:1px solid var(--c1);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);overflow:hidden;animation:cardFloat 4s ease-in-out infinite,cardGlow 4s ease-in-out infinite;transition:height .4s,padding .4s}
+.brand-card{--c1:#2f80ff;--c2:#00e88a;--g:rgba(47,128,255,.28);--shine:rgba(255,255,255,.22);position:relative;flex:1 1 0;min-width:0;height:clamp(62px,10vh,92px);display:flex;align-items:center;justify-content:center;padding:10px 16px;box-sizing:border-box;border-radius:14px;background:linear-gradient(160deg,rgba(255,255,255,.08),rgba(255,255,255,.015)),radial-gradient(ellipse at 50% 130%,var(--g),transparent 70%),rgba(2,6,10,.55);border:1px solid var(--c1);overflow:hidden;animation:cardFloat 4s ease-in-out infinite,cardGlow 4s ease-in-out infinite;transition:height .4s,padding .4s}
 .brand-card::before{content:'';position:absolute;left:0;right:0;bottom:0;height:3px;background:linear-gradient(90deg,var(--c1),var(--c2))}
 .brand-card::after{content:'';position:absolute;top:0;left:-60%;width:35%;height:100%;background:linear-gradient(105deg,transparent,var(--shine),transparent);transform:skewX(-20deg);animation:cardShine 5s ease-in-out infinite}
 .brand-card img{filter:drop-shadow(0 0 6px var(--g));max-width:100%;max-height:100%;object-fit:contain;display:block;position:relative;z-index:1;pointer-events:none;-webkit-user-drag:none}
@@ -102,17 +102,18 @@ h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.8rem,3.5vw,2.5rem);color:
 .subtitle{font-family:'Share Tech Mono',monospace;color:var(--neon-green);font-size:clamp(.9rem,1.2vw,1.2rem);letter-spacing:5px;margin-bottom:0;display:block}
 
 /* SCI-FI 3D DIMENSION */
-.portal{position:absolute;top:50%;left:50%;width:140vmax;height:140vmax;margin:-70vmax 0 0 -70vmax;z-index:1;pointer-events:none;background:conic-gradient(from 0deg,transparent,rgba(0,85,255,.2),transparent 25%,rgba(0,255,136,.14),transparent 45%,rgba(255,106,43,.15),transparent 58%,rgba(0,225,255,.18),transparent 78%);filter:blur(30px);animation:spinPortal 40s linear infinite}
+.portal{position:absolute;top:50%;left:50%;width:140vmax;height:140vmax;margin:-70vmax 0 0 -70vmax;z-index:1;pointer-events:none;background:conic-gradient(from 0deg,transparent,rgba(0,85,255,.2),transparent 25%,rgba(0,255,136,.14),transparent 45%,rgba(255,106,43,.15),transparent 58%,rgba(0,225,255,.18),transparent 78%);will-change:transform;animation:spinPortal 40s linear infinite}
 @keyframes spinPortal{to{transform:rotate(360deg)}}
 .grid-floor,.grid-ceiling{position:absolute;left:-50%;width:200%;height:55%;z-index:1;pointer-events:none;background-image:linear-gradient(rgba(0,225,255,.4) 1px,transparent 1px),linear-gradient(90deg,rgba(0,225,255,.4) 1px,transparent 1px);background-size:60px 60px}
 .grid-floor{bottom:-8%;transform:perspective(420px) rotateX(70deg);transform-origin:50% 100%;animation:gridMove 2s linear infinite;-webkit-mask-image:linear-gradient(to top,#000,transparent 85%);mask-image:linear-gradient(to top,#000,transparent 85%)}
 .grid-ceiling{top:-8%;transform:perspective(420px) rotateX(-70deg);transform-origin:50% 0;animation:gridMoveUp 2s linear infinite;-webkit-mask-image:linear-gradient(to bottom,#000,transparent 85%);mask-image:linear-gradient(to bottom,#000,transparent 85%)}
-@keyframes gridMove{to{background-position:0 60px,0 0}}
-@keyframes gridMoveUp{to{background-position:0 -60px,0 0}}
+@keyframes gridMove{from{transform:perspective(420px) rotateX(70deg) translateY(0)}to{transform:perspective(420px) rotateX(70deg) translateY(60px)}}
+@keyframes gridMoveUp{from{transform:perspective(420px) rotateX(-70deg) translateY(0)}to{transform:perspective(420px) rotateX(-70deg) translateY(-60px)}}
 .scanlines{position:absolute;inset:0;z-index:7;pointer-events:none;overflow:hidden;background:repeating-linear-gradient(0deg,rgba(0,0,0,.16) 0 1px,transparent 1px 3px)}
-.scanlines::after{content:'';position:absolute;left:0;width:100%;height:120px;top:-120px;background:linear-gradient(transparent,rgba(0,225,255,.09),transparent);animation:beam 6s linear infinite}
-@keyframes beam{to{top:100%}}
-.container{animation:panelGlow 5s ease-in-out infinite}
+.scanlines::after{content:'';position:absolute;left:0;width:100%;height:120px;top:0;background:linear-gradient(transparent,rgba(0,225,255,.09),transparent);will-change:transform;animation:beam 6s linear infinite}
+@keyframes beam{from{transform:translateY(-120px)}to{transform:translateY(110vmax)}}
+.panel-glow{position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none;box-shadow:inset 0 0 80px rgba(0,225,255,.1),0 0 70px rgba(0,225,255,.35);opacity:.3;will-change:opacity;animation:glowPulse 5s ease-in-out infinite}
+@keyframes glowPulse{0%,100%{opacity:.3}50%{opacity:1}}
 @keyframes panelGlow{0%,100%{box-shadow:inset 0 0 60px rgba(0,85,255,.05),0 0 30px rgba(0,85,255,.15)}50%{box-shadow:inset 0 0 80px rgba(0,225,255,.1),0 0 70px rgba(0,225,255,.35)}}
 #attract-screen{transform-style:preserve-3d}
 #attract-screen h1{transform:translateZ(50px);animation:titleGlitch 5s infinite}
@@ -204,7 +205,7 @@ h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.8rem,3.5vw,2.5rem);color:
 /* ===== ATTRACT MODE (eye-catching idle screen) ===== */
 #attract-screen h1.hero-title{font-size:clamp(2rem,4.6vw,3.7rem);letter-spacing:5px;line-height:1.05;margin:0 0 6px;background:linear-gradient(90deg,#00e1ff,#39ff14,#ffd000,#ff6a2b,#00e1ff);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;text-shadow:none;animation:heroShift 5s linear infinite,heroPulse 2.2s ease-in-out infinite}
 @keyframes heroShift{to{background-position:300% 0}}
-@keyframes heroPulse{0%,100%{transform:translateZ(50px) scale(1);filter:drop-shadow(0 0 10px rgba(0,225,255,.5))}50%{transform:translateZ(50px) scale(1.04);filter:drop-shadow(0 0 26px rgba(57,255,20,.75))}}
+@keyframes heroPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
 .hero-sub{font-family:'Share Tech Mono',monospace;color:var(--neon-green);letter-spacing:clamp(4px,.9vw,10px);font-size:clamp(.9rem,1.3vw,1.3rem);text-shadow:0 0 10px var(--neon-green);transform:translateZ(40px)}
 .win-banner{min-width:min(640px,90%);box-sizing:border-box;text-align:center}
 #win-msg{display:inline-block;animation:msgIn .6s ease-out}
@@ -217,7 +218,8 @@ h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.8rem,3.5vw,2.5rem);color:
 .hand-icon{animation:handTap 1.8s ease-in-out infinite}
 @keyframes handTap{0%,100%{transform:scale(1)}50%{transform:scale(1.14)}}
 .hold-btn-container.scanning .hand-icon,.hold-btn-container.success .hand-icon{animation:none}
-#stage.attract-on .container{animation:panelGlow 3s ease-in-out infinite,borderHue 8s linear infinite}
+#stage.attract-on .container{animation:borderHue 8s linear infinite}
+#stage.attract-on .panel-glow{animation-duration:3s}
 @keyframes borderHue{0%,100%{border-color:rgba(0,225,255,.5)}33%{border-color:rgba(57,255,20,.6)}66%{border-color:rgba(255,106,43,.6)}}
 #stage.attract-on .hud-data.br{bottom:48px}
 #stage.is-portrait.attract-on .hud-data.br{display:none}
@@ -251,6 +253,18 @@ h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.8rem,3.5vw,2.5rem);color:
 #game-screen.dense .options-grid{gap:10px}
 #game-screen.dense .timer-container{margin-bottom:22px}
 
+.ticker-track{will-change:transform}
+/* ===== AUTO QUALITY (q1 = lite, q2 = ultra-lite). Same look, fewer expensive repaints ===== */
+html.q1 .container,html.q1 #stage.attract-on .container{animation:none!important}
+html.q1 .brand-card,html.q1 .container.compact .brand-card,html.q1 .logo-container{animation:none!important}
+html.q1 #attract-screen h1,html.q1 #attract-screen h1.hero-title{animation:heroPulse 2.2s ease-in-out infinite!important;transform-style:flat}
+html.q1 #attract-screen{transform-style:flat}
+html.q1 .brand-card::after{animation:none!important;display:none}
+html.q1 .hud-data{display:none}
+html.q2 .portal,html.q2 .scanlines::after,html.q2 .ring3d.b{display:none!important}
+html.q2 .grid-floor,html.q2 .grid-ceiling,html.q2 .hud-ring-outer,html.q2 .panel-glow{animation:none!important}
+html.q2 #attract-screen h1,html.q2 #attract-screen h1.hero-title{animation:none!important}
+html.q2 .ring3d.a{box-shadow:none}
 </style>
 </head>
 <body>
@@ -285,6 +299,7 @@ h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.8rem,3.5vw,2.5rem);color:
 </div>
 
 <div class="container" id="main-container">
+    <div class="panel-glow"></div>
     <div class="hud-data tl" id="hud-tl">SYS.STATUS: ONLINE<br>DIMENSION: Ω-7<br>LINK: SECURE</div>
     <div class="hud-data br" id="hud-br"></div>
     <div class="brand-strip" id="brand-strip">
@@ -438,12 +453,45 @@ function triggerVibrate(pattern) { if (isVibrateEnabled && navigator.vibrate) na
 const canvas = document.getElementById('bg-canvas');
 const ctx = canvas.getContext('2d');
 let width, height, particles = [], pulses = [];
-const PARTICLE_COUNT = 80, CONNECTION_DISTANCE = 150;
+const TIERS = [
+    { particles: 60, dist: 140, scale: 1,    confetti: 110, fpsCap: 0  },   // 0 full
+    { particles: 36, dist: 130, scale: 0.75, confetti: 70,  fpsCap: 0  },   // 1 lite
+    { particles: 22, dist: 120, scale: 0.5,  confetti: 40,  fpsCap: 33 }    // 2 ultra-lite (~30fps)
+];
+let tier = 0, tierForced = false;
+(function () {
+    try {
+        const q = new URLSearchParams(location.search).get('q');
+        if (q !== null && ['0', '1', '2'].includes(q)) { tier = +q; tierForced = true; }
+        else tier = Math.min(2, Math.max(0, parseInt(localStorage.getItem('q_tier')) || 0));
+    } catch (e) {}
+})();
+let Q = TIERS[tier];
+function applyTier(t, save) {
+    tier = t; Q = TIERS[t];
+    document.documentElement.classList.toggle('q1', t === 1);
+    document.documentElement.classList.toggle('q2', t === 2);
+    if (typeof initCanvas === 'function' && typeof width !== 'undefined' && width) initCanvas();
+    if (save && !tierForced) { try { localStorage.setItem('q_tier', String(t)); } catch (e) {} }
+}
+applyTier(tier, false);
+// glow sprites replace shadowBlur (that was the biggest GPU/CPU cost)
+const glowSprites = {};
+function glowSprite(color) {
+    if (glowSprites[color]) return glowSprites[color];
+    const c = document.createElement('canvas'); c.width = c.height = 32;
+    const g = c.getContext('2d'), gr = g.createRadialGradient(16, 16, 0, 16, 16, 16);
+    gr.addColorStop(0, color + 'cc'); gr.addColorStop(0.35, color + '55'); gr.addColorStop(1, color + '00');
+    g.fillStyle = gr; g.fillRect(0, 0, 32, 32);
+    return (glowSprites[color] = c);
+}
 
 function initCanvas() {
-    width = canvas.width = stageW(); height = canvas.height = stageH();
+    width = stageW(); height = stageH();
+    canvas.width = Math.max(1, Math.round(width * Q.scale)); canvas.height = Math.max(1, Math.round(height * Q.scale));
+    ctx.setTransform(Q.scale, 0, 0, Q.scale, 0, 0);
     particles = [];
-    for (let i = 0; i < PARTICLE_COUNT; i++) particles.push(new Particle());
+    for (let i = 0; i < Q.particles; i++) particles.push(new Particle());
 }
 class Particle {
     constructor() {
@@ -459,8 +507,9 @@ class Particle {
         if (this.y < 0 || this.y > height) this.vy *= -1;
     }
     draw() {
+        ctx.drawImage(glowSprite(this.baseColor), this.x - 14, this.y - 14, 28, 28);
         ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx.fillStyle = this.baseColor; ctx.shadowBlur = 15; ctx.shadowColor = this.baseColor; ctx.fill(); ctx.shadowBlur = 0;
+        ctx.fillStyle = this.baseColor; ctx.fill();
     }
 }
 class Pulse {
@@ -474,24 +523,51 @@ class Pulse {
         ctx.strokeStyle = `rgba(${this.color}, ${this.opacity})`; ctx.lineWidth = 2; ctx.stroke(); ctx.shadowBlur = 0;
     }
 }
-function animateCanvas() {
-    ctx.fillStyle = 'rgba(2, 6, 10, 0.3)'; ctx.fillRect(0, 0, width, height);
-    for (let i = 0; i < particles.length; i++) {
-        particles[i].update(); particles[i].draw();
-        for (let j = i + 1; j < particles.length; j++) {
-            const dx = particles[i].x - particles[j].x, dy = particles[i].y - particles[j].y;
-            const distance = Math.sqrt(dx * dx + dy * dy);
-            if (distance < CONNECTION_DISTANCE) {
-                ctx.beginPath(); ctx.moveTo(particles[i].x, particles[i].y); ctx.lineTo(particles[j].x, particles[j].y);
-                ctx.strokeStyle = `rgba(0, 85, 255, ${(1 - (distance / CONNECTION_DISTANCE)) * 0.6})`; ctx.lineWidth = 1; ctx.stroke();
+let lastDraw = 0, frameN = 0, accDt = 0, lastTs = 0, warm = 30;
+const segs = [[], [], [], []];
+function animateCanvas(ts) {
+    ts = ts || performance.now();
+    requestAnimationFrame(animateCanvas);
+    // --- auto quality: if the average frame is slow, step down a tier (never back up) ---
+    if (lastTs) {
+        const dt = Math.min(ts - lastTs, 100);
+        if (warm > 0) warm--;
+        else if (!tierForced && tier < 2 && !document.hidden) {
+            accDt += dt; frameN++;
+            if (frameN >= 45) {
+                if (accDt / frameN > 24) { applyTier(tier + 1, true); warm = 30; }
+                accDt = 0; frameN = 0;
             }
         }
+    }
+    lastTs = ts;
+    if (Q.fpsCap && ts - lastDraw < Q.fpsCap) return;
+    lastDraw = ts;
+    ctx.fillStyle = 'rgba(2, 6, 10, 0.3)'; ctx.fillRect(0, 0, width, height);
+    const CD = Q.dist, CD2 = CD * CD;
+    for (let k = 0; k < 4; k++) segs[k].length = 0;
+    for (let i = 0; i < particles.length; i++) {
+        const pi = particles[i];
+        pi.update(); pi.draw();
+        for (let j = i + 1; j < particles.length; j++) {
+            const pj = particles[j], dx = pi.x - pj.x, dy = pi.y - pj.y, d2 = dx * dx + dy * dy;
+            if (d2 < CD2) {
+                const k = Math.min(3, ((1 - Math.sqrt(d2) / CD) * 4) | 0);
+                segs[k].push(pi.x, pi.y, pj.x, pj.y);
+            }
+        }
+    }
+    ctx.lineWidth = 1;
+    for (let k = 0; k < 4; k++) {
+        const arr = segs[k]; if (!arr.length) continue;
+        ctx.beginPath();
+        for (let m = 0; m < arr.length; m += 4) { ctx.moveTo(arr[m], arr[m + 1]); ctx.lineTo(arr[m + 2], arr[m + 3]); }
+        ctx.strokeStyle = `rgba(0, 85, 255, ${((k + 0.5) / 4 * 0.6).toFixed(3)})`; ctx.stroke();
     }
     for (let i = pulses.length - 1; i >= 0; i--) {
         pulses[i].update(); pulses[i].draw();
         if (pulses[i].opacity <= 0) pulses.splice(i, 1);
     }
-    requestAnimationFrame(animateCanvas);
 }
 function createPulse(e) {
     if (e.target.closest('#settings-modal') || e.target.closest('.settings-btn') || e.target.closest('.hold-btn-container') || e.target.closest('.giveaway-grid')) return;
@@ -506,7 +582,7 @@ function createPulse(e) {
     triggerVibrate(20);
 }
 window.addEventListener('mousedown', createPulse); window.addEventListener('touchstart', createPulse);
-window.addEventListener('resize', initCanvas); initCanvas(); animateCanvas();
+window.addEventListener('resize', initCanvas); initCanvas(); requestAnimationFrame(animateCanvas);
 
 // ==========================================
 // 3. CONFETTI
@@ -527,14 +603,14 @@ class ConfettiPiece {
     update() { this.y += this.speedY; this.x += this.speedX; this.rotation += this.rotSpeed; }
     draw() {
         fxCtx.save(); fxCtx.translate(this.x, this.y); fxCtx.rotate(this.rotation * Math.PI / 180);
-        fxCtx.fillStyle = this.color; fxCtx.shadowBlur = 10; fxCtx.shadowColor = this.color;
+        fxCtx.fillStyle = this.color;
         fxCtx.fillRect(-this.size / 2, -this.size / 2, this.size, this.size); fxCtx.restore();
     }
 }
 function startConfetti() {
     const wasActive = isConfettiActive;
     confetti = []; isConfettiActive = true;
-    for (let i = 0; i < 150; i++) confetti.push(new ConfettiPiece());
+    for (let i = 0; i < Q.confetti; i++) confetti.push(new ConfettiPiece());
     if (!wasActive) animateConfetti();
 }
 function animateConfetti() {
@@ -1079,7 +1155,7 @@ const hudBr = $('hud-br');
 setInterval(() => {
     const r = () => (Math.random() * 999).toFixed(2).padStart(6, '0');
     hudBr.innerHTML = `X:${r()} Y:${r()}<br>Z:${r()}<br>FLUX: ${(Math.random() * 100).toFixed(1)}%`;
-}, 140);
+}, 400);
 
 // Load the 3 company logos (same IMG_BASE as giveaway pictures)
 document.querySelectorAll('img[data-logo]').forEach(im => {
