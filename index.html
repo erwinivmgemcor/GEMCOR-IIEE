@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#02060a">
-<title>GEMCOR × GO Power × GreenLight | IIEE Knowledge Assessment</title>
+<title>PRESS IT TO WIN IT | GEMCOR × GreenLight Power × GO Power Solutions</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
 :root{--bg-dark:#02060a;--gemcor-blue:#0055ff;--gemcor-green:#00ff88;--neon-blue:#00e1ff;--neon-green:#39ff14;--danger:#ff003c;--warning:#ffcc00;--go-orange:#ff6a2b;--text-glow:0 0 10px rgba(255,255,255,.5)}
@@ -71,8 +71,8 @@ button,.logo-container,#question-text,#result-text,.options-grid,.settings-btn,#
 .brand-card img{filter:drop-shadow(0 0 6px var(--g));max-width:100%;max-height:100%;object-fit:contain;display:block;position:relative;z-index:1;pointer-events:none;-webkit-user-drag:none}
 .brand-card .fallback{font-family:'Orbitron',sans-serif;font-weight:700;color:#cfe6ff;font-size:1rem;letter-spacing:1px}
 .b-gemcor{--c1:#2f80ff;--c2:#00e88a;--g:rgba(47,128,255,.30);--shine:rgba(0,255,136,.25)}
-.b-go{--c1:#ff6a2b;--c2:#3d7bff;--g:rgba(255,106,43,.30);--shine:rgba(255,106,43,.28);animation-delay:.6s,.6s,.6s}
-.b-green{--c1:#2bd45f;--c2:#3aa0ff;--g:rgba(43,212,95,.28);--shine:rgba(58,160,255,.28);animation-delay:1.2s,1.2s,1.2s}
+.b-go{--c1:#ff6a2b;--c2:#3d7bff;--g:rgba(255,106,43,.30);--shine:rgba(255,106,43,.28);animation-delay:1.2s,1.2s,1.2s}
+.b-green{--c1:#2bd45f;--c2:#3aa0ff;--g:rgba(43,212,95,.28);--shine:rgba(58,160,255,.28);animation-delay:.6s,.6s,.6s}
 .brand-x{font-family:'Orbitron',sans-serif;color:var(--neon-blue);text-shadow:0 0 10px var(--neon-blue);font-size:clamp(1rem,1.8vw,1.6rem);opacity:.85;animation:guideBlink 2.4s ease-in-out infinite}
 @keyframes cardFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 @keyframes cardGlow{0%,100%{box-shadow:0 0 16px var(--c1),0 10px 26px rgba(0,0,0,.55)}50%{box-shadow:0 0 30px var(--c2),0 10px 26px rgba(0,0,0,.55)}}
@@ -200,6 +200,60 @@ h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.8rem,3.5vw,2.5rem);color:
 .btn:hover{background:rgba(0,225,255,.1);box-shadow:0 0 20px rgba(0,225,255,.3)}
 .btn:active{background:var(--neon-blue);color:#000}
 .hidden{display:none!important}
+
+/* ===== ATTRACT MODE (eye-catching idle screen) ===== */
+#attract-screen h1.hero-title{font-size:clamp(2rem,4.6vw,3.7rem);letter-spacing:5px;line-height:1.05;margin:0 0 6px;background:linear-gradient(90deg,#00e1ff,#39ff14,#ffd000,#ff6a2b,#00e1ff);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;text-shadow:none;animation:heroShift 5s linear infinite,heroPulse 2.2s ease-in-out infinite}
+@keyframes heroShift{to{background-position:300% 0}}
+@keyframes heroPulse{0%,100%{transform:translateZ(50px) scale(1);filter:drop-shadow(0 0 10px rgba(0,225,255,.5))}50%{transform:translateZ(50px) scale(1.04);filter:drop-shadow(0 0 26px rgba(57,255,20,.75))}}
+.hero-sub{font-family:'Share Tech Mono',monospace;color:var(--neon-green);letter-spacing:clamp(4px,.9vw,10px);font-size:clamp(.9rem,1.3vw,1.3rem);text-shadow:0 0 10px var(--neon-green);transform:translateZ(40px)}
+.win-banner{min-width:min(640px,90%);box-sizing:border-box;text-align:center}
+#win-msg{display:inline-block;animation:msgIn .6s ease-out}
+@keyframes msgIn{from{opacity:0;transform:translateY(10px) scale(.96)}to{opacity:1;transform:none}}
+.sonar{position:absolute;width:100%;height:100%;border-radius:50%;border:3px solid var(--neon-green);pointer-events:none;opacity:0;animation:sonar 2.7s ease-out infinite}
+.sonar.s2{animation-delay:.9s;border-color:var(--neon-blue)}
+.sonar.s3{animation-delay:1.8s;border-color:var(--go-orange)}
+@keyframes sonar{0%{transform:scale(.55);opacity:.9}100%{transform:scale(2.1);opacity:0}}
+.hold-btn-container.scanning .sonar{animation-play-state:paused;opacity:0}
+.hand-icon{animation:handTap 1.8s ease-in-out infinite}
+@keyframes handTap{0%,100%{transform:scale(1)}50%{transform:scale(1.14)}}
+.hold-btn-container.scanning .hand-icon,.hold-btn-container.success .hand-icon{animation:none}
+#stage.attract-on .container{animation:panelGlow 3s ease-in-out infinite,borderHue 8s linear infinite}
+@keyframes borderHue{0%,100%{border-color:rgba(0,225,255,.5)}33%{border-color:rgba(57,255,20,.6)}66%{border-color:rgba(255,106,43,.6)}}
+#stage.attract-on .hud-data.br{bottom:48px}
+#stage.is-portrait.attract-on .hud-data.br{display:none}
+/* prize showcase floating around the game */
+#prize-showcase{position:absolute;inset:0;z-index:11;pointer-events:none;opacity:0;transition:opacity .5s}
+#stage.attract-on #prize-showcase{opacity:1}
+.pz{position:absolute;width:var(--pzw,170px)}
+.pz-card{position:relative;text-align:center;animation:pzFloat 3.8s ease-in-out infinite;animation-delay:calc(var(--i,0) * -.9s)}
+.pz-img{display:block;width:100%;aspect-ratio:1/1;object-fit:contain;background:#fff;border-radius:16px;padding:8px;box-sizing:border-box;border:3px solid var(--neon-green);animation:pzGlow 2.4s ease-in-out infinite;animation-delay:calc(var(--i,0) * -.6s)}
+.pz-name{display:block;margin-top:10px;font-family:'Orbitron',sans-serif;font-weight:700;font-size:clamp(.7rem,1vw,.95rem);letter-spacing:1.5px;color:#fff;text-shadow:0 0 10px var(--neon-green)}
+.pz-badge{position:absolute;top:-14px;right:-14px;z-index:2;width:54px;height:54px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#ffb347,#ff6a2b);color:#fff;font-family:'Orbitron',sans-serif;font-weight:900;font-size:.8rem;display:flex;align-items:center;justify-content:center;box-shadow:0 0 18px rgba(255,106,43,.9);animation:badgeSpin 3s ease-in-out infinite}
+@keyframes pzFloat{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-16px) rotate(3deg)}}
+@keyframes pzGlow{0%,100%{box-shadow:0 0 14px rgba(57,255,20,.5)}50%{box-shadow:0 0 34px rgba(0,225,255,.9)}}
+@keyframes badgeSpin{0%,100%{transform:rotate(-12deg) scale(1)}50%{transform:rotate(12deg) scale(1.15)}}
+/* scrolling LED-style ticker */
+#ticker{position:absolute;left:0;bottom:0;width:100%;height:36px;z-index:12;overflow:hidden;pointer-events:none;opacity:0;transition:opacity .5s;background:linear-gradient(90deg,rgba(0,85,255,.6),rgba(0,166,81,.6),rgba(255,106,43,.6));border-top:1px solid rgba(255,255,255,.35);box-shadow:0 -4px 24px rgba(0,225,255,.35)}
+#stage.attract-on #ticker{opacity:1}
+.ticker-track{display:inline-flex;white-space:nowrap;height:100%;align-items:center;animation:tickerMove 40s linear infinite;will-change:transform}
+.ticker-track span{font-family:'Orbitron',sans-serif;font-weight:700;font-size:.95rem;letter-spacing:3px;color:#fff;text-shadow:0 0 8px rgba(0,0,0,.8);padding-right:60px}
+@keyframes tickerMove{to{transform:translateX(-50%)}}
+/* big periodic "attention burst" */
+#burst{position:absolute;inset:0;z-index:13;pointer-events:none;display:flex;align-items:center;justify-content:center;opacity:0}
+#burst::before{content:'';position:absolute;left:50%;top:50%;width:20px;height:20px;margin:-10px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.9),rgba(0,225,255,.5) 40%,transparent 70%);opacity:0}
+#burst.go{animation:burstFade 2.6s ease-out forwards}
+#burst.go::before{animation:burstFlash 1.2s ease-out forwards}
+.burst-text{font-family:'Orbitron',sans-serif;font-weight:900;font-size:clamp(2.6rem,8vw,6.5rem);text-align:center;line-height:1.05;letter-spacing:4px;padding:0 20px;background:linear-gradient(90deg,#00e1ff,#39ff14,#ffd000,#ff6a2b);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 30px rgba(255,255,255,.7))}
+#burst.go .burst-text{animation:burstPop 2.6s cubic-bezier(.2,1.4,.4,1) forwards}
+@keyframes burstFade{0%{opacity:0}8%{opacity:1}75%{opacity:1}100%{opacity:0}}
+@keyframes burstFlash{0%{transform:scale(1);opacity:1}100%{transform:scale(160);opacity:0}}
+@keyframes burstPop{0%{transform:scale(.3) rotate(-6deg)}25%{transform:scale(1.12) rotate(2deg)}40%{transform:scale(1)}100%{transform:scale(1.06)}}
+/* long questions */
+#game-screen.dense #question-text{font-size:clamp(1.3rem,1.9vw,1.9rem);margin-bottom:18px}
+#game-screen.dense .option-btn{padding:12px 20px;font-size:clamp(1.05rem,1.3vw,1.35rem)}
+#game-screen.dense .options-grid{gap:10px}
+#game-screen.dense .timer-container{margin-bottom:22px}
+
 </style>
 </head>
 <body>
@@ -239,20 +293,22 @@ h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.8rem,3.5vw,2.5rem);color:
     <div class="brand-strip" id="brand-strip">
         <div class="brand-card b-gemcor"><img data-logo="gemcor-logo-neon.png" alt="GEMCOR"></div>
         <span class="brand-x">×</span>
-        <div class="brand-card b-go"><img data-logo="go-power-logo-neon.png" alt="GO Power Solutions"></div>
-        <span class="brand-x">×</span>
         <div class="brand-card b-green"><img data-logo="greenlight-logo-neon.png" alt="GreenLight Power"></div>
+        <span class="brand-x">×</span>
+        <div class="brand-card b-go"><img data-logo="go-power-logo-neon.png" alt="GO Power Solutions"></div>
     </div>
 
     <div id="attract-screen">
-        <h1>KNOWLEDGE <span class="subtitle">ASSESSMENT</span></h1>
-        <div class="win-banner">★ Answer the question correctly to <b>win prizes!</b> ★</div>
+        <h1 class="hero-title">PRESS IT TO WIN IT</h1>
+        <div class="hero-sub">KNOWLEDGE ASSESSMENT</div>
+        <div class="win-banner" id="win-banner"><span id="win-msg">★ Answer the question correctly to <b>win prizes!</b> ★</span></div>
         <div class="scan-guide">
             <div class="guide-title">[ IDENTITY VERIFICATION REQUIRED ]</div>
             <div class="guide-sub">PRESS &amp; HOLD THE HAND TO SCAN YOUR IDENTITY</div>
         </div>
         <div class="hold-btn-container" id="hold-btn">
             <div class="scan-text" id="scan-text">AWAITING TOUCH...</div>
+            <div class="sonar s1"></div><div class="sonar s2"></div><div class="sonar s3"></div>
             <div class="hud-ring-outer"></div>
             <div class="hud-ring-inner"></div>
         <div class="ring3d a"></div>
@@ -289,6 +345,9 @@ h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.8rem,3.5vw,2.5rem);color:
     </div>
 </div>
 
+<div id="prize-showcase"></div>
+<div id="burst"><div class="burst-text">WIN PRIZES!</div></div>
+<div id="ticker"><div class="ticker-track" id="ticker-track"></div></div>
 </div><!-- /stage -->
 
 <script>
@@ -324,6 +383,7 @@ function refreshLayout() {
     const w = stageW(), h = stageH();
     stage.classList.toggle('is-portrait', h > w * 1.1);
     stage.classList.toggle('is-wide', w >= 1100);
+    if (document.getElementById('prize-showcase') && typeof inventory !== 'undefined') layoutShowcase();
 }
 function applyRotation(r, save) {
     rotation = r;
@@ -370,7 +430,7 @@ function toggleSettings() {
 }
 document.getElementById('volume-slider').addEventListener('input', (e) => {
     masterVolume = parseFloat(e.target.value);
-    if (musicGainNode && audioCtx) musicGainNode.gain.setTargetAtTime(masterVolume * 0.2, audioCtx.currentTime, 0.1);
+    if (bgm) bgm.volume = Math.min(1, masterVolume * MUSIC_GAIN);
 });
 document.getElementById('vibrate-toggle').addEventListener('change', (e) => { isVibrateEnabled = e.target.checked; });
 function triggerVibrate(pattern) { if (isVibrateEnabled && navigator.vibrate) navigator.vibrate(pattern); }
@@ -395,6 +455,8 @@ class Particle {
         this.radius = Math.random() * 2 + 1.5; const r = Math.random(); this.baseColor = r < 0.4 ? '#0055ff' : (r < 0.72 ? '#00ff88' : '#ff6a2b');
     }
     update() {
+        const sp = Math.hypot(this.vx, this.vy);
+        if (sp > 1.2) { this.vx *= 0.97; this.vy *= 0.97; }   // calm down after bursts
         this.x += this.vx; this.y += this.vy;
         if (this.x < 0 || this.x > width) this.vx *= -1;
         if (this.y < 0 || this.y > height) this.vy *= -1;
@@ -473,9 +535,10 @@ class ConfettiPiece {
     }
 }
 function startConfetti() {
+    const wasActive = isConfettiActive;
     confetti = []; isConfettiActive = true;
     for (let i = 0; i < 150; i++) confetti.push(new ConfettiPiece());
-    animateConfetti();
+    if (!wasActive) animateConfetti();
 }
 function animateConfetti() {
     if (!isConfettiActive) return;
@@ -535,53 +598,53 @@ function playClickSound() {
     gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.12);
     osc.start(); osc.stop(audioCtx.currentTime + 0.12);
 }
+// Background music = the uploaded MP3 (bgm.mp3, same folder/repo as the images)
+const MUSIC_FILE = 'bgm.mp3';
+const MUSIC_GAIN = 0.5;   // music loudness relative to the AUDIO LEVEL slider
+let bgm = null;
 function startEnergeticMusic() {
-    if (musicInterval || !audioCtx) return;
-    musicGainNode = audioCtx.createGain();
-    musicGainNode.gain.value = masterVolume * 0.2;
-    musicGainNode.connect(audioCtx.destination);
-    const bass = [110, 110, 130.81, 98];
-    const arp = [440, 523.25, 659.25, 523.25, 440, 392, 523.25, 392];
-    let step = 0;
-    function note(freq, type, dur, vol) {
-        const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
-        o.type = type; o.frequency.value = freq;
-        g.gain.setValueAtTime(vol, audioCtx.currentTime);
-        g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
-        o.connect(g); g.connect(musicGainNode);
-        o.start(); o.stop(audioCtx.currentTime + dur);
-    }
-    musicInterval = setInterval(() => {
-        if (step % 2 === 0) note(bass[Math.floor(step / 2) % bass.length], 'sawtooth', 0.28, 0.5);
-        note(arp[step % arp.length], 'square', 0.12, 0.18);
-        step++;
-    }, 150);
+    if (!bgm) { bgm = new Audio(imgUrl(MUSIC_FILE)); bgm.loop = true; bgm.preload = 'auto'; }
+    bgm.volume = Math.min(1, masterVolume * MUSIC_GAIN);
+    if (bgm.paused) { const p = bgm.play(); if (p && p.catch) p.catch(() => {}); }
+}
+// Short rising "ding-ding-ding" for the attention burst
+function playAttractSound() {
+    if (!audioCtx || audioCtx.state !== 'running') return;
+    const t = audioCtx.currentTime;
+    [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => {
+        const o = audioCtx.createOscillator(), g = audioCtx.createGain(), st = t + i * 0.09;
+        o.type = 'triangle'; o.frequency.value = f;
+        g.gain.setValueAtTime(0.0001, st);
+        g.gain.exponentialRampToValueAtTime(Math.max(masterVolume * 0.35, 0.001), st + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.001, st + 0.35);
+        o.connect(g); g.connect(audioCtx.destination); o.start(st); o.stop(st + 0.4);
+    });
 }
 
 // ==========================================
 // 5. CONTENT (100 questions: GreenLight Power, GO Power Solutions, GEMCOR)
 // ==========================================
-// answer: 0 = A, 1 = B, 2 = C, 3 = D
+// answer: 0 = A, 1 = B, 2 = C, 3 = D   |   t = optional seconds for harder questions (default QUESTION_TIME)
 const QUESTIONS = [
     { q: "Which of the following services does Greenlight Power provide?", options: ["Automotive Repair and Manufacturing", "Plumbing and Interior Design", "Furniture Design and Installation", "Electrical Works, Equipment Supply, and Preventive Maintenance"], answer: 3 },
     { q: "What is Greenlight Power's official tagline?", options: ["Energy for Everyone", "Power to Go Beyond", "Building a Brighter Tomorrow", "Your Energy, Our Future"], answer: 1 },
-    { q: "What is Greenlight Power's primary industry?", options: ["Electrical contracting and solutions", "Automotive manufacturing", "Telecommunications only", "Food processing"], answer: 0 },
-    { q: "Which of the following is an electrical service offered by Greenlight Power?", options: ["Interior painting", "Furniture assembly", "End-to-end electrical solutions", "Road construction"], answer: 2 },
+    { q: "Which of the following best describes Greenlight Power's primary industry?", options: ["Electrical equipment manufacturing and power distribution", "Electrical contracting and integrated power solutions", "Electrical engineering consultancy and system design", "Electrical equipment trading and technical maintenance services"], answer: 1, t: 22 },
+    { q: "Which of the following best describes the scope of electrical services offered by Greenlight Power?", options: ["Electrical equipment supply and delivery only", "Electrical installation and wiring works only", "End-to-end electrical solutions", "Electrical testing and preventive maintenance only"], answer: 2, t: 22 },
     { q: "Which renewable energy solution does Greenlight Power offer?", options: ["Nuclear energy", "Coal-fired generation", "Geothermal drilling", "Solar PV systems"], answer: 3 },
-    { q: "What does PV stand for in solar energy?", options: ["Power Voltage", "Photovoltaic", "Panel Verification", "Primary Voltage"], answer: 1 },
-    { q: "What does UPS stand for in electrical systems?", options: ["Uninterruptible Power Supply", "Universal Protection System", "Utility Power Switch", "Unified Power Source"], answer: 0 },
-    { q: "What is the main function of a transformer?", options: ["Store electrical energy", "Generate electricity", "Change voltage levels", "Measure electrical resistance"], answer: 2 },
+    { q: "A three-phase electrical system operates at 400 V and draws 100 A at a power factor of 0.80. What is the approximate real power consumption?", options: ["69.3 kW", "55.4 kW", "80.0 kW", "40.0 kW"], answer: 1, t: 45 },
+    { q: "A facility has an active power demand of 150 kW at a power factor of 0.75. What is its apparent power demand?", options: ["112.5 kVA", "150 kVA", "175 kVA", "200 kVA"], answer: 3, t: 45 },
+    { q: "During a short-circuit study, the calculated available fault current exceeds the interrupting rating of an existing circuit breaker. What is the most appropriate corrective action?", options: ["Increase the breaker trip setting without further evaluation", "Replace the breaker with one having an adequate interrupting rating, or implement another properly engineered solution", "Reduce the circuit breaker's physical dimensions", "Remove the protective device to avoid nuisance tripping"], answer: 1, t: 30 },
     { q: "Which device protects electrical circuits against overloads and short circuits?", options: ["Cable tray", "Capacitor", "Light switch", "Circuit breaker"], answer: 3 },
     { q: "What does PPE stand for?", options: ["Power Protection Equipment", "Personal Protective Equipment", "Professional Power Engineering", "Primary Protection Element"], answer: 1 },
     { q: "What is the main purpose of preventive maintenance?", options: ["Detect potential equipment problems before failure", "Increase energy consumption", "Replace equipment every month", "Eliminate the need for inspections"], answer: 0 },
     { q: "What does IR stand for in IR thermography?", options: ["Internal Resistance", "Input Relay", "Infrared", "Insulation Rating"], answer: 2 },
     { q: "Which instrument is used to identify abnormal heating in electrical equipment?", options: ["Voltmeter", "Tape measure", "Pressure gauge", "Thermal imaging camera"], answer: 3 },
-    { q: "What does LV stand for in electrical engineering?", options: ["Large Voltage", "Low Voltage", "Light Variation", "Load Verification"], answer: 1 },
-    { q: "What does MV stand for in electrical engineering?", options: ["Medium Voltage", "Maximum Value", "Motor Voltage", "Main Variation"], answer: 0 },
-    { q: "What is the primary purpose of a cable tray?", options: ["Generate electricity", "Store electrical energy", "Support and organize electrical cables", "Measure voltage"], answer: 2 },
+    { q: "A balanced three-phase load draws 50 A at 400 V with a power factor of 0.90. What is the approximate real power?", options: ["31.2 kW", "20.8 kW", "45.0 kW", "36.0 kW"], answer: 0, t: 45 },
+    { q: "A facility operates at 200 kW with a power factor of 0.80. Approximately how much reactive power compensation is required to improve the power factor to 0.95?", options: ["50 kVAR", "65 kVAR", "84 kVAR", "120 kVAR"], answer: 2, t: 45 },
+    { q: "What is the primary purpose of an arc-flash study in an electrical facility?", options: ["Calculate the monthly electricity consumption", "Determine the color coding of electrical busbars", "Measure the insulation resistance of cables", "Evaluate potential incident energy and establish appropriate electrical safety measures"], answer: 3, t: 22 },
     { q: "What does FDAS stand for?", options: ["Fire Distribution and Automation System", "Facility Detection and Alarm Supply", "Fire Distribution Access Switch", "Fire Detection and Alarm System"], answer: 3 },
     { q: "What is the primary purpose of electrical grounding?", options: ["Increase voltage", "Provide a path for fault current and support electrical safety", "Reduce cable size automatically", "Generate additional electrical power"], answer: 1 },
-    { q: "What energy source do solar panels use to generate electricity?", options: ["Sunlight", "Wind", "Sound", "Water pressure"], answer: 0 },
+    { q: "A solar PV system has a rated DC capacity of 100 kWp and produces an average of 400 kWh per day. What is its approximate daily specific energy yield?", options: ["2.0 kWh/kWp", "4.0 kWh/kWp", "6.0 kWh/kWp", "8.0 kWh/kWp"], answer: 1, t: 45 },
     { q: "Which of the following is an auxiliary system offered by Greenlight Power?", options: ["Hydraulic braking system", "Water filtration system", "Access control system", "Air-conditioning compressor manufacturing"], answer: 2 },
     { q: "What is the purpose of electrical testing and commissioning?", options: ["Change equipment colors", "Increase electrical consumption", "Replace all circuit breakers", "Verify that electrical systems operate as intended"], answer: 3 },
     { q: "What does XLPE stand for in electrical cables?", options: ["Extra Low Power Energy", "Cross-linked Polyethylene", "External Line Protection Equipment", "Extended Load Power Element"], answer: 1 },
@@ -598,30 +661,30 @@ const QUESTIONS = [
     { q: "Why is proper electrical cable sizing important?", options: ["To make electrical systems look organized only", "To eliminate protective devices", "To increase energy consumption", "To safely carry the required current"], answer: 3 },
     { q: "What is the purpose of a protective relay?", options: ["Generate additional voltage", "Detect abnormal electrical conditions and initiate protection", "Store electrical energy", "Replace transformers"], answer: 1 },
     { q: "What does a single-line diagram represent?", options: ["A simplified electrical distribution system", "A building's interior layout", "A company's organizational structure", "A mechanical piping arrangement"], answer: 0 },
-    { q: "What is the standard electrical frequency in the Philippines?", options: ["40 Hz", "50 Hz", "60 Hz", "100 Hz"], answer: 2 },
-    { q: "What is the unit of electrical resistance?", options: ["Volt", "Watt", "Ampere", "Ohm"], answer: 3 },
+    { q: "A three-phase transformer is rated at 500 kVA with a secondary voltage of 400 V. What is its approximate rated secondary line current?", options: ["500 A", "577 A", "722 A", "866 A"], answer: 2, t: 45 },
+    { q: "A transformer has a primary voltage of 13,200 V and a secondary voltage of 480 V. What is its approximate voltage transformation ratio?", options: ["15:1", "27.5:1", "30:1", "36:1"], answer: 1, t: 45 },
     { q: "Which instrument measures electrical current?", options: ["Voltmeter", "Ammeter", "Thermometer", "Megohmmeter"], answer: 1 },
-    { q: "What is the SI unit of electrical power?", options: ["Watt", "Ohm", "Ampere", "Hertz"], answer: 0 },
+    { q: "A 1,000 kVA transformer has an impedance of 5%. Assuming a stiff upstream source, what is its approximate maximum symmetrical short-circuit current at its 400 V secondary terminals?", options: ["14.4 kA", "20.0 kA", "25.0 kA", "28.9 kA"], answer: 3, t: 45 },
     { q: "Which law describes the relationship between voltage, current, and resistance?", options: ["Newton's Law", "Pascal's Law", "Ohm's Law", "Boyle's Law"], answer: 2 },
     { q: "Which formula represents Ohm's Law?", options: ["P = VI", "F = ma", "E = mc²", "V = IR"], answer: 3 },
-    { q: "What does AC stand for in electricity?", options: ["Automatic Circuit", "Alternating Current", "Active Connection", "Auxiliary Control"], answer: 1 },
-    { q: "What does DC stand for in electricity?", options: ["Direct Current", "Dual Circuit", "Distribution Cable", "Digital Control"], answer: 0 },
+    { q: "A circuit breaker has an interrupting capacity of 25 kA, but the calculated available fault current at its installation point is 35 k", options: ["What is the primary concern? A. The breaker may be unable to safely interrupt the available fault current", "The breaker will automatically increase its interrupting capacity", "The breaker will operate normally because its rated current is unaffected", "The breaker will reduce the available fault current to 25 kA"], answer: 0, t: 30 },
+    { q: "In a power distribution system, what is the primary objective of selective coordination between protective devices?", options: ["Ensure all circuit breakers trip simultaneously", "Increase the electrical system's operating voltage", "Allow the protective device closest to the fault to operate while minimizing unnecessary outages", "Eliminate the need for protective relays"], answer: 2, t: 30 },
     { q: "Which electrical component stores energy in an electric field?", options: ["Resistor", "Circuit breaker", "Capacitor", "Fuse"], answer: 2 },
     { q: "What is the primary purpose of a fuse?", options: ["Generate electricity", "Increase voltage", "Store electrical energy", "Interrupt excessive current"], answer: 3 },
     { q: "According to Ohm's Law, what happens to current when resistance increases while voltage remains constant?", options: ["Current increases", "Current decreases", "Current remains the same", "Current becomes zero regardless of resistance"], answer: 1 },
     { q: "What is the primary function of a backup generator?", options: ["Supply electricity when the primary source is unavailable", "Reduce lighting brightness", "Replace all electrical panels", "Eliminate equipment maintenance"], answer: 0 },
     { q: "Which solar PV system can operate independently of the utility grid?", options: ["Grid-tied system without storage", "Net-metered system only", "Off-grid system", "Utility-only system"], answer: 2 },
     { q: "Why is electrical load assessment important?", options: ["To determine building paint colors", "To measure equipment height only", "To calculate office attendance", "To determine whether electrical capacity meets demand"], answer: 3 },
-    { q: "Which statement best describes Greenlight Power's services?", options: ["Lighting installation only", "Equipment supply, electrical installation, testing, commissioning, and maintenance", "Electrical equipment painting only", "Automotive electrical repair only"], answer: 1 },
+    { q: "Which statement best describes Greenlight Power's services?", options: ["Lighting installation only", "Equipment supply, electrical installation, testing, commissioning, and maintenance", "Electrical equipment painting only", "Automotive electrical repair only"], answer: 1, t: 22 },
     { q: "What does GEMCOR stand for?", options: ["General Electrical Maintenance Corporation", "Global Energy Management Corporation", "Greenmetal Electric Manufacturing Corporation", "Green Energy Mechanical Company"], answer: 2 },
     { q: "What is GEMCOR's primary business?", options: ["Electrical panel fabrication and manufacturing", "Automotive manufacturing", "Electronics retail", "Furniture production"], answer: 0 },
-    { q: "What does LVSG stand for?", options: ["Large Voltage Supply Generator", "Line Verification Safety Ground", "Low Voltage Supply Gauge", "Low Voltage Switchgear"], answer: 3 },
+    { q: "A motor repeatedly trips its overload relay during normal operation. Which is the most appropriate initial troubleshooting approach?", options: ["Check motor current, mechanical loading, and overload relay settings", "Increase the overload setting without checking the motor", "Bypass the overload relay permanently", "Replace the motor immediately without inspection"], answer: 0, t: 30 },
     { q: "What does MCC stand for?", options: ["Main Cable Connector", "Motor Control Center", "Mechanical Current Control", "Main Circuit Capacitor"], answer: 1 },
     { q: "What does MTS stand for?", options: ["Main Testing Source", "Motor Timing System", "Manual Transfer Switch", "Mechanical Transformer Supply"], answer: 2 },
     { q: "Which of the following products is fabricated by GEMCOR?", options: ["Panelboards", "Air-conditioning units", "Computer processors", "Automotive batteries"], answer: 0 },
     { q: "What is the main function of a panelboard?", options: ["Generate electricity", "Store electrical energy", "Increase electrical frequency", "Distribute and protect electrical circuits"], answer: 3 },
-    { q: "What does VCB stand for?", options: ["Voltage Control Board", "Vacuum Circuit Breaker", "Variable Current Busbar", "Voltage Capacity Breaker"], answer: 1 },
-    { q: "What does LBS stand for in switchgear?", options: ["Line Battery System", "Low Busbar Supply", "Load Break Switch", "Local Breaker System"], answer: 2 },
+    { q: "A three-phase induction motor experiences a sudden loss of one supply phase while operating. What is the most likely consequence?", options: ["The motor automatically becomes more efficient", "The motor may experience increased current in the remaining phases and overheating", "The motor will operate at twice its rated speed", "The motor's power factor will automatically become unity"], answer: 1, t: 30 },
+    { q: "What is the primary advantage of using a Variable Frequency Drive (VFD) for a centrifugal pump application?", options: ["It eliminates the need for motor protection", "It increases the supply frequency permanently", "It converts the motor into a DC generator", "It allows motor speed control and can reduce energy consumption under variable-flow conditions"], answer: 3, t: 30 },
     { q: "What is the primary purpose of switchgear?", options: ["Control, protect, and isolate electrical equipment", "Store electricity", "Cool electrical motors", "Produce electricity"], answer: 0 },
     { q: "Which of the following electrical equipment is commonly used to improve power factor?", options: ["Circuit Breaker", "Cable Tray", "Capacitor Bank", "Transformer"], answer: 2 },
     { q: "Which electrical equipment is commonly used to control multiple motors?", options: ["Lighting panelboard", "Motor Control Center", "Distribution transformer", "Cable tray"], answer: 1 },
@@ -645,13 +708,13 @@ const QUESTIONS = [
     { q: "Which of the following commonly causes overheating inside electrical panels?", options: ["Loose electrical connections", "Properly tightened terminals", "Adequate ventilation", "Correct cable sizing"], answer: 0 },
     { q: "What is the primary purpose of a control panel?", options: ["Store fuel", "Produce electrical cables", "Generate electricity", "Manage and control equipment operations"], answer: 3 },
     { q: "What does an IP rating indicate for electrical enclosures?", options: ["Electrical power consumption", "Protection against solid objects and water ingress", "Panelboard installation cost", "Electrical frequency"], answer: 1 },
-    { q: "Why is selecting the appropriate electrical enclosure important?", options: ["All enclosures have identical protection levels", "Enclosures automatically eliminate maintenance", "Different installation environments require appropriate protection", "Enclosures determine the electricity price"], answer: 2 },
+    { q: "Why is selecting the appropriate electrical enclosure important?", options: ["All enclosures have identical protection levels", "Enclosures automatically eliminate maintenance", "Different installation environments require appropriate protection", "Enclosures determine the electricity price"], answer: 2, t: 22 },
     { q: "What is the primary function of a motor starter?", options: ["Start and stop an electric motor through a control circuit", "Generate electricity", "Manufacture motor windings", "Store electrical energy"], answer: 0 },
     { q: "What does motor overload protection help prevent?", options: ["Changes in room temperature", "All possible electrical interruptions", "Changes in motor paint color", "Motor damage caused by sustained excessive current"], answer: 3 },
     { q: "Which electrical device is commonly used to switch motor circuits remotely?", options: ["Capacitor", "Contactor", "Voltmeter", "Transformer oil"], answer: 1 },
     { q: "What is the primary function of a thermal overload relay?", options: ["Increase motor speed", "Generate electricity", "Protect motors against sustained overload conditions", "Change the electrical frequency"], answer: 2 },
-    { q: "What does MCCB stand for?", options: ["Molded Case Circuit Breaker", "Main Current Control Board", "Motor Control Circuit Busbar", "Manual Circuit Connection Box"], answer: 0 },
-    { q: "What does ACB stand for in switchgear?", options: ["Automatic Cable Board", "Auxiliary Control Breaker", "Alternating Current Busbar", "Air Circuit Breaker"], answer: 3 },
+    { q: "In a star-delta motor starting arrangement, what is the approximate relationship between starting line current in star connection and direct-on-line starting current, assuming the same motor and supply voltage?", options: ["Approximately one-third", "Approximately one-half", "Approximately two-thirds", "Approximately equal"], answer: 0, t: 22 },
+    { q: "In a grid-tied solar PV system without battery storage or an independent backup power configuration, what normally happens during a utility power outage?", options: ["The solar inverter continues supplying the utility grid", "The solar panels automatically increase their output voltage", "The inverter stops exporting power to the grid due to anti-islanding protection", "The system automatically operates as an off-grid system"], answer: 2, t: 30 },
     { q: "What does CT stand for in electrical metering and protection?", options: ["Circuit Terminal", "Current Transformer", "Control Timer", "Cable Tester"], answer: 1 },
     { q: "What is the function of a current transformer?", options: ["Store electricity", "Increase electrical frequency", "Provide a scaled current signal for measurement or protection", "Generate electricity"], answer: 2 },
     { q: "What does kVA stand for?", options: ["Kilovolt-Ampere", "Kilowatt Adjustment", "Kinetic Voltage Amplifier", "Kilovolt Amplification"], answer: 0 },
@@ -660,9 +723,9 @@ const QUESTIONS = [
     { q: "What is the purpose of electrical busbar insulation?", options: ["Increase electrical resistance intentionally", "Replace circuit breakers", "Reduce the risk of accidental contact and electrical faults", "Generate additional electricity"], answer: 2 },
     { q: "What is a common reason for retrofitting an electrical panelboard?", options: ["Upgrade outdated or inadequate electrical components", "Change office furniture", "Increase building height", "Eliminate protective devices"], answer: 0 },
     { q: "What is the main difference between ATS and MTS?", options: ["Both operate automatically", "MTS operates without human intervention", "ATS works only with solar energy", "ATS transfers automatically, while MTS requires manual operation"], answer: 3 },
-    { q: "Why is load balancing important in three-phase electrical systems?", options: ["To eliminate electricity bills", "To reduce current imbalance and improve system performance", "To increase electrical resistance", "To remove the need for circuit protection"], answer: 1 },
+    { q: "Why is load balancing important in three-phase electrical systems?", options: ["To eliminate electricity bills", "To reduce current imbalance and improve system performance", "To increase electrical resistance", "To remove the need for circuit protection"], answer: 1, t: 22 },
     { q: "What is an important consideration when designing a Motor Control Center?", options: ["Office furniture", "Building paint colors", "Motor loads, starting methods, and protection requirements", "Parking space availability"], answer: 2 },
-    { q: "Which statement best describes GEMCOR's role in electrical projects?", options: ["Fabricating and supplying electrical distribution and control equipment", "Manufacturing automotive engines", "Providing food processing equipment", "Developing telecommunications applications only"], answer: 0 }
+    { q: "Which statement best describes GEMCOR's role in electrical projects?", options: ["Fabricating and supplying electrical distribution and control equipment", "Manufacturing automotive engines", "Providing food processing equipment", "Developing telecommunications applications only"], answer: 0, t: 22 }
 ];
 
 // Folder where the giveaway pictures are hosted (same GitHub repo as the logo)
@@ -752,10 +815,18 @@ holdBtn.addEventListener('contextmenu', e => e.preventDefault());
 // ==========================================
 const container = $('main-container');
 const screens = ['attract-screen', 'game-screen', 'result-screen', 'giveaway-screen'];
+// Auto-return to the attract animation when nobody touches the screen (ms)
+const IDLE_RESET = { lose: 10000, win: 45000, claimed: 20000, pick: 60000 };
+let idleTimer = null, idleMs = 0, resultKind = 'lose';
+function armIdle() { clearTimeout(idleTimer); if (idleMs) idleTimer = setTimeout(resetGame, idleMs); }
 function showScreen(id) {
     screens.forEach(s => $(s).classList.toggle('hidden', s !== id));
     container.classList.toggle('compact', id !== 'attract-screen');   // smaller logo strip during game
+    stage.classList.toggle('attract-on', id === 'attract-screen');    // attract animations only while idle
+    idleMs = id === 'result-screen' ? (IDLE_RESET[resultKind] || 0) : (id === 'giveaway-screen' ? IDLE_RESET.pick : 0);
+    armIdle();
 }
+window.addEventListener('pointerdown', armIdle, true);
 
 let deck = [], currentQ = null, timeLeft = QUESTION_TIME, timerInterval = null, answered = false;
 
@@ -768,7 +839,9 @@ function startGame() {
     holdBtn.classList.remove('scanning', 'success');
     currentQ = nextQuestion();
     answered = false;
-    timeLeft = QUESTION_TIME;
+    const qTime = currentQ.t || QUESTION_TIME;
+    timeLeft = qTime;
+    $('game-screen').classList.toggle('dense', currentQ.q.length + currentQ.options.join('').length > 230);
 
     $('question-text').textContent = currentQ.q;
     const optBox = $('options-container');
@@ -789,10 +862,10 @@ function startGame() {
     showScreen('game-screen');
 
     clearInterval(timerInterval);
-    let lastWhole = QUESTION_TIME;
+    let lastWhole = qTime;
     timerInterval = setInterval(() => {
         timeLeft -= 0.1;
-        const pct = Math.max(timeLeft / QUESTION_TIME, 0) * 100;
+        const pct = Math.max(timeLeft / qTime, 0) * 100;
         bar.style.width = pct + '%';
         if (pct < 30) bar.style.backgroundColor = 'var(--danger)';
         else if (pct < 60) bar.style.backgroundColor = 'var(--warning)';
@@ -817,6 +890,7 @@ function selectAnswer(index, btn) {
 }
 function handleResult(type) {
     answered = true;
+    resultKind = type === 'correct' ? (totalStock() > 0 ? 'win' : 'claimed') : 'lose';
     const title = $('result-text'), sub = $('result-subtext');
     const claimBtn = $('claim-btn'), nextBtn = $('next-btn');
     title.className = '';
@@ -908,6 +982,7 @@ function claimGiveaway(id) {
 
     $('claim-btn').style.display = 'none';
     $('next-btn').textContent = 'DONE';
+    resultKind = 'claimed';
     showScreen('result-screen');
 }
 
@@ -922,6 +997,7 @@ function resetGame() {
     setRing(0);
     $('prize-preview').innerHTML = '';
     holdDone = false; answered = false;
+    renderShowcase();
     showScreen('attract-screen');
 }
 window.addEventListener('keydown', e => {
@@ -1000,13 +1076,7 @@ function resetInventoryUI() {
     if (confirm('Reset inventory to default items and counts?')) { resetInventory(); renderInventoryEditor(); }
 }
 
-// 3D parallax tilt that follows the pointer
-window.addEventListener('pointermove', e => {
-    const pt = toStage(e.clientX, e.clientY);
-    const x = pt.x / stageW() - 0.5, y = pt.y / stageH() - 0.5;
-    container.style.setProperty('--ry', (x * 10) + 'deg');
-    container.style.setProperty('--rx', (-y * 8) + 'deg');
-});
+// (3D mouse-tilt removed on purpose: it shifted click/touch positions on TVs)
 
 // Live HUD readout
 const hudBr = $('hud-br');
@@ -1020,6 +1090,96 @@ document.querySelectorAll('img[data-logo]').forEach(im => {
     im.onerror = () => { const s = document.createElement('span'); s.className = 'fallback'; s.textContent = im.alt; im.replaceWith(s); };
     im.src = imgUrl(im.dataset.logo);
 });
+
+// ==========================================
+// 11. ATTRACT MODE (runs while nobody is playing)
+// ==========================================
+function renderShowcase() {
+    const box = $('prize-showcase');
+    box.innerHTML = '';
+    inventory.filter(g => g.img && g.stock > 0).slice(0, 4).forEach((g, i) => {
+        const d = document.createElement('div');
+        d.className = 'pz'; d.style.setProperty('--i', i);
+        d.innerHTML = '<div class="pz-card"><span class="pz-badge">WIN!</span><img class="pz-img" alt=""><span class="pz-name"></span></div>';
+        const im = d.querySelector('img');
+        im.src = imgUrl(g.img); im.alt = g.name; im.onerror = () => d.remove();
+        d.querySelector('.pz-name').textContent = g.name;
+        box.appendChild(d);
+    });
+    layoutShowcase();
+}
+// Wide screen: prizes float in the side margins. Portrait: a row under the content. Otherwise hidden.
+function layoutShowcase() {
+    const box = $('prize-showcase'), items = [...box.children];
+    const w = stageW(), h = stageH(), portrait = h > w * 1.1;
+    const cw = Math.min(portrait ? 1000 : 900, w * (portrait ? 0.94 : 0.9));
+    const m = (w - cw) / 2, n = items.length;
+    box.style.display = 'block';
+    if (!n) { box.style.display = 'none'; return; }
+    if (m >= 150) {
+        const pzw = Math.min(210, m - 36);
+        box.style.setProperty('--pzw', pzw + 'px');
+        items.forEach((el, i) => {
+            const cx = i < 2 ? m / 2 : w - m / 2;
+            el.style.left = (cx - pzw / 2) + 'px';
+            el.style.top = (i % 2 === 0 ? h * 0.2 : h * 0.55) + 'px';
+        });
+    } else if (portrait) {
+        const gap = 18, pzw = Math.min(200, (w * 0.94 - (n - 1) * gap) / n);
+        box.style.setProperty('--pzw', pzw + 'px');
+        const total = n * pzw + (n - 1) * gap;
+        items.forEach((el, i) => {
+            el.style.left = ((w - total) / 2 + i * (pzw + gap)) + 'px';
+            el.style.top = (h - 36 - pzw - 70 - h * 0.03) + 'px';
+        });
+    } else {
+        box.style.display = 'none';
+    }
+}
+// Rotating call-to-action messages
+const WIN_MSGS = [
+    '★ Answer the question correctly to <b>win prizes!</b> ★',
+    '★ <b>Free giveaways</b> for every winner! ★',
+    '★ Test your <b>electrical knowledge</b>! ★',
+    '★ <b>Press &amp; hold</b> the hand to start! ★'
+];
+let winIdx = 0;
+setInterval(() => {
+    if ($('attract-screen').classList.contains('hidden')) return;
+    winIdx = (winIdx + 1) % WIN_MSGS.length;
+    const el = $('win-msg');
+    el.style.animation = 'none'; void el.offsetWidth; el.style.animation = '';
+    el.innerHTML = WIN_MSGS[winIdx];
+}, 3200);
+// Scrolling ticker text
+(function () {
+    const msgs = ['PRESS IT TO WIN IT', 'ANSWER CORRECTLY &amp; WIN FREE GIVEAWAYS', 'GEMCOR × GREENLIGHT POWER × GO POWER SOLUTIONS', 'VISIT OUR BOOTH'];
+    const one = msgs.map(t => '<span>★ ' + t + '</span>').join('');
+    $('ticker-track').innerHTML = one + one + one + one;
+})();
+// Big burst every few seconds while idle: flash + giant text + confetti + particle shock-wave
+const BURST_MSGS = ['WIN PRIZES!', 'PRESS IT TO WIN IT!', 'FREE GIVEAWAYS!', 'ANSWER & WIN!'];
+let burstIdx = 0;
+function attractBurst() {
+    if ($('attract-screen').classList.contains('hidden') || holdBtn.classList.contains('scanning')) return;
+    const b = $('burst');
+    b.querySelector('.burst-text').textContent = BURST_MSGS[burstIdx++ % BURST_MSGS.length];
+    b.classList.remove('go'); void b.offsetWidth; b.classList.add('go');
+    startConfetti();
+    const cx = stageW() / 2, cy = stageH() / 2;
+    pulses.push(new Pulse(cx, cy));
+    setTimeout(() => pulses.push(new Pulse(cx, cy)), 150);
+    setTimeout(() => pulses.push(new Pulse(cx, cy)), 300);
+    particles.forEach(p => { const dx = p.x - cx, dy = p.y - cy, d = Math.hypot(dx, dy) || 1; p.vx += dx / d * 3; p.vy += dy / d * 3; });
+    playAttractSound();
+}
+setInterval(attractBurst, 14000);
+setTimeout(attractBurst, 2500);   // first burst right after the page loads
+
+// Start music as early as the browser allows (first touch/click, or immediately in kiosk mode)
+['pointerdown', 'keydown', 'touchend'].forEach(ev => window.addEventListener(ev, () => { if (!bgm || bgm.paused || !audioCtx) initAudio(); }, true));
+startEnergeticMusic();
+renderShowcase();
 
 // Restore rotation: ?rotate=90 in the URL wins, otherwise the saved setting
 (function () {
