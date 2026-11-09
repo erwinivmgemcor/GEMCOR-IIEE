@@ -676,7 +676,7 @@ const MUSIC_FILE = 'bgm.mp3';
 const MUSIC_GAIN = 0.5;   // music loudness relative to the AUDIO LEVEL slider
 let bgm = null;
 function startEnergeticMusic() {
-    if (!bgm) { bgm = new Audio(imgUrl(MUSIC_FILE)); bgm.loop = true; bgm.preload = 'auto'; }
+    if (!bgm) { bgm = new Audio(imgUrl(MUSIC_FILE)); bgm.loop = true; bgm.preload = 'auto'; bgm.addEventListener('error', () => console.warn('bgm.mp3 failed to load')); }
     bgm.volume = Math.min(1, masterVolume * MUSIC_GAIN);
     if (bgm.paused) { const p = bgm.play(); if (p && p.catch) p.catch(() => {}); }
 }
@@ -1209,9 +1209,10 @@ setInterval(attractBurst, 14000);
 setTimeout(attractBurst, 2500);   // first burst right after the page loads
 
 // Start music as early as the browser allows (first touch/click, or immediately in kiosk mode)
-['pointerdown', 'keydown', 'touchend'].forEach(ev => window.addEventListener(ev, () => { if (!bgm || bgm.paused || !audioCtx) initAudio(); }, true));
+let gestureDone = false;   // after the first tap the 'tap for sound' hint never comes back
+['pointerdown', 'keydown', 'touchend'].forEach(ev => window.addEventListener(ev, () => { gestureDone = true; if (!bgm || bgm.paused || !audioCtx) initAudio(); }, true));
 startEnergeticMusic();
-setInterval(() => stage.classList.toggle('need-sound', !bgm || bgm.paused), 500);
+setInterval(() => stage.classList.toggle('need-sound', !gestureDone && (!bgm || bgm.paused)), 500);
 
 // Restore rotation: ?rotate=90 in the URL wins, otherwise the saved setting
 (function () {
