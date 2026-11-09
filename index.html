@@ -234,9 +234,6 @@ h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.8rem,3.5vw,2.5rem);color:
 .ticker-track span{font-family:'Orbitron',sans-serif;font-weight:700;font-size:.95rem;letter-spacing:3px;color:#fff;text-shadow:0 0 8px rgba(0,0,0,.8);padding-right:60px}
 @keyframes tickerMove{to{transform:translateX(-50%)}}
 
-/* tap-for-sound hint (shown only while the browser is still blocking the music) */
-#sound-hint{position:absolute;left:50%;bottom:52px;transform:translateX(-50%);z-index:14;pointer-events:none;opacity:0;transition:opacity .4s;padding:8px 20px;border-radius:30px;border:1px solid var(--neon-green);background:rgba(2,6,10,.8);color:#fff;font-family:'Share Tech Mono',monospace;font-size:.95rem;letter-spacing:2px;white-space:nowrap;box-shadow:0 0 20px rgba(57,255,20,.5);animation:guideBlink 1.4s ease-in-out infinite}
-#stage.attract-on.need-sound #sound-hint{opacity:1}
 /* big periodic "attention burst" */
 #burst{position:absolute;inset:0;z-index:13;pointer-events:none;display:flex;align-items:center;justify-content:center;opacity:0}
 #burst::before{content:'';position:absolute;left:50%;top:50%;width:20px;height:20px;margin:-10px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.9),rgba(0,225,255,.5) 40%,transparent 70%);opacity:0}
@@ -357,7 +354,6 @@ html.q2 .ring3d.a{box-shadow:none}
     </div>
 </div>
 
-<div id="sound-hint">🔊 TAP ANYWHERE TO TURN ON SOUND</div>
 <div id="burst"><div class="burst-text">WIN PRIZES!</div></div>
 <div class="ticker top"><div class="ticker-track" id="ticker-track-top"></div></div>
 <div class="ticker"><div class="ticker-track" id="ticker-track"></div></div>
@@ -1212,7 +1208,6 @@ setTimeout(attractBurst, 2500);   // first burst right after the page loads
 let gestureDone = false;   // after the first tap the 'tap for sound' hint never comes back
 ['pointerdown', 'keydown', 'touchend'].forEach(ev => window.addEventListener(ev, () => { gestureDone = true; if (!bgm || bgm.paused || !audioCtx) initAudio(); }, true));
 startEnergeticMusic();
-setInterval(() => stage.classList.toggle('need-sound', !gestureDone && (!bgm || bgm.paused)), 500);
 
 // Restore rotation: ?rotate=90 in the URL wins, otherwise the saved setting
 (function () {
