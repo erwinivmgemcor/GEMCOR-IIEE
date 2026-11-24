@@ -46,7 +46,7 @@ input:checked+.slider:before{transform:translateX(24px)}
 .close-btn:hover{background:var(--neon-blue);color:#000}
 
 /* MAIN CONTAINER */
-.container{position:relative;z-index:10;width:90%;max-width:900px;height:92%;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;border:1px solid rgba(0,225,255,.1);box-shadow:inset 0 0 60px rgba(0,85,255,.05);border-radius:5px;padding:40px;background:rgba(2,6,10,.6);box-sizing:border-box;pointer-events:none;transition:all .2s;transform:perspective(1400px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transform-style:preserve-3d}
+.container{position:relative;z-index:10;width:90%;max-width:900px;height:92%;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;border:1px solid rgba(0,225,255,.1);box-shadow:inset 0 0 60px rgba(0,85,255,.05);border-radius:5px;padding:40px;background:rgba(2,6,10,.6);box-sizing:border-box;pointer-events:none;transition:background-color .2s,border-color .2s,box-shadow .2s}
 .container::before,.container::after{content:'';position:absolute;width:30px;height:30px;border:2px solid var(--gemcor-blue);pointer-events:none}
 .container::before{top:10px;left:10px;border-right:none;border-bottom:none}
 .container::after{bottom:10px;right:10px;border-left:none;border-top:none}
@@ -115,16 +115,16 @@ h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.8rem,3.5vw,2.5rem);color:
 .panel-glow{position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none;box-shadow:inset 0 0 80px rgba(0,225,255,.1),0 0 70px rgba(0,225,255,.35);opacity:.3;will-change:opacity;animation:glowPulse 5s ease-in-out infinite}
 @keyframes glowPulse{0%,100%{opacity:.3}50%{opacity:1}}
 @keyframes panelGlow{0%,100%{box-shadow:inset 0 0 60px rgba(0,85,255,.05),0 0 30px rgba(0,85,255,.15)}50%{box-shadow:inset 0 0 80px rgba(0,225,255,.1),0 0 70px rgba(0,225,255,.35)}}
-#attract-screen{transform-style:preserve-3d}
-#attract-screen h1{transform:translateZ(50px);animation:titleGlitch 5s infinite}
+#attract-screen{}
+#attract-screen h1{animation:titleGlitch 5s infinite}
 @keyframes titleGlitch{0%,91%,100%{text-shadow:0 0 20px var(--gemcor-blue)}93%{text-shadow:3px 0 var(--danger),-3px 0 var(--neon-blue)}96%{text-shadow:-3px 0 var(--danger),3px 0 var(--neon-blue)}}
-.scan-guide{transform:translateZ(30px)}
+
 .ring3d{position:absolute;width:112%;height:112%;border-radius:50%;border:2px solid transparent;pointer-events:none}
 .ring3d.a{border-top-color:var(--neon-green);border-bottom-color:var(--neon-blue);box-shadow:0 0 15px rgba(0,225,255,.3);animation:spin3dA 6s linear infinite}
 .ring3d.b{width:94%;height:94%;border-left-color:var(--gemcor-blue);border-right-color:var(--neon-green);animation:spin3dB 8s linear infinite}
 @keyframes spin3dA{from{transform:rotateX(70deg) rotateZ(0)}to{transform:rotateX(70deg) rotateZ(360deg)}}
 @keyframes spin3dB{from{transform:rotateY(70deg) rotateZ(0)}to{transform:rotateY(70deg) rotateZ(-360deg)}}
-.hud-data{position:absolute;font-family:'Share Tech Mono',monospace;font-size:.75rem;color:var(--neon-blue);opacity:.7;letter-spacing:1px;line-height:1.5;pointer-events:none;transform:translateZ(20px)}
+.hud-data{position:absolute;font-family:'Share Tech Mono',monospace;font-size:.75rem;color:var(--neon-blue);opacity:.7;letter-spacing:1px;line-height:1.5;pointer-events:none}
 .hud-data.tl{top:18px;left:46px;text-align:left;font-size:.68rem;line-height:1.3}
 .hud-data.br{bottom:24px;right:50px;text-align:right}
 
@@ -150,7 +150,7 @@ h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.8rem,3.5vw,2.5rem);color:
 @keyframes guideBlink{0%,100%{opacity:1}50%{opacity:.35}}
 
 /* HOLD BUTTON */
-.hold-btn-container{position:relative;width:clamp(180px,19vw,250px);height:clamp(180px,19vw,250px);margin:22px auto 0;display:flex;justify-content:center;align-items:center;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:none;perspective:700px;transform:translateZ(70px)}
+.hold-btn-container{position:relative;width:clamp(180px,19vw,250px);height:clamp(180px,19vw,250px);margin:22px auto 0;display:flex;justify-content:center;align-items:center;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:none;perspective:700px}
 .hud-ring-outer{position:absolute;width:100%;height:100%;border:1px dashed rgba(0,225,255,.3);border-radius:50%;animation:rotateHUD 20s linear infinite;pointer-events:none}
 .hud-ring-inner{position:absolute;width:82%;height:82%;border:2px solid rgba(0,85,255,.2);border-radius:50%;border-top-color:var(--neon-blue);border-bottom-color:var(--neon-blue);pointer-events:none}
 @keyframes rotateHUD{100%{transform:rotate(360deg)}}
@@ -169,10 +169,10 @@ h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.8rem,3.5vw,2.5rem);color:
 /* GAME UI */
 #question-text{font-family:'Rajdhani',sans-serif;font-size:clamp(1.8rem,2.5vw,2.5rem);margin-bottom:30px;font-weight:600;text-shadow:var(--text-glow)}
 .timer-container{width:100%;height:8px;background:#111;overflow:hidden;margin-bottom:40px;position:relative;border-radius:4px}
-.timer-bar{width:100%;height:100%;background:var(--neon-blue);transition:width .1s linear,background-color .3s;box-shadow:0 0 10px var(--neon-blue)}
+.timer-bar{width:100%;height:100%;background:var(--neon-blue);transform-origin:0 50%;will-change:transform;transition:transform .1s linear,background-color .3s}
 .options-grid{display:grid;grid-template-columns:1fr;gap:15px;width:100%}
-.option-btn{background:rgba(0,85,255,.05);border:1px solid rgba(0,225,255,.2);color:#eee;padding:20px 25px;font-family:'Rajdhani',sans-serif;font-size:clamp(1.2rem,1.5vw,1.6rem);font-weight:500;border-radius:5px;cursor:pointer;transition:all .2s;text-align:left;display:flex;align-items:center}
-.option-btn:hover{background:rgba(0,85,255,.2);border-color:var(--neon-blue);transform:translateX(5px)}
+.option-btn{background:rgba(0,85,255,.05);border:1px solid rgba(0,225,255,.2);color:#eee;padding:20px 25px;font-family:'Rajdhani',sans-serif;font-size:clamp(1.2rem,1.5vw,1.6rem);font-weight:500;border-radius:5px;cursor:pointer;transition:background-color .12s,border-color .12s;text-align:left;display:flex;align-items:center;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+@media (hover:hover){.option-btn:hover{background:rgba(0,85,255,.2);border-color:var(--neon-blue)}}
 .option-btn span{font-family:'Share Tech Mono',monospace;color:var(--neon-blue);margin-right:20px;font-size:1em;border:1px solid rgba(0,225,255,.3);padding:5px 10px;border-radius:3px}
 .option-btn:active{transform:scale(.99);background:var(--gemcor-blue)}
 .flash-correct{background:rgba(0,255,136,.2)!important;border-color:var(--neon-green)!important;color:var(--neon-green)!important;box-shadow:0 0 30px rgba(0,255,136,.3)!important}
@@ -206,7 +206,7 @@ h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.8rem,3.5vw,2.5rem);color:
 #attract-screen h1.hero-title{font-size:clamp(2rem,4.6vw,3.7rem);letter-spacing:5px;line-height:1.05;margin:0 0 6px;background:linear-gradient(90deg,#00e1ff,#39ff14,#ffd000,#ff6a2b,#00e1ff);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;text-shadow:none;animation:heroShift 5s linear infinite,heroPulse 2.2s ease-in-out infinite}
 @keyframes heroShift{to{background-position:300% 0}}
 @keyframes heroPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
-.hero-sub{font-family:'Share Tech Mono',monospace;color:var(--neon-green);letter-spacing:clamp(4px,.9vw,10px);font-size:clamp(.9rem,1.3vw,1.3rem);text-shadow:0 0 10px var(--neon-green);transform:translateZ(40px)}
+.hero-sub{font-family:'Share Tech Mono',monospace;color:var(--neon-green);letter-spacing:clamp(4px,.9vw,10px);font-size:clamp(.9rem,1.3vw,1.3rem);text-shadow:0 0 10px var(--neon-green)}
 .win-banner{min-width:min(640px,90%);box-sizing:border-box;text-align:center}
 #win-msg{display:inline-block;animation:msgIn .6s ease-out}
 @keyframes msgIn{from{opacity:0;transform:translateY(10px) scale(.96)}to{opacity:1;transform:none}}
@@ -262,6 +262,18 @@ html.q2 .portal,html.q2 .scanlines::after,html.q2 .ring3d.b{display:none!importa
 html.q2 .grid-floor,html.q2 .grid-ceiling,html.q2 .hud-ring-outer,html.q2 .panel-glow{animation:none!important}
 html.q2 #attract-screen h1,html.q2 #attract-screen h1.hero-title{animation:none!important}
 html.q2 .ring3d.a{box-shadow:none}
+
+.hold-btn-container::before{content:'';position:absolute;inset:-50px;border-radius:50%}
+/* ===== TV / LOW-END GPU PROFILE ===== */
+html.q1 .portal{animation:none;width:100vmax;height:100vmax;margin:-50vmax 0 0 -50vmax;will-change:auto;opacity:.7}
+html.q1 .grid-floor,html.q1 .grid-ceiling,html.q1 .scanlines::after,html.q1 .ring3d.b,html.q1 .hud-ring-outer,html.q1 .sonar.s3{display:none}
+html.q1 .panel-glow{animation:none;opacity:.6;will-change:auto;box-shadow:inset 0 0 60px rgba(0,225,255,.1),0 0 30px rgba(0,225,255,.3)}
+html.q1 .win-banner{animation:none!important}
+html.q1 .brand-card img,html.q1 .hand-icon,html.q1 .burst-text{filter:none!important}
+html.q1 .hand-icon{transition:none}
+html.q1 .ticker{box-shadow:none}
+html.q2 .scanlines{background:none}
+html.q2 .sonar,html.q2 .ring3d.a,html.q2 #burst::before{display:none}
 </style>
 </head>
 <body>
@@ -447,11 +459,11 @@ function triggerVibrate(pattern) { if (isVibrateEnabled && navigator.vibrate) na
 // 2. BACKGROUND CANVAS
 // ==========================================
 const canvas = document.getElementById('bg-canvas');
-const ctx = canvas.getContext('2d');
+const ctx = canvas.getContext('2d', { alpha: false });
 let width, height, particles = [], pulses = [];
 const TIERS = [
     { particles: 60, dist: 140, scale: 1,    confetti: 110, fpsCap: 0  },   // 0 full
-    { particles: 36, dist: 130, scale: 0.75, confetti: 70,  fpsCap: 0  },   // 1 lite
+    { particles: 36, dist: 130, scale: 0.75, confetti: 70,  fpsCap: 33 },   // 1 lite
     { particles: 22, dist: 120, scale: 0.5,  confetti: 40,  fpsCap: 33 }    // 2 ultra-lite (~30fps)
 ];
 let tier = 0, tierForced = false;
@@ -459,7 +471,7 @@ let tier = 0, tierForced = false;
     try {
         const q = new URLSearchParams(location.search).get('q');
         if (q !== null && ['0', '1', '2'].includes(q)) { tier = +q; tierForced = true; }
-        else tier = Math.min(2, Math.max(0, parseInt(localStorage.getItem('q_tier')) || 0));
+        else { const sv = parseInt(localStorage.getItem('q_tier')) || 0, app = !!window.Capacitor || /Android/.test(navigator.userAgent); tier = Math.min(2, Math.max(app ? 1 : 0, sv)); }
     } catch (e) {}
 })();
 let Q = TIERS[tier];
@@ -484,8 +496,9 @@ function glowSprite(color) {
 
 function initCanvas() {
     width = stageW(); height = stageH();
-    canvas.width = Math.max(1, Math.round(width * Q.scale)); canvas.height = Math.max(1, Math.round(height * Q.scale));
-    ctx.setTransform(Q.scale, 0, 0, Q.scale, 0, 0);
+    const cs = Math.min(Q.scale, Math.sqrt(420000 / Math.max(1, width * height)));   // pixel budget: weak TV GPUs
+    canvas.width = Math.max(1, Math.round(width * cs)); canvas.height = Math.max(1, Math.round(height * cs));
+    ctx.setTransform(cs, 0, 0, cs, 0, 0);
     particles = [];
     for (let i = 0; i < Q.particles; i++) particles.push(new Particle());
 }
@@ -577,7 +590,7 @@ function createPulse(e) {
     });
     triggerVibrate(20);
 }
-window.addEventListener('mousedown', createPulse); window.addEventListener('touchstart', createPulse);
+window.addEventListener('pointerdown', createPulse);   // one event per tap (was mousedown + touchstart = doubled)
 window.addEventListener('resize', initCanvas); initCanvas(); requestAnimationFrame(animateCanvas);
 
 // ==========================================
@@ -586,12 +599,13 @@ window.addEventListener('resize', initCanvas); initCanvas(); requestAnimationFra
 const fxCanvas = document.getElementById('fx-canvas');
 const fxCtx = fxCanvas.getContext('2d');
 let confetti = [], isConfettiActive = false;
-function resizeFx() { fxCanvas.width = stageW(); fxCanvas.height = stageH(); }
+let fxW = 0, fxH = 0;
+function resizeFx() { fxW = stageW(); fxH = stageH(); const s = Math.min(1, Math.sqrt(600000 / Math.max(1, fxW * fxH))); fxCanvas.width = Math.round(fxW * s); fxCanvas.height = Math.round(fxH * s); fxCtx.setTransform(s, 0, 0, s, 0, 0); }
 window.addEventListener('resize', resizeFx); resizeFx();
 
 class ConfettiPiece {
     constructor() {
-        this.x = Math.random() * fxCanvas.width; this.y = -20;
+        this.x = Math.random() * fxW; this.y = -20;
         this.size = Math.random() * 8 + 4; this.speedY = Math.random() * 4 + 2; this.speedX = (Math.random() - 0.5) * 3;
         this.color = ['#00ff88', '#0055ff', '#00e1ff', '#ff6a2b', '#ffffff'][Math.floor(Math.random() * 5)];
         this.rotation = Math.random() * 360; this.rotSpeed = (Math.random() - 0.5) * 10;
@@ -611,11 +625,11 @@ function startConfetti() {
 }
 function animateConfetti() {
     if (!isConfettiActive) return;
-    fxCtx.clearRect(0, 0, fxCanvas.width, fxCanvas.height);
+    fxCtx.clearRect(0, 0, fxW, fxH);
     confetti.forEach(p => { p.update(); p.draw(); });
-    confetti = confetti.filter(p => p.y < fxCanvas.height);
+    confetti = confetti.filter(p => p.y < fxH);
     if (confetti.length > 0) requestAnimationFrame(animateConfetti);
-    else { isConfettiActive = false; fxCtx.clearRect(0, 0, fxCanvas.width, fxCanvas.height); }
+    else { isConfettiActive = false; fxCtx.clearRect(0, 0, fxW, fxH); }
 }
 
 // ==========================================
@@ -845,14 +859,17 @@ ring.style.strokeDashoffset = CIRC;
 let holdTimer = null, holdStart = 0, holdDone = false;
 
 function setRing(progress) { ring.style.strokeDashoffset = CIRC * (1 - progress); }
+const activePtrs = new Set(); let graceTimer = null;
+const HOLD_GRACE = 450;   // ignore short lifts / flicker of a flat palm
 function startHold(e) {
     e.preventDefault();
+    activePtrs.add(e.pointerId); clearTimeout(graceTimer);
+    if (holdTimer || holdDone) return;          // already scanning: keep counting
     initAudio();
-    holdDone = false; holdStart = Date.now();
+    holdStart = Date.now();
     holdBtn.classList.add('scanning');
     scanText.textContent = 'SCANNING...';
     triggerVibrate(30);
-    clearInterval(holdTimer);
     holdTimer = setInterval(() => {
         const p = Math.min((Date.now() - holdStart) / HOLD_TIME, 1);
         setRing(p);
@@ -861,14 +878,19 @@ function startHold(e) {
 }
 function cancelHold() {
     if (holdDone) return;
-    clearInterval(holdTimer);
+    clearInterval(holdTimer); holdTimer = null; activePtrs.clear();
     holdBtn.classList.remove('scanning');
     scanText.textContent = 'AWAITING TOUCH...';
     setRing(0);
 }
+function releaseHold(e) {
+    activePtrs.delete(e.pointerId);
+    if (holdDone || activePtrs.size) return;
+    clearTimeout(graceTimer); graceTimer = setTimeout(cancelHold, HOLD_GRACE);
+}
 function completeHold() {
     holdDone = true;
-    clearInterval(holdTimer);
+    clearInterval(holdTimer); holdTimer = null;
     holdBtn.classList.add('success');
     scanText.textContent = 'ACCESS GRANTED';
     triggerVibrate([60, 40, 60]);
@@ -876,7 +898,7 @@ function completeHold() {
     setTimeout(startGame, 700);
 }
 holdBtn.addEventListener('pointerdown', startHold);
-['pointerup', 'pointerleave', 'pointercancel'].forEach(ev => holdBtn.addEventListener(ev, cancelHold));
+['pointerup', 'pointerleave', 'pointercancel'].forEach(ev => holdBtn.addEventListener(ev, releaseHold));
 holdBtn.addEventListener('contextmenu', e => e.preventDefault());
 
 // ==========================================
@@ -897,6 +919,7 @@ function showScreen(id) {
 }
 window.addEventListener('pointerdown', armIdle, true);
 
+let answerArmAt = 0;
 let deck = [], currentQ = null, timeLeft = QUESTION_TIME, timerInterval = null, answered = false;
 
 function nextQuestion() {
@@ -907,7 +930,7 @@ function startGame() {
     container.classList.remove('shake', 'glitch-bg', 'success-bg');
     holdBtn.classList.remove('scanning', 'success');
     currentQ = nextQuestion();
-    answered = false;
+    answered = false; answerArmAt = Date.now() + 600;   // palm still on the glass after scanning must not pick an answer
     const qTime = currentQ.t || QUESTION_TIME;
     timeLeft = qTime;
     $('game-screen').classList.toggle('dense', currentQ.q.length + currentQ.options.join('').length > 230);
@@ -921,21 +944,21 @@ function startGame() {
         btn.className = 'option-btn';
         btn.innerHTML = `<span>${letter}</span>`;
         btn.appendChild(document.createTextNode(currentQ.options[i]));
-        btn.addEventListener('click', () => selectAnswer(i, btn));
+        btn.addEventListener('pointerdown', ev => { ev.preventDefault(); selectAnswer(i, btn); });
         optBox.appendChild(btn);
     });
 
     const bar = $('timer-bar');
-    bar.style.width = '100%';
+    bar.style.transition = 'none'; bar.style.transform = 'scaleX(1)'; void bar.offsetWidth; bar.style.transition = '';
     bar.style.backgroundColor = 'var(--neon-blue)';
     showScreen('game-screen');
 
     clearInterval(timerInterval);
-    let lastWhole = qTime;
+    let lastWhole = qTime; const tEnd = Date.now() + qTime * 1000;
     timerInterval = setInterval(() => {
-        timeLeft -= 0.1;
+        timeLeft = (tEnd - Date.now()) / 1000;
         const pct = Math.max(timeLeft / qTime, 0) * 100;
-        bar.style.width = pct + '%';
+        bar.style.transform = 'scaleX(' + (pct / 100).toFixed(3) + ')';
         if (pct < 30) bar.style.backgroundColor = 'var(--danger)';
         else if (pct < 60) bar.style.backgroundColor = 'var(--warning)';
         if (timeLeft <= 5 && Math.ceil(timeLeft) !== lastWhole) { lastWhole = Math.ceil(timeLeft); playTickSound(); }
@@ -943,7 +966,7 @@ function startGame() {
     }, 100);
 }
 function selectAnswer(index, btn) {
-    if (answered) return;
+    if (answered || Date.now() < answerArmAt) return;
     answered = true;
     clearInterval(timerInterval);
     playClickSound();
@@ -1059,7 +1082,7 @@ function claimGiveaway(id) {
 // 10. RESET & SHORTCUTS
 // ==========================================
 function resetGame() {
-    clearInterval(timerInterval); clearInterval(holdTimer);
+    clearInterval(timerInterval); clearInterval(holdTimer); holdTimer = null; activePtrs.clear(); clearTimeout(graceTimer);
     container.classList.remove('shake', 'glitch-bg', 'success-bg');
     holdBtn.classList.remove('scanning', 'success');
     scanText.textContent = 'AWAITING TOUCH...';
