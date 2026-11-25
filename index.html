@@ -158,7 +158,7 @@ h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.8rem,3.5vw,2.5rem);color:
 .progress-ring__circle{stroke-linecap:round}
 .laser-scanner{position:absolute;width:60%;height:2px;background:var(--neon-blue);box-shadow:0 0 15px var(--neon-blue),0 0 30px var(--neon-blue);top:50%;left:20%;transform:translateY(-50%);opacity:0;z-index:3;pointer-events:none}
 .hold-btn-container:active .laser-scanner,.hold-btn-container.scanning .laser-scanner{opacity:1;animation:scanAnim 1s linear infinite alternate}
-@keyframes scanAnim{0%{top:30%}100%{top:70%}}
+@keyframes scanAnim{0%{transform:translateY(calc(-50% - clamp(36px,3.8vw,50px)))}100%{transform:translateY(calc(-50% + clamp(36px,3.8vw,50px)))}}
 .hand-icon{width:40%;height:40%;fill:transparent;stroke:#fff;stroke-width:1.5;filter:drop-shadow(0 0 10px rgba(255,255,255,.5));transition:transform .2s,stroke .2s,filter .2s;z-index:4;pointer-events:none}
 .hold-btn-container:active .hand-icon{stroke:var(--neon-blue);filter:drop-shadow(0 0 20px var(--neon-blue));transform:scale(.95)}
 .hold-btn-container.success .hand-icon{stroke:var(--neon-green);filter:drop-shadow(0 0 40px var(--neon-green))}
@@ -274,6 +274,18 @@ html.q1 .hand-icon{transition:none}
 html.q1 .ticker{box-shadow:none}
 html.q2 .scanlines{background:none}
 html.q2 .sonar,html.q2 .ring3d.a,html.q2 #burst::before{display:none}
+/* q3 = STATIC: no animated background at all, only cheap compositor effects */
+html.q3 .scanlines,html.q3 .panel-glow,html.q3 .portal,html.q3 .sonar,html.q3 .hud-data{display:none!important}
+html.q3 .hand-icon,html.q3 .guide-title,html.q3 .brand-x{animation:none!important}
+html.q3 .laser-scanner{animation:none!important;box-shadow:none}
+html.q3 #attract-screen h1,html.q3 #attract-screen h1.hero-title{animation:none!important}
+html.q3 #bg-canvas{display:none}
+html.q3 #stage{background:radial-gradient(ellipse at 50% 40%,#06182b,#02060a 75%)}
+/* animations that belong to the idle screen only: never run while a game is in progress */
+.ticker-track{animation-play-state:paused}
+#stage.attract-on .ticker-track{animation-play-state:running}
+html,body{touch-action:manipulation;-webkit-tap-highlight-color:transparent;overscroll-behavior:none}
+#perf-hud{position:absolute;left:6px;bottom:44px;z-index:99;font:12px/1.35 'Share Tech Mono',monospace;color:#0f8;background:rgba(0,0,0,.75);padding:5px 8px;border-radius:4px;pointer-events:none;white-space:pre;display:none}
 </style>
 </head>
 <body>
@@ -295,6 +307,9 @@ html.q2 .sonar,html.q2 .ring3d.a,html.q2 #burst::before{display:none}
     <div class="setting-item"><span>FULLSCREEN</span><button class="close-btn" id="fs-btn" onclick="toggleFullscreen()" style="margin:0;min-width:90px">ENTER</button></div>
     <div class="setting-item"><span>SCREEN ROTATION</span><button class="close-btn" id="rot-btn" onclick="cycleRotation()" style="margin:0;min-width:90px">0°</button></div>
     <div class="rot-hint">TV mounted upright (portrait)? Tap ROTATION until the screen looks straight.</div>
+    <div class="setting-item"><span>PERFORMANCE</span><button class="close-btn" id="perf-btn" onclick="cyclePerf()" style="margin:0;min-width:130px">AUTO</button></div>
+    <div class="rot-hint">Laggy? Tap PERFORMANCE until it feels smooth (STATIC = smoothest).</div>
+    <div class="setting-item"><span>SHOW FPS</span><button class="close-btn" id="fps-btn" onclick="togglePerfHud()" style="margin:0;min-width:90px">OFF</button></div>
     <button class="close-btn" id="inv-open-btn" onclick="toggleInventoryEditor()">EDIT INVENTORY 🔒</button>
     <div id="inv-editor">
         <h3>// GIVEAWAY INVENTORY</h3>
@@ -366,6 +381,7 @@ html.q2 .sonar,html.q2 .ring3d.a,html.q2 #burst::before{display:none}
     </div>
 </div>
 
+<div id="perf-hud"></div>
 <div id="burst"><div class="burst-text">WIN PRIZES!</div></div>
 <div class="ticker top"><div class="ticker-track" id="ticker-track-top"></div></div>
 <div class="ticker"><div class="ticker-track" id="ticker-track"></div></div>
@@ -460,25 +476,37 @@ function triggerVibrate(pattern) { if (isVibrateEnabled && navigator.vibrate) na
 // ==========================================
 const canvas = document.getElementById('bg-canvas');
 const ctx = canvas.getContext('2d', { alpha: false });
-let width, height, particles = [], pulses = [];
+let width, height, particles = [], pulses = [], bgRunning = false;
+let lastDraw = 0, frameN = 0, accDt = 0, lastTs = 0, warm = 90;
 const TIERS = [
     { particles: 60, dist: 140, scale: 1,    confetti: 110, fpsCap: 0  },   // 0 full
     { particles: 36, dist: 130, scale: 0.75, confetti: 70,  fpsCap: 33 },   // 1 lite
-    { particles: 22, dist: 120, scale: 0.5,  confetti: 40,  fpsCap: 33 }    // 2 ultra-lite (~30fps)
+    { particles: 22, dist: 120, scale: 0.5,  confetti: 40,  fpsCap: 33 },   // 2 ultra-lite (~30fps)
+    { particles: 0,  dist: 0,   scale: 0.35, confetti: 28,  fpsCap: 0  }    // 3 static background (smoothest)
 ];
+const TIER_NAMES = ['FULL', 'LITE', 'ULTRA-LITE', 'STATIC'];
+const PERF_KEY = 'gemcor_iiee_perf';   // manual choice: 'auto' | '0'..'3'
 let tier = 0, tierForced = false;
 (function () {
     try {
         const q = new URLSearchParams(location.search).get('q');
-        if (q !== null && ['0', '1', '2'].includes(q)) { tier = +q; tierForced = true; }
-        else { const sv = parseInt(localStorage.getItem('q_tier')) || 0, app = !!window.Capacitor || /Android/.test(navigator.userAgent); tier = Math.min(2, Math.max(app ? 1 : 0, sv)); }
+        if (q !== null && ['0', '1', '2', '3'].includes(q)) { tier = +q; tierForced = true; }
+        else {
+            const pref = localStorage.getItem(PERF_KEY);
+            if (pref !== null && ['0', '1', '2', '3'].includes(pref)) { tier = +pref; tierForced = true; }
+            else { const sv = parseInt(localStorage.getItem('q_tier')) || 0, app = !!window.Capacitor || /Android/.test(navigator.userAgent); tier = Math.min(3, Math.max(app ? 2 : 0, sv)); }
+        }
     } catch (e) {}
 })();
 let Q = TIERS[tier];
 function applyTier(t, save) {
     tier = t; Q = TIERS[t];
-    document.documentElement.classList.toggle('q1', t === 1);
-    document.documentElement.classList.toggle('q2', t === 2);
+    // cumulative: every lower tier keeps all the savings of the tiers above it (before, tier 2 lost the tier-1 savings and was SLOWER than tier 1)
+    document.documentElement.classList.toggle('q1', t >= 1);
+    document.documentElement.classList.toggle('q2', t >= 2);
+    document.documentElement.classList.toggle('q3', t >= 3);
+    const pb = document.getElementById('perf-btn'); if (pb) pb.textContent = perfLabel();
+    if (typeof startBgLoop === 'function') startBgLoop();
     if (typeof initCanvas === 'function' && typeof width !== 'undefined' && width) initCanvas();
     if (save && !tierForced) { try { localStorage.setItem('q_tier', String(t)); } catch (e) {} }
 }
@@ -532,19 +560,24 @@ class Pulse {
         ctx.strokeStyle = `rgba(${this.color}, ${this.opacity})`; ctx.lineWidth = 2; ctx.stroke(); ctx.shadowBlur = 0;
     }
 }
-let lastDraw = 0, frameN = 0, accDt = 0, lastTs = 0, warm = 30;
 const segs = [[], [], [], []];
+function startBgLoop() {
+    if (Q.particles === 0 || bgRunning) return;     // STATIC tier: nothing animates in JS
+    bgRunning = true; lastTs = 0; warm = 90;
+    requestAnimationFrame(animateCanvas);
+}
 function animateCanvas(ts) {
     ts = ts || performance.now();
+    if (Q.particles === 0) { bgRunning = false; return; }
     requestAnimationFrame(animateCanvas);
     // --- auto quality: if the average frame is slow, step down a tier (never back up) ---
     if (lastTs) {
         const dt = Math.min(ts - lastTs, 100);
         if (warm > 0) warm--;
-        else if (!tierForced && tier < 2 && !document.hidden) {
+        else if (!tierForced && tier < 3 && !document.hidden) {
             accDt += dt; frameN++;
-            if (frameN >= 45) {
-                if (accDt / frameN > 24) { applyTier(tier + 1, true); warm = 30; }
+            if (frameN >= 60) {
+                if (accDt / frameN > 24) { applyTier(tier + 1, true); warm = 60; }
                 accDt = 0; frameN = 0;
             }
         }
@@ -580,6 +613,7 @@ function animateCanvas(ts) {
 }
 function createPulse(e) {
     if (e.target.closest('#settings-modal') || e.target.closest('.settings-btn') || e.target.closest('.hold-btn-container') || e.target.closest('.giveaway-grid')) return;
+    if (!Q.particles) return;
     const pt = toStage(e.touches ? e.touches[0].clientX : e.clientX, e.touches ? e.touches[0].clientY : e.clientY);
     let x = pt.x, y = pt.y;
     pulses.push(new Pulse(x, y));
@@ -591,7 +625,7 @@ function createPulse(e) {
     triggerVibrate(20);
 }
 window.addEventListener('pointerdown', createPulse);   // one event per tap (was mousedown + touchstart = doubled)
-window.addEventListener('resize', initCanvas); initCanvas(); requestAnimationFrame(animateCanvas);
+initCanvas(); startBgLoop();
 
 // ==========================================
 // 3. CONFETTI
@@ -601,7 +635,7 @@ const fxCtx = fxCanvas.getContext('2d');
 let confetti = [], isConfettiActive = false;
 let fxW = 0, fxH = 0;
 function resizeFx() { fxW = stageW(); fxH = stageH(); const s = Math.min(1, Math.sqrt(600000 / Math.max(1, fxW * fxH))); fxCanvas.width = Math.round(fxW * s); fxCanvas.height = Math.round(fxH * s); fxCtx.setTransform(s, 0, 0, s, 0, 0); }
-window.addEventListener('resize', resizeFx); resizeFx();
+resizeFx();
 
 class ConfettiPiece {
     constructor() {
@@ -870,15 +904,16 @@ function startHold(e) {
     holdBtn.classList.add('scanning');
     scanText.textContent = 'SCANNING...';
     triggerVibrate(30);
-    holdTimer = setInterval(() => {
+    const tick = () => {
         const p = Math.min((Date.now() - holdStart) / HOLD_TIME, 1);
         setRing(p);
-        if (p >= 1) completeHold();
-    }, 30);
+        if (p >= 1) completeHold(); else holdTimer = requestAnimationFrame(tick);
+    };
+    holdTimer = requestAnimationFrame(tick);
 }
 function cancelHold() {
     if (holdDone) return;
-    clearInterval(holdTimer); holdTimer = null; activePtrs.clear();
+    cancelAnimationFrame(holdTimer); holdTimer = null; activePtrs.clear();
     holdBtn.classList.remove('scanning');
     scanText.textContent = 'AWAITING TOUCH...';
     setRing(0);
@@ -890,7 +925,7 @@ function releaseHold(e) {
 }
 function completeHold() {
     holdDone = true;
-    clearInterval(holdTimer); holdTimer = null;
+    cancelAnimationFrame(holdTimer); holdTimer = null;
     holdBtn.classList.add('success');
     scanText.textContent = 'ACCESS GRANTED';
     triggerVibrate([60, 40, 60]);
@@ -949,27 +984,34 @@ function startGame() {
     });
 
     const bar = $('timer-bar');
-    bar.style.transition = 'none'; bar.style.transform = 'scaleX(1)'; void bar.offsetWidth; bar.style.transition = '';
+    clearTimeout(barColorT1); clearTimeout(barColorT2);
+    bar.style.transition = 'none'; bar.style.transform = 'scaleX(1)';
     bar.style.backgroundColor = 'var(--neon-blue)';
     showScreen('game-screen');
+    void bar.offsetWidth;                      // bar must be visible before the transition starts
+    bar.style.transition = `transform ${qTime}s linear, background-color .3s`;
+    bar.style.transform = 'scaleX(0)';         // animated by the compositor: immune to main-thread hiccups
+    barColorT1 = setTimeout(() => { bar.style.backgroundColor = 'var(--warning)'; }, qTime * 400);
+    barColorT2 = setTimeout(() => { bar.style.backgroundColor = 'var(--danger)'; }, qTime * 700);
 
     clearInterval(timerInterval);
     let lastWhole = qTime; const tEnd = Date.now() + qTime * 1000;
     timerInterval = setInterval(() => {
         timeLeft = (tEnd - Date.now()) / 1000;
-        const pct = Math.max(timeLeft / qTime, 0) * 100;
-        bar.style.transform = 'scaleX(' + (pct / 100).toFixed(3) + ')';
-        if (pct < 30) bar.style.backgroundColor = 'var(--danger)';
-        else if (pct < 60) bar.style.backgroundColor = 'var(--warning)';
         if (timeLeft <= 5 && Math.ceil(timeLeft) !== lastWhole) { lastWhole = Math.ceil(timeLeft); playTickSound(); }
         if (timeLeft <= 0) { clearInterval(timerInterval); handleResult('timeout'); }
     }, 100);
+}
+let barColorT1 = 0, barColorT2 = 0;
+function freezeBar() {
+    clearTimeout(barColorT1); clearTimeout(barColorT2);
+    const bar = $('timer-bar'), m = getComputedStyle(bar).transform;
+    bar.style.transition = 'none'; bar.style.transform = m;
 }
 function selectAnswer(index, btn) {
     if (answered || Date.now() < answerArmAt) return;
     answered = true;
     clearInterval(timerInterval);
-    playClickSound();
     const buttons = [...document.querySelectorAll('.option-btn')];
     buttons.forEach(b => b.style.pointerEvents = 'none');
     if (index === currentQ.answer) {
@@ -979,6 +1021,8 @@ function selectAnswer(index, btn) {
         btn.classList.add('flash-wrong');
         setTimeout(() => handleResult('wrong'), 1400);
     }
+    freezeBar();
+    setTimeout(playClickSound, 0);   // paint the feedback first, then the sound
 }
 function handleResult(type) {
     answered = true;
@@ -1082,7 +1126,7 @@ function claimGiveaway(id) {
 // 10. RESET & SHORTCUTS
 // ==========================================
 function resetGame() {
-    clearInterval(timerInterval); clearInterval(holdTimer); holdTimer = null; activePtrs.clear(); clearTimeout(graceTimer);
+    clearInterval(timerInterval); clearTimeout(barColorT1); clearTimeout(barColorT2); cancelAnimationFrame(holdTimer); holdTimer = null; activePtrs.clear(); clearTimeout(graceTimer);
     container.classList.remove('shake', 'glitch-bg', 'success-bg');
     holdBtn.classList.remove('scanning', 'success');
     scanText.textContent = 'AWAITING TOUCH...';
@@ -1172,6 +1216,7 @@ function resetInventoryUI() {
 // Live HUD readout
 const hudBr = $('hud-br');
 setInterval(() => {
+    if (tier > 0 || $('attract-screen').classList.contains('hidden')) return;
     const r = () => (Math.random() * 999).toFixed(2).padStart(6, '0');
     hudBr.innerHTML = `X:${r()} Y:${r()}<br>Z:${r()}<br>FLUX: ${(Math.random() * 100).toFixed(1)}%`;
 }, 400);
@@ -1218,9 +1263,7 @@ function attractBurst() {
     b.classList.remove('go'); void b.offsetWidth; b.classList.add('go');
     startConfetti();
     const cx = stageW() / 2, cy = stageH() / 2;
-    pulses.push(new Pulse(cx, cy));
-    setTimeout(() => pulses.push(new Pulse(cx, cy)), 150);
-    setTimeout(() => pulses.push(new Pulse(cx, cy)), 300);
+    if (Q.particles) { pulses.push(new Pulse(cx, cy)); setTimeout(() => pulses.push(new Pulse(cx, cy)), 150); setTimeout(() => pulses.push(new Pulse(cx, cy)), 300); }
     particles.forEach(p => { const dx = p.x - cx, dy = p.y - cy, d = Math.hypot(dx, dy) || 1; p.vx += dx / d * 3; p.vy += dy / d * 3; });
     playAttractSound();
 }
@@ -1242,6 +1285,43 @@ startEnergeticMusic();
     applyRotation(r, q !== null);
 })();
 window.addEventListener('resize', refreshLayout);
+
+// ==========================================
+// 12. PERFORMANCE CONTROLS + LIVE FPS / TOUCH-LAG METER (Settings > SHOW FPS, or ?debug=1)
+// ==========================================
+function perfPref() { try { return localStorage.getItem(PERF_KEY); } catch (e) { return null; } }
+function perfLabel() { const p = perfPref(); return ((p === null || p === 'auto') ? 'AUTO · ' : '') + TIER_NAMES[tier]; }
+function cyclePerf() {
+    const order = ['auto', '0', '1', '2', '3'], nx = order[(order.indexOf(perfPref() || 'auto') + 1) % order.length];
+    try { localStorage.setItem(PERF_KEY, nx); } catch (e) {}
+    if (nx === 'auto') { tierForced = false; try { localStorage.removeItem('q_tier'); } catch (e) {} applyTier(!!window.Capacitor || /Android/.test(navigator.userAgent) ? 2 : 0, false); }
+    else { tierForced = true; applyTier(+nx, false); }
+}
+let perfOn = false, pf = { n: 0, t0: 0, worst: 0, last: 0, lag: 0, lagMax: 0 };
+function perfLoop(ts) {
+    if (!perfOn) return;
+    requestAnimationFrame(perfLoop);
+    if (pf.last) pf.worst = Math.max(pf.worst, ts - pf.last);
+    pf.last = ts; pf.n++;
+    if (!pf.t0) pf.t0 = ts;
+    if (ts - pf.t0 >= 1000) {
+        $('perf-hud').textContent = 'FPS ' + Math.round(pf.n * 1000 / (ts - pf.t0)) + '  worst frame ' + Math.round(pf.worst) + 'ms\nTOUCH->SCREEN ' + Math.round(pf.lag) + 'ms (max ' + Math.round(pf.lagMax) + ')\nMODE ' + perfLabel();
+        pf.n = 0; pf.t0 = ts; pf.worst = 0;
+    }
+}
+window.addEventListener('pointerdown', e => {
+    if (!perfOn) return;
+    const t0 = e.timeStamp;
+    requestAnimationFrame(() => { pf.lag = performance.now() - t0; pf.lagMax = Math.max(pf.lagMax * .98, pf.lag); });
+}, true);
+function togglePerfHud(force) {
+    perfOn = typeof force === 'boolean' ? force : !perfOn;
+    $('perf-hud').style.display = perfOn ? 'block' : 'none';
+    $('fps-btn').textContent = perfOn ? 'ON' : 'OFF';
+    if (perfOn) { pf = { n: 0, t0: 0, worst: 0, last: 0, lag: 0, lagMax: 0 }; requestAnimationFrame(perfLoop); }
+}
+if (/[?&]debug=1/.test(location.search)) togglePerfHud(true);
+applyTier(tier, false);   // refresh button label now that the DOM exists
 
 showScreen('attract-screen');
 </script>

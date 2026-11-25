@@ -40,3 +40,10 @@ Palitan lang ang `index.html` (o mga larawan/music) sa repo, tapos mag-run ulit 
 - Kung mag-fail ang build, buksan ang run, i-click ang pulang step, at ipadala sa akin ang error.
 - Hindi ko pa ito nasusubukan sa totoong device. I-test ang music volume, ang rotation at ang pindot sa mismong TV/tablet bago ang event.
 - Ang stock ng prizes at settings ay nasa device mismo (localStorage). Kung i-uninstall at i-install ulit ang app, mare-reset ang mga ito.
+
+## Kapag may lag sa TV (Performance mode)
+
+- Sa APK/TV, ang game ay nagsisimula na sa **ULTRA-LITE** at awtomatikong bumababa sa **STATIC** kung mabagal pa rin.
+- Manual: ⚙ Settings > **PERFORMANCE**. I-tap hanggang smooth: AUTO, FULL, LITE, ULTRA-LITE, STATIC (STATIC = pinakamakinis, walang gumagalaw na background).
+- Settings > **SHOW FPS** ay nagpapakita ng FPS at ng "TOUCH->SCREEN" (ilang ms bago lumabas sa screen ang pindot). Kung malaki pa rin ito kahit STATIC, ang problema ay nasa touch frame/firmware ng TV, hindi sa game.
+- Ang napiling mode ay naaalala ng app.

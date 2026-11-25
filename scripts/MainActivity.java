@@ -3,6 +3,7 @@ package com.gemcor.pressittowin;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
+import android.webkit.WebView;
 import com.getcapacitor.BridgeActivity;
 
 public class MainActivity extends BridgeActivity {
@@ -13,6 +14,12 @@ public class MainActivity extends BridgeActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         // Let the background music start on its own (no first tap needed)
         getBridge().getWebView().getSettings().setMediaPlaybackRequiresUserGesture(false);
+        // Smoother rendering on weak TV chips: force GPU layer, no overscroll glow / haptics
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED, WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
+        WebView wv = getBridge().getWebView();
+        wv.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        wv.setOverScrollMode(View.OVER_SCROLL_NEVER);
+        wv.setHapticFeedbackEnabled(false);
         hideSystemUi();
     }
 
